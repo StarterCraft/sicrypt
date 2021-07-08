@@ -416,6 +416,12 @@ class Ui_MainWindow(object):
 "    border-bottom-right-radius: 3px;\n"
 "}\n"
 "\n"
+"QComboBox QAbstractItemView \n"
+"{\n"
+"    border: 2px solid darkgray;\n"
+"    background-color: rgb(213, 213, 213); \n"
+"    selection-background-color: rgb(70, 175, 38);\n"
+"}\n"
 "\n"
 "QLineEdit\n"
 "{ \n"
@@ -460,6 +466,8 @@ class Ui_MainWindow(object):
         self.cbb_Cipher = QtWidgets.QComboBox(self.gridLayoutWidget)
         self.cbb_Cipher.setMinimumSize(QtCore.QSize(0, 30))
         self.cbb_Cipher.setObjectName("cbb_Cipher")
+        self.cbb_Cipher.addItem("")
+        self.cbb_Cipher.addItem("")
         self.gridLayout.addWidget(self.cbb_Cipher, 6, 0, 1, 2)
         self.btn_Settings = QtWidgets.QPushButton(self.gridLayoutWidget)
         sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Minimum, QtWidgets.QSizePolicy.Maximum)
@@ -611,6 +619,8 @@ class Ui_MainWindow(object):
         self.btn_About.setToolTip(_translate("MainWindow", "Help/About"))
         self.btn_About.setText(_translate("MainWindow", "?"))
         self.cbb_Cipher.setToolTip(_translate("MainWindow", "Select your cipher"))
+        self.cbb_Cipher.setItemText(0, _translate("MainWindow", "j"))
+        self.cbb_Cipher.setItemText(1, _translate("MainWindow", "ij"))
         self.btn_Settings.setToolTip(_translate("MainWindow", "Settings"))
         self.tbt_OpenFile.setToolTip(_translate("MainWindow", "Open a file and paste its contents as source text"))
         self.tbt_OpenFile.setText(_translate("MainWindow", "Open file..."))

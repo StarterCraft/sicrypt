@@ -301,6 +301,14 @@ class Ui_Dialog(object):
 "    background-color: rgb(236, 236, 236);\n"
 "}\n"
 "\n"
+"QComboBox QAbstractItemView \n"
+"{\n"
+"    border: 2px solid darkgray;\n"
+"    background-color: rgb(213, 213, 213); \n"
+"    selection-background-color: rgb(70, 175, 38);\n"
+"}\n"
+"\n"
+"\n"
 "QPushButton\n"
 "{ \n"
 "    color: black;\n"
@@ -484,6 +492,9 @@ class Ui_Dialog(object):
         self.cbb_Font.setMinimumSize(QtCore.QSize(143, 0))
         self.cbb_Font.setMaximumSize(QtCore.QSize(210, 16777215))
         self.cbb_Font.setIconSize(QtCore.QSize(10, 10))
+        font = QtGui.QFont()
+        font.setFamily("Segoe UI Semilight")
+        self.cbb_Font.setCurrentFont(font)
         self.cbb_Font.setObjectName("cbb_Font")
         self.gridLayout.addWidget(self.cbb_Font, 8, 1, 1, 1)
         self.lbl_ReadOnly8 = QtWidgets.QLabel(self.frame)
@@ -500,6 +511,7 @@ class Ui_Dialog(object):
         self.spb_FontSize = QtWidgets.QSpinBox(self.frame)
         self.spb_FontSize.setMaximumSize(QtCore.QSize(35, 16777215))
         self.spb_FontSize.setButtonSymbols(QtWidgets.QAbstractSpinBox.NoButtons)
+        self.spb_FontSize.setProperty("value", 13)
         self.spb_FontSize.setObjectName("spb_FontSize")
         self.gridLayout.addWidget(self.spb_FontSize, 8, 2, 1, 1)
         self.lbl_ReadOnly2 = QtWidgets.QLabel(self.frame)

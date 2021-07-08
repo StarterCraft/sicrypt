@@ -325,6 +325,14 @@ QComboBox:hover
     background-color: rgb(236, 236, 236);
 }
 
+QComboBox QAbstractItemView 
+{
+    border: 2px solid darkgray;
+    background-color: rgb(213, 213, 213); 
+    selection-background-color: rgb(70, 175, 38);
+}
+
+
 QPushButton
 { 
     color: black;
@@ -593,6 +601,11 @@ QLineEdit:hover
           <height>10</height>
          </size>
         </property>
+        <property name="currentFont">
+         <font>
+          <family>Segoe UI Semilight</family>
+         </font>
+        </property>
        </widget>
       </item>
       <item row="11" column="0">
@@ -626,6 +639,9 @@ QLineEdit:hover
         </property>
         <property name="buttonSymbols">
          <enum>QAbstractSpinBox::NoButtons</enum>
+        </property>
+        <property name="value">
+         <number>13</number>
         </property>
        </widget>
       </item>

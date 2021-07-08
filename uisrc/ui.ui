@@ -429,6 +429,12 @@ QComboBox::drop-down
     border-bottom-right-radius: 3px;
 }
 
+QComboBox QAbstractItemView 
+{
+    border: 2px solid darkgray;
+    background-color: rgb(213, 213, 213); 
+    selection-background-color: rgb(70, 175, 38);
+}
 
 QLineEdit
 { 
@@ -527,6 +533,16 @@ QLineEdit:hover
        <property name="toolTip">
         <string>Select your cipher</string>
        </property>
+       <item>
+        <property name="text">
+         <string>j</string>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string>ij</string>
+        </property>
+       </item>
       </widget>
      </item>
      <item row="0" column="5">

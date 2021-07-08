@@ -1,4 +1,4 @@
-import sys, os, base64, pyperclip, glob, importlib
+import sys, os, pyperclip, glob, json, importlib
 
 from PyQt5               import QtCore, QtGui, QtWidgets
 from PyQt5.QtCore        import *
@@ -94,6 +94,16 @@ class Settings(QDialog):
         QDialog.__init__(self)
         self.ui = Ui_Dialog()
         self.ui.setupUi(self)
+
+    def loadConfig(self) -> None:
+        '''
+        Load program configuration from 'config.json' file and apply it
+        to the UI.
+
+        :returns: None
+        '''
+        self.config = {}
+        with open('config.json', 'r') as file: self.config.update(json.load(file))
 
 
 class Cipher:
