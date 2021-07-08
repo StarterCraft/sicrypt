@@ -1,0 +1,19 @@
+<RCC>
+  <qresource prefix="zxc">
+    <file>icons/radiobutton_checked.png</file>
+    <file>icons/radiobutton_checked_hover.png</file>
+    <file>icons/radiobutton_unchecked.png</file>
+    <file>icons/radiobutton_unchecked_hover.png</file>
+    <file>icons/checkbox_unchecked.png</file>
+    <file>icons/checkbox_checked_hover.png</file>
+    <file>icons/checkbox_unchecked_hover.png</file>
+    <file>icons/arrowDown_ico.png</file>
+    <file>icons/arrowUp_ico.png</file>
+    <file>icons/settings.png</file>
+    <file>icons/checkbox_checked.png</file>
+    <file>icons/copy.png</file>
+    <file>icons/icon.ico</file>
+    <file>icons/icon_-d.ico</file>
+    <file>icons/paste.png</file>
+  </qresource>
+</RCC>
