@@ -1,0 +1,949 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>Dialog</class>
+ <widget class="QDialog" name="Dialog">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>450</width>
+    <height>380</height>
+   </rect>
+  </property>
+  <property name="sizePolicy">
+   <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+    <horstretch>0</horstretch>
+    <verstretch>0</verstretch>
+   </sizepolicy>
+  </property>
+  <property name="minimumSize">
+   <size>
+    <width>450</width>
+    <height>380</height>
+   </size>
+  </property>
+  <property name="maximumSize">
+   <size>
+    <width>450</width>
+    <height>400</height>
+   </size>
+  </property>
+  <property name="windowTitle">
+   <string>Sicrypt Settings</string>
+  </property>
+  <property name="windowIcon">
+   <iconset resource="../res.qrc">
+    <normaloff>:/zxc/icons/icon.ico</normaloff>:/zxc/icons/icon.ico</iconset>
+  </property>
+  <property name="styleSheet">
+   <string notr="true">background-color: rgb(45, 45, 45)</string>
+  </property>
+  <layout class="QVBoxLayout" name="verticalLayout_4">
+   <property name="leftMargin">
+    <number>6</number>
+   </property>
+   <property name="topMargin">
+    <number>6</number>
+   </property>
+   <property name="rightMargin">
+    <number>6</number>
+   </property>
+   <property name="bottomMargin">
+    <number>9</number>
+   </property>
+   <item>
+    <widget class="QFrame" name="frame">
+     <property name="styleSheet">
+      <string notr="true">QLabel { 
+    color: white;
+    font: 13pt &quot;Segoe UI Semilight&quot;;
+}
+
+QCheckBox, QRadioButton {
+	color: white;
+	font: 11pt &quot;Segoe UI Semilight&quot;;
+}
+
+QCheckBox::indicator, QRadioButton::indicator {
+	width: 16px;
+	height: 16px;
+}
+
+QCheckBox::indicator:checked {
+	image: url(:/zxc/icons/checkbox_checked.png);
+}
+
+QCheckBox::indicator:checked:hover {
+	image: url(:/zxc/icons/checkbox_checked_hover.png);
+}
+
+QCheckBox::indicator:unchecked {
+	image: url(:/zxc/icons/checkbox_unchecked.png);
+}
+
+QCheckBox::indicator:unchecked:hover {
+	image: url(:/zxc/icons/checkbox_unchecked_hover.png);
+}
+
+QRadioButton::indicator:checked {
+	image: url(:/zxc/icons/radiobutton_checked.png);
+}
+
+QRadioButton::indicator:checked:hover {
+	image: url(:/zxc/icons/radiobutton_checked_hover.png);
+}
+
+QRadioButton::indicator:unchecked {
+	image: url(:/zxc/icons/radiobutton_unchecked.png);
+}
+
+QRadioButton::indicator:unchecked:hover {
+	image: url(:/zxc/icons/radiobutton_unchecked_hover.png);
+}
+
+QCheckBox:disabled, QRadioButton:disabled {
+	color: gray;
+}
+
+QPlainTextEdit {
+    color: white;
+    font: 12pt &quot;Segoe UI Semilight&quot;;
+}
+
+QTabWidget::pane {
+    border-top: 1px solid white;
+    padding: 2px;
+}
+
+QTabBar::tab {
+    background: rgb(59, 59, 59);
+    border: 1px solid white;
+    border-top-left-radius: 4px;
+    border-top-right-radius: 4px;
+    padding-left: 10px;
+    padding-right: 10px;
+    padding-top: 3px;
+    padding-bottom: 2px;
+    font: 63 9pt &quot;Segoe UI Semibold&quot;;
+}
+
+QTabBar::tab:disabled { 
+    background-color: gray;
+}
+
+QTabBar::tab:active:disabled {
+    background-color: grey;
+}
+
+QTabBar::tab:hover {
+    background-color: rgb(47, 105, 23);
+    color: rgb(248, 248, 248);
+}
+
+QTabBar::tab:!selected {
+    margin-top: 2px; /* make non-selected tabs look smaller */
+}
+
+/* make use of negative margins for overlapping tabs */
+QTabBar::tab:selected {
+    /* expand/overlap to the left and right by 4px */
+    margin-left: -4px;
+    margin-right: -4px;
+    background-color: rgb(70, 175, 38);
+}
+
+QTabBar::tab:first:selected {
+    margin-left: 0; /* the first selected tab has nothing to overlap with on the left */
+}
+
+QTabBar::tab:last:selected {
+    margin-right: 0; /* the last selected tab has nothing to overlap with on the right */
+}
+
+QListView {
+    show-decoration-selected: 1; /* make the selection span the entire width of the view */
+}
+
+QListView::item:hover {
+	background-color: rgb(47, 105, 23);
+}
+
+QListView::item:selected {
+	background-color: rgb(70, 175, 38);
+}
+
+QSlider::handle:horizontal {
+    background:  rgb(70, 175, 38);
+    width: 18px;
+    margin: -2px 0; /* handle is placed by default on the contents rect of the groove. Expand outside the groove */
+    border-radius: 3px;
+}
+
+QSlider::handle:horizontal:hover {
+	background-color: rgb(45, 102, 23);
+}
+
+QSlider::handle:horizontal:disabled {
+	background-color: grey;
+}
+
+QScrollBar:vertical {
+    background-color: #2A2929;
+    width: 15px;
+    margin: 15px 3px 15px 3px;
+    border: 1px transparent #2A2929;
+}
+
+QScrollBar::handle:vertical {
+     background-color: rgb(45, 45, 45);         /* #605F5F; */
+     min-height: 5px;
+     border: 2px solid white;
+     border-radius: 4px;
+}
+
+QScrollBar::sub-line:vertical
+{
+    margin: 3px 0px 3px 0px;
+    border-image: url(:/qss_icons/rc/icons/up_arrow_disabled.png);
+    height: 10px;
+    width: 10px;
+    subcontrol-position: top;
+    subcontrol-origin: margin;
+}
+
+QScrollBar::add-line:vertical
+{
+    margin: 3px 0px 3px 0px;
+    border-image: url(:/qss_icons/rc/icons/down_arrow_disabled.png);
+    height: 10px;
+    width: 10px;
+    subcontrol-position: bottom;
+    subcontrol-origin: margin;
+}
+
+QScrollBar::sub-line:vertical:hover,QScrollBar::sub-line:vertical:on
+{
+    border-image: url(:/qss_icons/rc/icons/up_arrow.png);
+    height: 10px;
+    width: 10px;
+    subcontrol-position: top;
+    subcontrol-origin: margin;
+}
+
+QScrollBar::add-line:vertical:hover, QScrollBar::add-line:vertical:on
+{
+    border-image: url(:/qss_icons/rc/icons/down_arrow.png);
+    height: 10px;
+    width: 10px;
+    subcontrol-position: bottom;
+    subcontrol-origin: margin;
+}
+
+QScrollBar::up-arrow:vertical, QScrollBar::down-arrow:vertical
+{
+    background: none;
+}
+
+QScrollBar::add-page:vertical, QScrollBar::sub-page:vertical
+{
+    background: none;
+}
+
+QSpinBox
+{
+    color: black;
+    background-color: rgb(215, 215, 215);
+    border: 1px solid gray;
+    border-radius: 3px;  
+    font: 11pt &quot;Segoe UI Semilight&quot;;
+}
+
+QSpinBox:hover {
+    border: 1px green sunken;
+}
+
+QSpinBox:disabled
+{
+    color: grey;
+}
+
+QSpinBox::up-button
+{
+    color: black;
+    background-color: rgb(215, 215, 215);
+    border: 1px solid gray;
+    border-radius: 3px;
+}
+
+QSpinBox::down-button
+{   
+    color: black;
+    background-color: rgb(215, 215, 215);
+    border: 1px solid gray;
+    border-radius: 3px;
+}
+
+QTimeEdit 
+{
+    border: none;
+    font: 11pt &quot;Segoe UI&quot;;
+}
+
+QTimeEdit:hover
+{
+    border: 1px green sunken;
+}
+
+QTimeEdit:disabled
+{
+    color: grey; 
+}
+
+QTimeEdit::up-button
+{
+    color: white;
+}
+
+QTimeEdit::down-button
+{
+    color: white;
+}
+
+QComboBox 
+{
+    color: black;
+    border: 1px solid gray;
+    border-radius: 3px;
+    padding: 1px 18px 1px 3px;
+    min-width: 6em;
+    font: 11pt &quot;Segoe UI Semilight&quot;;
+}
+
+QComboBox:hover
+{
+    border: 1px solid rgb(254, 254, 254);
+    background-color: rgb(236, 236, 236);
+}
+
+QPushButton
+{ 
+    color: black;
+    background-color: rgb(215, 215, 215);
+    border: 1px solid gray;
+    border-radius: 3px;  
+    font: 11pt &quot;Segoe UI Semilight&quot;;
+}
+
+QPushButton:hover
+{ 
+    background-color: rgb(235, 235, 235);
+}
+
+QPushButton:pressed
+{ 
+    background-color: rgb(221, 221, 221);
+}
+
+QToolButton
+{ 
+    color: black;
+    background-color: rgb(215, 215, 215);
+    border: 1px solid gray;
+    border-radius: 3px;  
+    font: 11pt &quot;Segoe UI Semilight&quot;;
+}
+
+QToolButton:hover
+{ 
+    background-color: rgb(235, 235, 235);
+}
+
+QToolButton:pressed
+{ 
+    background-color: rgb(221, 221, 221);
+}
+
+/* the subcontrols below are used only in the MenuButtonPopup mode */
+QToolButton::menu-button
+{
+    border: 1px solid gray;
+    border-top-right-radius: 3px;
+    border-bottom-right-radius: 3px;
+    /* 16px width + 4px for border = 20px allocated above */
+    background: none;
+    width: 16px;
+}
+
+QToolButton::menu-arrow:open
+{
+    top: 1px; left: 1px; /* shift it a bit */
+}
+
+QComboBox:disabled
+{
+    color: gray;
+    background-color: rgb(35, 35, 35);
+}
+
+
+QComboBox::down-arrow
+{
+    image: url(:/zxc/icons/arrowDown_ico.png);
+}
+
+
+QComboBox::up-arrow
+{ 
+    image: url(:/zxc/icons/arrowUp_ico.png);
+}
+
+
+QComboBox:editable
+{
+    background: white;
+}
+
+
+QComboBox:!editable, QComboBox::drop-down:editable
+{
+     background: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,
+        stop: 0 #E1E1E1, stop: 0.4 #DDDDDD,
+        stop: 0.5 #D8D8D8, stop: 1.0 #D3D3D3);
+}
+
+
+/* QComboBox gets the &quot;on&quot; state when the popup is open */
+QComboBox:!editable:on, QComboBox::drop-down:editable:on
+{
+    background: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,
+        stop: 0 #D3D3D3, stop: 0.4 #D8D8D8,
+        stop: 0.5 #DDDDDD, stop: 1.0 #E1E1E1);
+}
+
+
+QComboBox:on
+{ /* shift the text when the popup opens */
+    padding-top: 3px;
+    padding-left: 4px;
+}
+
+
+QComboBox::drop-down
+{
+    subcontrol-origin: padding;
+    subcontrol-position: top right;
+    width: 15px;
+
+    border-left-width: 1px;
+    border-left-color: darkgray;
+    border-left-style: solid; /* just a single line */
+    border-top-right-radius: 3px; /* same radius as the QComboBox */
+    border-bottom-right-radius: 3px;
+}
+
+
+QLineEdit
+{ 
+    border-radius: 3px;
+    border: 1px solid white;
+}
+
+QLineEdit:hover
+{ 
+    border-color: rgb(42, 105, 23);
+}</string>
+     </property>
+     <property name="frameShape">
+      <enum>QFrame::StyledPanel</enum>
+     </property>
+     <property name="frameShadow">
+      <enum>QFrame::Raised</enum>
+     </property>
+     <layout class="QGridLayout" name="gridLayout">
+      <property name="leftMargin">
+       <number>6</number>
+      </property>
+      <property name="topMargin">
+       <number>6</number>
+      </property>
+      <property name="rightMargin">
+       <number>6</number>
+      </property>
+      <property name="bottomMargin">
+       <number>6</number>
+      </property>
+      <property name="horizontalSpacing">
+       <number>9</number>
+      </property>
+      <property name="verticalSpacing">
+       <number>6</number>
+      </property>
+      <item row="5" column="0" colspan="3">
+       <widget class="QLabel" name="lbl_ReadOnly4">
+        <property name="styleSheet">
+         <string notr="true">font-family: Segoe UI Semibold</string>
+        </property>
+        <property name="text">
+         <string>Text fields' appearance:</string>
+        </property>
+       </widget>
+      </item>
+      <item row="1" column="0" colspan="3">
+       <widget class="Line" name="line">
+        <property name="orientation">
+         <enum>Qt::Horizontal</enum>
+        </property>
+       </widget>
+      </item>
+      <item row="8" column="0">
+       <widget class="QLabel" name="lbl_ReadOnly6">
+        <property name="text">
+         <string>Font:</string>
+        </property>
+       </widget>
+      </item>
+      <item row="3" column="1" colspan="2">
+       <widget class="QComboBox" name="cbb_Language">
+        <property name="minimumSize">
+         <size>
+          <width>143</width>
+          <height>0</height>
+         </size>
+        </property>
+        <property name="maximumSize">
+         <size>
+          <width>256</width>
+          <height>16777215</height>
+         </size>
+        </property>
+        <item>
+         <property name="text">
+          <string>English</string>
+         </property>
+        </item>
+       </widget>
+      </item>
+      <item row="0" column="0" colspan="3">
+       <widget class="QLabel" name="lbl_ReadOnly1">
+        <property name="sizePolicy">
+         <sizepolicy hsizetype="Preferred" vsizetype="MinimumExpanding">
+          <horstretch>0</horstretch>
+          <verstretch>0</verstretch>
+         </sizepolicy>
+        </property>
+        <property name="maximumSize">
+         <size>
+          <width>16777215</width>
+          <height>26</height>
+         </size>
+        </property>
+        <property name="font">
+         <font>
+          <family>Segoe UI Black</family>
+          <pointsize>13</pointsize>
+          <weight>50</weight>
+          <italic>false</italic>
+          <bold>false</bold>
+         </font>
+        </property>
+        <property name="styleSheet">
+         <string notr="true">font-family: Segoe UI Black</string>
+        </property>
+        <property name="text">
+         <string>Settings</string>
+        </property>
+       </widget>
+      </item>
+      <item row="9" column="0">
+       <widget class="QLabel" name="lbl_ReadOnly7">
+        <property name="maximumSize">
+         <size>
+          <width>16777215</width>
+          <height>26</height>
+         </size>
+        </property>
+        <property name="text">
+         <string>Word wrap:</string>
+        </property>
+       </widget>
+      </item>
+      <item row="8" column="1">
+       <widget class="QFontComboBox" name="cbb_Font">
+        <property name="sizePolicy">
+         <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
+          <horstretch>0</horstretch>
+          <verstretch>0</verstretch>
+         </sizepolicy>
+        </property>
+        <property name="minimumSize">
+         <size>
+          <width>143</width>
+          <height>0</height>
+         </size>
+        </property>
+        <property name="maximumSize">
+         <size>
+          <width>210</width>
+          <height>16777215</height>
+         </size>
+        </property>
+        <property name="iconSize">
+         <size>
+          <width>10</width>
+          <height>10</height>
+         </size>
+        </property>
+       </widget>
+      </item>
+      <item row="11" column="0">
+       <widget class="QLabel" name="lbl_ReadOnly8">
+        <property name="text">
+         <string>Tab policy:</string>
+        </property>
+       </widget>
+      </item>
+      <item row="3" column="0">
+       <widget class="QLabel" name="lbl_ReadOnly3">
+        <property name="text">
+         <string>Language:</string>
+        </property>
+       </widget>
+      </item>
+      <item row="4" column="0" colspan="3">
+       <widget class="Line" name="line_2">
+        <property name="orientation">
+         <enum>Qt::Horizontal</enum>
+        </property>
+       </widget>
+      </item>
+      <item row="8" column="2">
+       <widget class="QSpinBox" name="spb_FontSize">
+        <property name="maximumSize">
+         <size>
+          <width>35</width>
+          <height>16777215</height>
+         </size>
+        </property>
+        <property name="buttonSymbols">
+         <enum>QAbstractSpinBox::NoButtons</enum>
+        </property>
+       </widget>
+      </item>
+      <item row="2" column="0">
+       <widget class="QLabel" name="lbl_ReadOnly2">
+        <property name="styleSheet">
+         <string notr="true">font-family: Segoe UI Semibold</string>
+        </property>
+        <property name="text">
+         <string>General:</string>
+        </property>
+       </widget>
+      </item>
+      <item row="6" column="0">
+       <widget class="QLabel" name="lbl_ReadOnly5">
+        <property name="maximumSize">
+         <size>
+          <width>16777215</width>
+          <height>26</height>
+         </size>
+        </property>
+        <property name="text">
+         <string>Position:</string>
+        </property>
+       </widget>
+      </item>
+      <item row="9" column="1" colspan="2">
+       <widget class="QFrame" name="frame_WordWrapSelectors">
+        <property name="maximumSize">
+         <size>
+          <width>16777215</width>
+          <height>26</height>
+         </size>
+        </property>
+        <property name="frameShape">
+         <enum>QFrame::StyledPanel</enum>
+        </property>
+        <property name="frameShadow">
+         <enum>QFrame::Raised</enum>
+        </property>
+        <layout class="QHBoxLayout" name="horizontalLayout">
+         <property name="leftMargin">
+          <number>2</number>
+         </property>
+         <property name="topMargin">
+          <number>0</number>
+         </property>
+         <property name="rightMargin">
+          <number>0</number>
+         </property>
+         <property name="bottomMargin">
+          <number>0</number>
+         </property>
+         <item>
+          <widget class="QCheckBox" name="ckb_ResultTextFieldTextWrap">
+           <property name="text">
+            <string>Result text</string>
+           </property>
+           <property name="checked">
+            <bool>true</bool>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QCheckBox" name="ckb_SourceTextFieldTextWrap">
+           <property name="text">
+            <string>Source text</string>
+           </property>
+          </widget>
+         </item>
+        </layout>
+       </widget>
+      </item>
+      <item row="11" column="1" colspan="2">
+       <widget class="QTabWidget" name="tbs_TabPolicyFieldsSelector">
+        <property name="sizePolicy">
+         <sizepolicy hsizetype="Expanding" vsizetype="Minimum">
+          <horstretch>0</horstretch>
+          <verstretch>0</verstretch>
+         </sizepolicy>
+        </property>
+        <property name="minimumSize">
+         <size>
+          <width>0</width>
+          <height>55</height>
+         </size>
+        </property>
+        <property name="maximumSize">
+         <size>
+          <width>16777215</width>
+          <height>64</height>
+         </size>
+        </property>
+        <property name="currentIndex">
+         <number>0</number>
+        </property>
+        <widget class="QWidget" name="tab_SourceTextFieldTabPolicy">
+         <attribute name="title">
+          <string> Source text </string>
+         </attribute>
+         <widget class="QComboBox" name="cbb_SourceTextFieldTabPolicy">
+          <property name="geometry">
+           <rect>
+            <x>0</x>
+            <y>0</y>
+            <width>251</width>
+            <height>26</height>
+           </rect>
+          </property>
+          <property name="minimumSize">
+           <size>
+            <width>143</width>
+            <height>0</height>
+           </size>
+          </property>
+          <property name="maximumSize">
+           <size>
+            <width>256</width>
+            <height>16777215</height>
+           </size>
+          </property>
+          <item>
+           <property name="text">
+            <string>Tab symbol</string>
+           </property>
+          </item>
+          <item>
+           <property name="text">
+            <string>2 spaces</string>
+           </property>
+          </item>
+          <item>
+           <property name="text">
+            <string>3 spaces</string>
+           </property>
+          </item>
+          <item>
+           <property name="text">
+            <string>4 spaces</string>
+           </property>
+          </item>
+         </widget>
+        </widget>
+        <widget class="QWidget" name="tab_ResultTextFieldTabPolicy">
+         <attribute name="title">
+          <string> Result text</string>
+         </attribute>
+         <widget class="QComboBox" name="cbb_ResultTextFieldTabPolicy">
+          <property name="geometry">
+           <rect>
+            <x>0</x>
+            <y>0</y>
+            <width>230</width>
+            <height>26</height>
+           </rect>
+          </property>
+          <property name="minimumSize">
+           <size>
+            <width>143</width>
+            <height>0</height>
+           </size>
+          </property>
+          <property name="maximumSize">
+           <size>
+            <width>230</width>
+            <height>16777215</height>
+           </size>
+          </property>
+          <item>
+           <property name="text">
+            <string>Tab как символ</string>
+           </property>
+          </item>
+          <item>
+           <property name="text">
+            <string>2 пробела</string>
+           </property>
+          </item>
+          <item>
+           <property name="text">
+            <string>3 пробела</string>
+           </property>
+          </item>
+          <item>
+           <property name="text">
+            <string>4 пробела</string>
+           </property>
+          </item>
+         </widget>
+        </widget>
+       </widget>
+      </item>
+      <item row="6" column="1" colspan="2">
+       <widget class="QFrame" name="frame_TextFieldsPosition">
+        <property name="maximumSize">
+         <size>
+          <width>16777215</width>
+          <height>26</height>
+         </size>
+        </property>
+        <property name="frameShape">
+         <enum>QFrame::StyledPanel</enum>
+        </property>
+        <property name="frameShadow">
+         <enum>QFrame::Raised</enum>
+        </property>
+        <layout class="QHBoxLayout" name="horizontalLayout_2">
+         <property name="leftMargin">
+          <number>2</number>
+         </property>
+         <property name="topMargin">
+          <number>0</number>
+         </property>
+         <property name="rightMargin">
+          <number>0</number>
+         </property>
+         <property name="bottomMargin">
+          <number>0</number>
+         </property>
+         <item>
+          <widget class="QRadioButton" name="rbt_TextFieldsPositionHorizontal">
+           <property name="text">
+            <string>Horizontal</string>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QRadioButton" name="rbt_TextFieldsPositionVertical">
+           <property name="text">
+            <string>Vertical</string>
+           </property>
+           <property name="checkable">
+            <bool>true</bool>
+           </property>
+           <property name="checked">
+            <bool>true</bool>
+           </property>
+          </widget>
+         </item>
+        </layout>
+       </widget>
+      </item>
+     </layout>
+    </widget>
+   </item>
+   <item>
+    <widget class="QDialogButtonBox" name="buttonBox">
+     <property name="styleSheet">
+      <string notr="true">QPushButton
+{ 
+    color: black;
+    background-color: rgb(215, 215, 215);
+    border: 1px solid gray;
+    border-radius: 3px;
+	min-width: 80px;
+	min-height: 30px;
+    padding: 0px 4px 0px 4px;
+    font: 11pt &quot;Segoe UI Semilight&quot;;
+}
+
+QPushButton:hover
+{ 
+    background-color: rgb(235, 235, 235);
+}
+
+QPushButton:pressed
+{ 
+    background-color: rgb(221, 221, 221);
+}</string>
+     </property>
+     <property name="orientation">
+      <enum>Qt::Horizontal</enum>
+     </property>
+     <property name="standardButtons">
+      <set>QDialogButtonBox::Cancel|QDialogButtonBox::Save</set>
+     </property>
+     <property name="centerButtons">
+      <bool>true</bool>
+     </property>
+    </widget>
+   </item>
+  </layout>
+ </widget>
+ <resources>
+  <include location="../res.qrc"/>
+ </resources>
+ <connections>
+  <connection>
+   <sender>buttonBox</sender>
+   <signal>accepted()</signal>
+   <receiver>Dialog</receiver>
+   <slot>accept()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>254</x>
+     <y>305</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>157</x>
+     <y>274</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>buttonBox</sender>
+   <signal>rejected()</signal>
+   <receiver>Dialog</receiver>
+   <slot>reject()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>322</x>
+     <y>305</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>286</x>
+     <y>274</y>
+    </hint>
+   </hints>
+  </connection>
+ </connections>
+</ui>
