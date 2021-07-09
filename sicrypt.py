@@ -1,4 +1,5 @@
-import sys, os, pyperclip, glob, json, importlib
+import sys, os, pyperclip, glob, json
+import importlib, requests
 
 from PyQt5               import QtCore, QtGui, QtWidgets
 from PyQt5.QtCore        import *
@@ -7,6 +8,11 @@ from PyQt5.QtWidgets     import *
 from uibld               import *
 from uibld.settings      import *
 from uibld.style         import *
+
+
+#Global variables declaration
+gitHubLink = 'https://github.com/StarterCraft/sicrypt'
+
 
 
 class Window(QMainWindow):
@@ -21,9 +27,9 @@ class Window(QMainWindow):
         self.ui = Ui_MainWindow()
         self.ui.setupUi(self)
 
-        #Menu for opening a file with specific encoding
+        #Menu for opening a file with specific encoding:
         self.openFileMenu = QMenu()
-        self.openFileMenu.addSection(self.translate('MainWindow', 'Open a file with encoding...'))
+
         #Define and setup encoding actions
         self.openFileEncodingActions = [
             Action('ASCII'),
@@ -32,11 +38,12 @@ class Window(QMainWindow):
             Action('UTF-16'),
             Action('UTF-32'),
             Action('Windows-1251')]
+
         self.openFileMenu.addActions(self.openFileEncodingActions)
 
-        #Menu for saving into a file with specific encoding
+        #Menu for saving into a file with specific encoding:
         self.saveToFileMenu = QMenu()
-        self.saveToFileMenu.addSection(self.translate('MainWindow', 'Save to a file with encoding...'))
+
         #Define and setup encoding actions
         self.saveToFileEncodingActions = [
             Action('ASCII'),
@@ -57,7 +64,7 @@ class Action(QAction):
     A class defenition allowing 'QAction' initialization with
     'data' parameter
     '''
-    def __init__(self, data = None, *args, **kwargs):
+    def __init__(self, name: str, data = None, *args, **kwargs):
         '''
         Initialize QAction with a possibility to set action
         data while initializing
@@ -66,6 +73,7 @@ class Action(QAction):
             Optional data
         '''
         QAction.__init__(self, *args, **kwargs)
+        self.setText(name)
         if data: self.setData(data)
 
 
@@ -160,335 +168,329 @@ class Cipher:
         self.category = category
 
 
-class Functions:
+#Major functions are defined below
+def loadCiphers(root: Window) -> None:
     '''
-    Class consisting of all the basic functions of Sicrypt.
-    Plays role of a method union, although stores loaded
-    'Cipher' class instances.
+    Load ciphers from '*.py' files in 'ciphers' directory,
+    initialize them, collect them into 'ciphers' list and
+    add their display names to the cipher selection combobox.
+
+    :param 'root': Window
+        Main window
+
+    :returns: None
     '''
-    def loadCiphers(self, root: Window) -> None:
-        '''
-        Load ciphers from '*.py' files in 'ciphers' directory,
-        initialize them, collect them into 'ciphers' list and
-        add their display names to the cipher selection combobox.
+    global ciphers
 
-        :param 'root': Window
-            Main window
+    ciphers, categories, classNames = [], [], {}
+    available = glob.glob('ciphers/*')
+    for fileName in available[:]:
+        available.remove(fileName)
+        available.append(fileName.replace('\\', '/'))
 
-        :returns: None
-        '''
-        self.ciphers, categories, classNames = [], [], {}
-        available = glob.glob('ciphers/*')
-        for fileName in available[:]:
-            available.remove(fileName)
-            available.append(fileName.replace('\\', '/'))
+    for fileName in available:
+        if fileName.split('/')[len(fileName.split('/'))-1].startswith('__'): continue
+        with open(fileName, 'r') as file:
+            for line in file.readlines():
+                if line.startswith('class '):
+                    className = line[5:line.index('(')].strip()
+                    if fileName not in classNames.keys():
+                        classNames.update({fileName.replace('/', '.'): [className]})
+                    else:
+                        savedNames = classNames[fileName.replace('/', '.')]
+                        savedNames.append(className)
+                        classNames.update({fileName.replace('/', '.'): savedNames})
 
-        for fileName in available:
-            if fileName.split('/')[len(fileName.split('/'))-1].startswith('__'): continue
-            with open(fileName, 'r') as file:
-                for line in file.readlines():
-                    if line.startswith('class '):
-                       className = line[5:line.index('(')].strip()
-                       if fileName not in classNames.keys():
-                           classNames.update({fileName.replace('/', '.'): [className]})
-                       else:
-                           savedNames = classNames[fileName.replace('/', '.')]
-                           savedNames.append(className)
-                           classNames.update({fileName.replace('/', '.'): savedNames})
+    for classFile, classNames in classNames.items():
+        for className in classNames:
+            _class = getattr(importlib.import_module(classFile[:-3], 'ciphers'), className)
 
-        print(classNames)
-        for classFile, classNames in classNames.items():
-            for className in classNames:
-               _class = getattr(importlib.import_module(classFile[:-3], 'ciphers'), className)
+            try:
+                if (callable(getattr(_class, 'encrypt')) and
+                    callable(getattr(_class, 'decrypt'))):
+                    ciphers.append(_class())
+                else: messageBox(root, QMessageBox.Critical,
+                    root.translate('CipherLoadingErrorMessagebox', f'Failed to load cipher {className}'),
+                    root.translate('CipherLoadingErrorMessagebox', f'Cipher {className}, declared in {classFile}, appears to be invalid'))
 
-               try:
-                   print(callable(getattr(_class, 'encrypt')))
-                   if (callable(getattr(_class, 'encrypt')) and
-                       callable(getattr(_class, 'decrypt'))):
-                       self.ciphers.append(_class())
-                   else: self.messageBox(root, QMessageBox.Critical,
-                       root.translate('CipherLoadingErrorMessagebox', f'Failed to load cipher {className}'),
-                       root.translate('CipherLoadingErrorMessagebox', f'Cipher {className}, declared in {classFile}, appears to be invalid'))
+            except Exception as exception:
+                messageBox(root, QMessageBox.Critical, root.translate('CipherLoadingErrorMessagebox', f'Failed to load cipher {className}'),
+                    root.translate('CipherLoadingErrorMessagebox',
+                        f'Cipher {className}, declared in {classFile}, failed to load due to {type(exception).__name__}. See the details below'),
+                        details = str(exception))
 
-               except Exception as exception:
-                   self.messageBox(root, QMessageBox.Critical, root.translate('CipherLoadingErrorMessagebox', f'Failed to load cipher {className}'),
-                       root.translate('CipherLoadingErrorMessagebox',
-                           f'Cipher {className}, declared in {classFile}, failed to load due to {type(exception).__name__}. See the details below'),
-                           details = str(exception))
-
-        for cipher in self.ciphers: 
-            if cipher.category not in categories: categories.append(cipher.category)
-            print(204)
-            root.ui.cbb_Cipher.addItem(cipher.displayName)
+    for cipher in ciphers: 
+        if cipher.category not in categories: categories.append(cipher.category)
+        root.ui.cbb_Cipher.addItem(cipher.displayName)
         
-        #TODO No.1: Implement QComboBox with categories 
-        #Setup model for the cipher selection combobox
-        #self.cipherSelectionModel = QStringListModel()
+    #TODO No.1: Implement QComboBox with categories 
+    #Setup model for the cipher selection combobox
+    #cipherSelectionModel = QStringListModel()
 
-        #(https://stackoverflow.com/questions/33012292/grouped-qcombobox)
-        #self.cipherSelectionModel.setStringList([cipher.displayName for cipher in self.ciphers])
-
-
-    def getCipherByDisplayName(self, name: str) -> Cipher:
-        '''
-        Find the 'Cipher' class instance in the 'ciphers' list, which
-        display name maches the 'name' parameter, and return it. This
-        method is used while a cipher is selected in the cipher sele-
-        ction combobox.
-
-        :param 'name': str
-            Display name for finding the 'Cipher' class instance
-
-        :returns: Cipher
-        '''
-        for cipher in self.ciphers:
-            if cipher.displayName == name: return cipher
+    #(https://stackoverflow.com/questions/33012292/grouped-qcombobox)
+    #cipherSelectionModel.setStringList([cipher.displayName for cipher in ciphers])
 
 
-    def encrypt(self, root: Window) -> None:
-        '''
-        Encrypt contents of 'Source text' field, and place the encrypted
-        text into the 'Result text' field.
+def getCipherByDisplayName(name: str) -> Cipher:
+    '''
+    Find the 'Cipher' class instance in the 'ciphers' list, which
+    display name maches the 'name' parameter, and return it. This
+    method is used while a cipher is selected in the cipher sele-
+    ction combobox.
+
+    :param 'name': str
+        Display name for finding the 'Cipher' class instance
+
+    :returns: Cipher
+    '''
+    for cipher in ciphers:
+        if cipher.displayName == name: return cipher
+
+
+def encrypt(root: Window) -> None:
+    '''
+    Encrypt contents of 'Source text' field, and place the encrypted
+    text into the 'Result text' field.
         
-        :param 'root': Window
-            Main window
+    :param 'root': Window
+        Main window
 
-        :returns: None
-        '''
-        root.ui.ptx_ResultText.setPlainText(str(
-            self.getCipherByDisplayName(root.ui.cbb_Cipher.currentText()).encrypt(root.ui.ptx_SourceText.toPlainText())))
+    :returns: None
+    '''
+    root.ui.ptx_ResultText.setPlainText(str(
+        getCipherByDisplayName(root.ui.cbb_Cipher.currentText()).encrypt(root.ui.ptx_SourceText.toPlainText())))
 
         
-    def decrypt(self, root: Window) -> None:
-        '''
-        Decrypt contents of 'Source text' field, and place the decrypted
-        text into the 'Result text' field.
+def decrypt(root: Window) -> None:
+    '''
+    Decrypt contents of 'Source text' field, and place the decrypted
+    text into the 'Result text' field.
         
-        :param 'root': Window
-            Main window
+    :param 'root': Window
+        Main window
 
-        :returns: None
-        '''
-        root.ui.ptx_ResultText.setPlainText(str(
-            self.getCipherByDisplayName(root.ui.cbb_Cipher.currentText()).decrypt(root.ui.ptx_SourceText.toPlainText())))
+    :returns: None
+    '''
+    root.ui.ptx_ResultText.setPlainText(str(
+        getCipherByDisplayName(root.ui.cbb_Cipher.currentText()).decrypt(root.ui.ptx_SourceText.toPlainText())))
 
 
-    def transferText(self, root: Window, flag: bool) -> None:
-        '''
-        Tranfer text between the two text fields.
+def transferText(root: Window, flag: bool) -> None:
+    '''
+    Tranfer text between the two text fields.
         
-        :param 'root': Window
-            Main window
+    :param 'root': Window
+        Main window
 
-        :param 'flag': bool
-            Mode switch. 
-            If True, transfer text from 'Result text' field to 'Source text' field;
-            if False, transfer text from 'Source text' field to 'Result text' field
+    :param 'flag': bool
+        Mode switch. 
+        If True, transfer text from 'Result text' field to 'Source text' field;
+        if False, transfer text from 'Source text' field to 'Result text' field
 
-        :returns: None
-        '''
-        if flag: #Transfer text from 'Result text' field to 'Source text' field
-            root.ui.ptx_SourceText.setPlainText(root.ui.ptx_ResultText.toPlainText())
-            root.ui.plainTextEdit_2.clear()
-        else:    #Transfer text from 'Source text' field to 'Result text' field
-            root.ui.ptx_ResultText.setPlainText(root.ui.ptx_SourceText.toPlainText())
-            root.ui.plainTextEdit.clear()
-
-
-    def copyResultText(self, root: Window) -> None:
-        '''
-        Copy result text to the clipboard.
-
-        :param 'root': Window
-            Main window
-
-        :returns: None
-        '''
-        pyperclip.copy(root.ui.ptx_ResultText.toPlainText())
+    :returns: None
+    '''
+    if flag: #Transfer text from 'Result text' field to 'Source text' field
+        root.ui.ptx_SourceText.setPlainText(root.ui.ptx_ResultText.toPlainText())
+        root.ui.ptx_ResultText.clear()
+    else:    #Transfer text from 'Source text' field to 'Result text' field
+        root.ui.ptx_ResultText.setPlainText(root.ui.ptx_SourceText.toPlainText())
+        root.ui.ptx_SourceText.clear()
 
 
-    def pasteSourceText(self, root: Window) -> None:
-        '''
-        Paste clipboard text as source text.
+def copyResultText(root: Window) -> None:
+    '''
+    Copy result text to the clipboard.
 
-        :param 'root': Window
-            Main window
+    :param 'root': Window
+        Main window
 
-        :returns: None
-        '''
-        root.ui.plainTextEdit.setPlainText(str(pyperclip.paste()))
-
-
-    def info(self, root: Window) -> None:
-        '''
-        Show 'About' information window.
-
-        :param 'root': Window
-            Main window
-
-        :returns: None
-        '''
-        with open('changelog.txt', 'r') as file: changelog = file.read()
-        self.messageBox(root, QMessageBox.Information, root.translate('AboutDialog', 'About'), 
-            root.translate('AboutDialog', 'Developed by: StarterCraft\n Version: 1.1\n2020-2021'),
-            details = changelog)
+    :returns: None
+    '''
+    pyperclip.copy(root.ui.ptx_ResultText.toPlainText())
 
 
-    def openFileDialog(self, root: Window, encoding: str, flag: bool) -> None:
-        '''
-        Open file selection dialog for opening a file or saving into a file.
+def pasteSourceText(root: Window) -> None:
+    '''
+    Paste clipboard text as source text.
 
-        :param 'root': Window
-            Main window
+    :param 'root': Window
+        Main window
 
-        :param 'encoding': str
-            Encoding to open/save a file with. This parameter is transferred
-            to the 'openFile'/'saveToFile' methods respectively.
-
-        :param 'flag': bool
-            If True, then 'openFile' method will be called after an existing
-            file is selected by the user;
-            if False, then 'saveToFile' method will be called after any file,
-            including a nonexistent one, is selected by the user.
-
-        :returns: None
-        '''
-        self.dlg = QFileDialog(root)
-        self.dlg.setOptions(QFileDialog.DontUseNativeDialog)
-        self.dlg.setStyleSheet(styleSheet)
-        if flag: self.dlg.setFileMode(QFileDialog.ExistingFile)
-        else: self.dlg.setFileMode(QFileDialog.AnyFile)
-        self.dlg.show()
-
-        if flag: self.dlg.fileSelected.connect( lambda: self.openFile(root, self.dlg.selectedFiles()[0], encoding) )
-        else: self.dlg.fileSelected.connect( lambda: self.saveToFile(root, self.dlg.selectedFiles()[0], encoding) )
+    :returns: None
+    '''
+    root.ui.plainTextEdit.setPlainText(str(pyperclip.paste()))
 
 
-    def openFile(self, root: Window, name: str, encoding: str) -> None:
-        '''
-        Open existing file with specified name and encoding, and place
-        the loaded text into the 'Source text' field.
+def info(root: Window) -> None:
+    '''
+    Show 'About' information window.
+
+    :param 'root': Window
+        Main window
+
+    :returns: None
+    '''
+    with open('changelog.txt', 'r') as file: changelog = file.read()
+    messageBox(root, QMessageBox.Information, root.translate('AboutDialog', 'About'), 
+        root.translate('AboutDialog', 'Developed by: StarterCraft\n Version: 1.1\n2020-2021'),
+        details = changelog)
+
+
+def openFileDialog(root: Window, encoding: str, flag: bool) -> None:
+    '''
+    Open file selection dialog for opening a file or saving into a file.
+
+    :param 'root': Window
+        Main window
+
+    :param 'encoding': str
+        Encoding to open/save a file with. This parameter is transferred
+        to the 'openFile'/'saveToFile' methods respectively.
+
+    :param 'flag': bool
+        If True, then 'openFile' method will be called after an existing
+        file is selected by the user;
+        if False, then 'saveToFile' method will be called after any file,
+        including a nonexistent one, is selected by the user.
+
+    :returns: None
+    '''
+    dlg = QFileDialog(root)
+    dlg.setOptions(QFileDialog.DontUseNativeDialog)
+    dlg.setStyleSheet(styleSheet)
+    if flag: dlg.setFileMode(QFileDialog.ExistingFile)
+    else: dlg.setFileMode(QFileDialog.AnyFile)
+    dlg.show()
+
+    if flag: dlg.fileSelected.connect( lambda: openFile(root, dlg.selectedFiles()[0], encoding) )
+    else: dlg.fileSelected.connect( lambda: saveToFile(root, dlg.selectedFiles()[0], encoding) )
+
+
+def openFile(root: Window, name: str, encoding: str) -> None:
+    '''
+    Open existing file with specified name and encoding, and place
+    the loaded text into the 'Source text' field.
         
-        :param 'root': Window
-            Main window
+    :param 'root': Window
+        Main window
 
-        :param 'name': str
-            A name of an existing file to open
+    :param 'name': str
+        A name of an existing file to open
 
-        :param 'encoding': str
-            An encoding to open the file with
+    :param 'encoding': str
+        An encoding to open the file with
 
-        :returns: None
-        '''
-        try:
-            with open(name, 'r', encoding = encoding) as file: root.ui.ptx_SourceText.setPlainText(file.read())
-        except Exception as exception:
-            self.messageBox(root, QMessageBox.Critical,
-                root.translate('FileOpeningErrorMessagebox', 'An error ocurred while opening file'),
-                root.translate('FileOpeningErrorMessagebox', f'Failed to open file "{name}" due to {type(exception).__name__}',
-                details = str(exception)))
+    :returns: None
+    '''
+    try:
+        with open(name, 'r', encoding = encoding) as file: root.ui.ptx_SourceText.setPlainText(file.read())
+    except Exception as exception:
+        messageBox(root, QMessageBox.Critical,
+            root.translate('FileOpeningErrorMessagebox', 'An error ocurred while opening file'),
+            root.translate('FileOpeningErrorMessagebox', f'Failed to open file "{name}" due to {type(exception).__name__}',
+            details = str(exception)))
 
 
-    def saveToFile(self, root: Window, name: str, encoding: str) -> None:
-        '''
-        Take the text from the 'Resut text' field and save it into a file
-        with specified name and encoding.
+def saveToFile(root: Window, name: str, encoding: str) -> None:
+    '''
+    Take the text from the 'Resut text' field and save it into a file
+    with specified name and encoding.
         
-        :param 'root': Window
-            Main window
+    :param 'root': Window
+        Main window
 
-        :param 'name': str
-            Any name fo save to the file with
+    :param 'name': str
+        Any name fo save to the file with
 
-        :param 'encoding': str
-            An encoding to save to the file with
+    :param 'encoding': str
+        An encoding to save to the file with
 
-        :returns: None
-        '''
-        try:
-            with open(name, 'x', encoding = encoding) as file: file.write(root.ui.ptx_ResultText.toPlainText())
-        except FileExistsError:
-            if self.messageBox(root, QMessageBox.Warning,
-                root.translate('SavingToFileRewriteMessagebox', 'File you specified already exists'),
-                root.translate('SavingToFileRewriteMessagebox', f'File {name} already exists. Should we rewrite it?'),
-                buttons = [QMessageBox.Yes, QMessageBox.No]):
-                with open(name, 'w', encoding = encoding) as file: file.write(root.ui.ptx_ResultText.toPlainText())
-            else: return
-        except Exception as exception:
-            self.messageBox(root, QMessageBox.Critical,
-                root.translate('SavingToFileErrorMessagebox', 'An error ocurred while saving to file'),
-                root.translate('SavingToFileErrorMessagebox', f'Failed to save to file "{name}" due to {type(exception).__name__}',
-                details = str(exception)))
+    :returns: None
+    '''
+    try:
+        with open(name, 'x', encoding = encoding) as file: file.write(root.ui.ptx_ResultText.toPlainText())
+    except FileExistsError:
+        if messageBox(root, QMessageBox.Warning,
+            root.translate('SavingToFileRewriteMessagebox', 'File you specified already exists'),
+            root.translate('SavingToFileRewriteMessagebox', f'File {name} already exists. Should we rewrite it?'),
+            buttons = [QMessageBox.Yes, QMessageBox.No]):
+            with open(name, 'w', encoding = encoding) as file: file.write(root.ui.ptx_ResultText.toPlainText())
+        else: return
+    except Exception as exception:
+        messageBox(root, QMessageBox.Critical,
+            root.translate('SavingToFileErrorMessagebox', 'An error ocurred while saving to file'),
+            root.translate('SavingToFileErrorMessagebox', f'Failed to save to file "{name}" due to {type(exception).__name__}',
+            details = str(exception)))
 
 
-    @staticmethod
-    def messageBox(root: Window, icon: QMessageBox.Icon, title: str, text: str,
-        details: str = None, buttons: list = [QMessageBox.Close]) -> int:
-        '''
-        Show a messagebox with the given icon, title, and text.
-        Buttons of the message box can be modified and detailed
-        text can be applied if necessary.
+def messageBox(root: Window, icon: QMessageBox.Icon, title: str, text: str,
+    details: str = None, buttons: list = [QMessageBox.Close]) -> int:
+    '''
+    Show a messagebox with the given icon, title, and text.
+    Buttons of the message box can be modified and detailed
+    text can be applied if necessary.
         
-        :param 'root': Window
-            Main window
+    :param 'root': Window
+        Main window
 
-        :param 'icon': QMessageBox.Icon
-            A standard QMessageBox.Icon to show in the messagebox
+    :param 'icon': QMessageBox.Icon
+        A standard QMessageBox.Icon to show in the messagebox
 
-        :param 'title': str
-            Messagebox's title
+    :param 'title': str
+        Messagebox's title
 
-        :param 'text': str
-            Messagebox's main text
+    :param 'text': str
+        Messagebox's main text
 
-        :kwparam 'details': str = None
-            Optional detailed text
+    :kwparam 'details': str = None
+        Optional detailed text
 
-        :kwparam 'buttons': list<QMessageBox.StandardButtons> = [QMessageBox.Close]
-            Buttons that should be shown in the messageBox,
-            defaults to one 'Close' button.
+    :kwparam 'buttons': list<QMessageBox.StandardButtons> = [QMessageBox.Close]
+        Buttons that should be shown in the messageBox,
+        defaults to one 'Close' button.
 
-        :returns: int
-            The integer value representing the user's response
-            to the messagebox, according to Qt5 Messagebox Button
-            Roles.
-        '''
-        _messageBox = QMessageBox(icon, title, text, parent = root)
-        if details: _messageBox.setDetailedText(details)
+    :returns: int
+        The integer value representing the user's response
+        to the messagebox, according to Qt5 Messagebox Button
+        Roles.
+    '''
+    _messageBox = QMessageBox(icon, title, text, parent = root)
+    if details: _messageBox.setDetailedText(details)
 
-        for buttonDef in buttons:
-            btn = _messageBox.addButton(buttonDef)
-            btn.setStyleSheet(buttonStyleSheet)
+    for buttonDef in buttons:
+        btn = _messageBox.addButton(buttonDef)
+        btn.setStyleSheet(buttonStyleSheet)
 
-        _messageBox.setStyleSheet(styleSheet)
-        return _messageBox.exec()
+    _messageBox.setStyleSheet(styleSheet)
+    return _messageBox.exec()
 
 
 if __name__ == '__main__':
     app = QApplication(sys.argv)
+    app.setStyleSheet(appStyleSheet)
+
+    translator = QTranslator(app)
+    translator.load(f'qtbase_{QtCore.QLocale.system().name()}', QtCore.QLibraryInfo.location(QtCore.QLibraryInfo.TranslationsPath))
+    app.installTranslator(translator)
+
+    root = Window()
+
 
     try:
-        translator = QTranslator(app)
-        translator.load(f'qtbase_{QtCore.QLocale.system().name()}', QtCore.QLibraryInfo.location(QtCore.QLibraryInfo.TranslationsPath))
-        app.installTranslator(translator)
-
-        root = Window()
-        fnc = Functions()
-
         #Load ciphers
-        fnc.loadCiphers(root)
+        loadCiphers(root)
 
         #Bind functions to actions
-        root.ui.btn_Encrypt.clicked.connect( lambda: fnc.encrypt(root) )
-        root.ui.btn_Decrypt.clicked.connect( lambda: fnc.decrypt(root) )
-        root.ui.btn_Paste.clicked.connect( lambda: fnc.pasteSourceText(root) )
-        root.ui.btn_Copy.clicked.connect( lambda: fnc.copyResultText(root) )
-        root.ui.btn_TransferResToSrc.clicked.connect( lambda: fnc.transferText(root, True) )
-        root.ui.btn_TransferSrcToRes.clicked.connect( lambda: fnc.transferText(root, False) ) 
-        root.ui.btn_About.clicked.connect( lambda: fnc.info(root) )
-        root.ui.tbt_OpenFile.clicked.connect( lambda: fnc.openFileDialog(root, 'utf-8', True) )
-        for action in root.openFileEncodingActions: action.triggered.connect( lambda: fnc.openFileDialog(root, action.text().lower(), True) )
-        for action in root.saveToFileEncodingActions: action.triggered.connect( lambda: fnc.openFileDialog(root, action.text().lower(), False) )
+        root.ui.btn_Encrypt.clicked.connect( lambda: encrypt(root) )
+        root.ui.btn_Decrypt.clicked.connect( lambda: decrypt(root) )
+        root.ui.btn_Paste.clicked.connect( lambda: pasteSourceText(root) )
+        root.ui.btn_Copy.clicked.connect( lambda: copyResultText(root) )
+        root.ui.btn_TransferResToSrc.clicked.connect( lambda: transferText(root, True) )
+        root.ui.btn_TransferSrcToRes.clicked.connect( lambda: transferText(root, False) ) 
+        root.ui.btn_About.clicked.connect( lambda: info(root) )
+        root.ui.tbt_OpenFile.clicked.connect( lambda: openFileDialog(root, 'utf-8', True) )
+        for action in root.openFileEncodingActions: action.triggered.connect( lambda: openFileDialog(root, action.text().lower(), True) )
+        for action in root.saveToFileEncodingActions: action.triggered.connect( lambda: openFileDialog(root, action.text().lower(), False) )
 
         #Execute the program
         root.show()
@@ -496,3 +498,12 @@ if __name__ == '__main__':
 
 
     except KeyboardInterrupt: exit(1)
+    
+    except Exception as exception:
+        messageBox(root, QMessageBox.Critical,
+            root.translate('CriticalErrorDialog', 'An unexpected error forced Sicrypt to close'),
+            root.translate('CriticalErrorDialog', f'An critical {type(exception).__name__} occured, see the details below '
+                f'(click "Show details..." button to see details). Please submit an issue on our GitHub here: {gitHubLink}, ',
+                'so we can help you solving this problem. If you have fixed this problem yourself, huge thanks to you, '
+                'please submit a pull request with the code files you have changed.'),
+            details = str(exception))

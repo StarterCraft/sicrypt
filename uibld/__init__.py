@@ -300,6 +300,82 @@ class Ui_MainWindow(object):
 "    background-color: rgb(236, 236, 236);\n"
 "}\n"
 "\n"
+"QComboBox:disabled\n"
+"{\n"
+"    color: gray;\n"
+"    background-color: rgb(35, 35, 35);\n"
+"}\n"
+"\n"
+"\n"
+"QComboBox::down-arrow\n"
+"{\n"
+"    image: url(:/zxc/icons/arrowDown_ico.png);\n"
+"}\n"
+"\n"
+"\n"
+"QComboBox::up-arrow\n"
+"{ \n"
+"    image: url(:/zxc/icons/arrowUp_ico.png);\n"
+"}\n"
+"\n"
+"\n"
+"QComboBox:editable\n"
+"{\n"
+"    background: white;\n"
+"}\n"
+"\n"
+"\n"
+"QComboBox:!editable, QComboBox::drop-down:editable\n"
+"{\n"
+"     background: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,\n"
+"        stop: 0 #E1E1E1, stop: 0.4 #DDDDDD,\n"
+"        stop: 0.5 #D8D8D8, stop: 1.0 #D3D3D3);\n"
+"}\n"
+"\n"
+"\n"
+"/* QComboBox gets the \"on\" state when the popup is open */\n"
+"QComboBox:!editable:on, QComboBox::drop-down:editable:on\n"
+"{\n"
+"    background: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,\n"
+"        stop: 0 #D3D3D3, stop: 0.4 #D8D8D8,\n"
+"        stop: 0.5 #DDDDDD, stop: 1.0 #E1E1E1);\n"
+"}\n"
+"\n"
+"\n"
+"QComboBox:on\n"
+"{ /* shift the text when the popup opens */\n"
+"    padding-top: 3px;\n"
+"    padding-left: 4px;\n"
+"    \n"
+"    border-bottom-left-radius: 3px;\n"
+"    border-bottom-right-radius: 3px;\n"
+"}\n"
+"\n"
+"\n"
+"QComboBox::drop-down\n"
+"{\n"
+"    subcontrol-origin: padding;\n"
+"    subcontrol-position: top right;\n"
+"    width: 15px;\n"
+"\n"
+"    border-left-width: 1px;\n"
+"    border-left-color: darkgray;\n"
+"    border-left-style: solid; /* just a single line */\n"
+"    border-top-right-radius: 3px; /* same radius as the QComboBox */\n"
+"    border-bottom-left-radius: 3px;\n"
+"    border-bottom-right-radius: 3px;\n"
+"}\n"
+"\n"
+"QComboBox QAbstractItemView\n"
+"{\n"
+"    border: 2px solid darkgray;\n"
+"    background-color: rgb(213, 213, 213); \n"
+"    selection-background-color: rgb(70, 175, 38);\n"
+"    \n"
+"    border-bottom-left-radius: 3px;\n"
+"    border-bottom-right-radius: 3px;\n"
+"}\n"
+"\n"
 "QPushButton\n"
 "{ \n"
 "    color: black;\n"
@@ -354,74 +430,15 @@ class Ui_MainWindow(object):
 "    top: 1px; left: 1px; /* shift it a bit */\n"
 "}\n"
 "\n"
-"QComboBox:disabled\n"
-"{\n"
-"    color: gray;\n"
-"    background-color: rgb(35, 35, 35);\n"
-"}\n"
-"\n"
-"\n"
-"QComboBox::down-arrow\n"
-"{\n"
-"    image: url(:/zxc/icons/arrowDown_ico.png);\n"
-"}\n"
-"\n"
-"\n"
-"QComboBox::up-arrow\n"
-"{ \n"
-"    image: url(:/zxc/icons/arrowUp_ico.png);\n"
-"}\n"
-"\n"
-"\n"
-"QComboBox:editable\n"
-"{\n"
-"    background: white;\n"
-"}\n"
-"\n"
-"\n"
-"QComboBox:!editable, QComboBox::drop-down:editable\n"
-"{\n"
-"     background: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,\n"
-"        stop: 0 #E1E1E1, stop: 0.4 #DDDDDD,\n"
-"        stop: 0.5 #D8D8D8, stop: 1.0 #D3D3D3);\n"
-"}\n"
-"\n"
-"\n"
-"/* QComboBox gets the \"on\" state when the popup is open */\n"
-"QComboBox:!editable:on, QComboBox::drop-down:editable:on\n"
-"{\n"
-"    background: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,\n"
-"        stop: 0 #D3D3D3, stop: 0.4 #D8D8D8,\n"
-"        stop: 0.5 #DDDDDD, stop: 1.0 #E1E1E1);\n"
-"}\n"
-"\n"
-"\n"
-"QComboBox:on\n"
-"{ /* shift the text when the popup opens */\n"
-"    padding-top: 3px;\n"
-"    padding-left: 4px;\n"
-"}\n"
-"\n"
-"\n"
-"QComboBox::drop-down\n"
-"{\n"
-"    subcontrol-origin: padding;\n"
-"    subcontrol-position: top right;\n"
-"    width: 15px;\n"
-"\n"
-"    border-left-width: 1px;\n"
-"    border-left-color: darkgray;\n"
-"    border-left-style: solid; /* just a single line */\n"
-"    border-top-right-radius: 3px; /* same radius as the QComboBox */\n"
-"    border-bottom-right-radius: 3px;\n"
-"}\n"
-"\n"
-"QComboBox QAbstractItemView \n"
-"{\n"
-"    border: 2px solid darkgray;\n"
-"    background-color: rgb(213, 213, 213); \n"
-"    selection-background-color: rgb(70, 175, 38);\n"
-"}\n"
+"QMenu {\n"
+"        background: #ff0;\n"
+"        border: 2px solid red;\n"
+"        border-radius: 2px;\n"
+"    }\n"
+"    QMenu::item {\n"
+"        color: green;\n"
+"        font-size: 22px;\n"
+"    }\n"
 "\n"
 "QLineEdit\n"
 "{ \n"
@@ -466,8 +483,6 @@ class Ui_MainWindow(object):
         self.cbb_Cipher = QtWidgets.QComboBox(self.gridLayoutWidget)
         self.cbb_Cipher.setMinimumSize(QtCore.QSize(0, 30))
         self.cbb_Cipher.setObjectName("cbb_Cipher")
-        self.cbb_Cipher.addItem("")
-        self.cbb_Cipher.addItem("")
         self.gridLayout.addWidget(self.cbb_Cipher, 6, 0, 1, 2)
         self.btn_Settings = QtWidgets.QPushButton(self.gridLayoutWidget)
         sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Minimum, QtWidgets.QSizePolicy.Maximum)
@@ -484,16 +499,6 @@ class Ui_MainWindow(object):
         self.btn_Settings.setIconSize(QtCore.QSize(20, 20))
         self.btn_Settings.setObjectName("btn_Settings")
         self.gridLayout.addWidget(self.btn_Settings, 0, 5, 1, 1)
-        self.tbt_OpenFile = QtWidgets.QToolButton(self.gridLayoutWidget)
-        self.tbt_OpenFile.setMinimumSize(QtCore.QSize(150, 30))
-        self.tbt_OpenFile.setMaximumSize(QtCore.QSize(150, 30))
-        self.tbt_OpenFile.setStyleSheet("padding-right: 20px;")
-        self.tbt_OpenFile.setIconSize(QtCore.QSize(16, 16))
-        self.tbt_OpenFile.setPopupMode(QtWidgets.QToolButton.MenuButtonPopup)
-        self.tbt_OpenFile.setToolButtonStyle(QtCore.Qt.ToolButtonIconOnly)
-        self.tbt_OpenFile.setAutoRaise(False)
-        self.tbt_OpenFile.setObjectName("tbt_OpenFile")
-        self.gridLayout.addWidget(self.tbt_OpenFile, 5, 3, 1, 1)
         self.ptx_ResultText = QtWidgets.QPlainTextEdit(self.gridLayoutWidget)
         self.ptx_ResultText.setMaximumSize(QtCore.QSize(290, 16777215))
         self.ptx_ResultText.setObjectName("ptx_ResultText")
@@ -547,15 +552,6 @@ class Ui_MainWindow(object):
         self.btn_Decrypt.setShortcut("Ctrl+D")
         self.btn_Decrypt.setObjectName("btn_Decrypt")
         self.gridLayout.addWidget(self.btn_Decrypt, 6, 2, 1, 1)
-        self.tbt_SaveToFile = QtWidgets.QToolButton(self.gridLayoutWidget)
-        self.tbt_SaveToFile.setMinimumSize(QtCore.QSize(150, 30))
-        self.tbt_SaveToFile.setMaximumSize(QtCore.QSize(150, 30))
-        self.tbt_SaveToFile.setStyleSheet("padding-right: 20px;")
-        self.tbt_SaveToFile.setPopupMode(QtWidgets.QToolButton.MenuButtonPopup)
-        self.tbt_SaveToFile.setToolButtonStyle(QtCore.Qt.ToolButtonIconOnly)
-        self.tbt_SaveToFile.setAutoRaise(False)
-        self.tbt_SaveToFile.setObjectName("tbt_SaveToFile")
-        self.gridLayout.addWidget(self.tbt_SaveToFile, 6, 3, 1, 1)
         self.ptx_SourceText = QtWidgets.QPlainTextEdit(self.gridLayoutWidget)
         sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Expanding)
         sizePolicy.setHorizontalStretch(0)
@@ -607,6 +603,25 @@ class Ui_MainWindow(object):
         self.btn_TransferResToSrc.setStyleSheet("font-size: 16pt")
         self.btn_TransferResToSrc.setObjectName("btn_TransferResToSrc")
         self.gridLayout.addWidget(self.btn_TransferResToSrc, 6, 5, 1, 1)
+        self.tbt_SaveToFile = QtWidgets.QToolButton(self.gridLayoutWidget)
+        self.tbt_SaveToFile.setMinimumSize(QtCore.QSize(150, 30))
+        self.tbt_SaveToFile.setMaximumSize(QtCore.QSize(150, 30))
+        self.tbt_SaveToFile.setStyleSheet("padding-right: 20px;")
+        self.tbt_SaveToFile.setPopupMode(QtWidgets.QToolButton.MenuButtonPopup)
+        self.tbt_SaveToFile.setToolButtonStyle(QtCore.Qt.ToolButtonIconOnly)
+        self.tbt_SaveToFile.setAutoRaise(False)
+        self.tbt_SaveToFile.setObjectName("tbt_SaveToFile")
+        self.gridLayout.addWidget(self.tbt_SaveToFile, 6, 3, 1, 1)
+        self.tbt_OpenFile = QtWidgets.QToolButton(self.gridLayoutWidget)
+        self.tbt_OpenFile.setMinimumSize(QtCore.QSize(150, 30))
+        self.tbt_OpenFile.setMaximumSize(QtCore.QSize(150, 30))
+        self.tbt_OpenFile.setStyleSheet("padding-right: 20px;")
+        self.tbt_OpenFile.setIconSize(QtCore.QSize(16, 16))
+        self.tbt_OpenFile.setPopupMode(QtWidgets.QToolButton.MenuButtonPopup)
+        self.tbt_OpenFile.setToolButtonStyle(QtCore.Qt.ToolButtonIconOnly)
+        self.tbt_OpenFile.setAutoRaise(False)
+        self.tbt_OpenFile.setObjectName("tbt_OpenFile")
+        self.gridLayout.addWidget(self.tbt_OpenFile, 5, 3, 1, 1)
         MainWindow.setCentralWidget(self.centralwidget)
 
         self.retranslateUi(MainWindow)
@@ -619,11 +634,7 @@ class Ui_MainWindow(object):
         self.btn_About.setToolTip(_translate("MainWindow", "Help/About"))
         self.btn_About.setText(_translate("MainWindow", "?"))
         self.cbb_Cipher.setToolTip(_translate("MainWindow", "Select your cipher"))
-        self.cbb_Cipher.setItemText(0, _translate("MainWindow", "j"))
-        self.cbb_Cipher.setItemText(1, _translate("MainWindow", "ij"))
         self.btn_Settings.setToolTip(_translate("MainWindow", "Settings"))
-        self.tbt_OpenFile.setToolTip(_translate("MainWindow", "Open a file and paste its contents as source text"))
-        self.tbt_OpenFile.setText(_translate("MainWindow", "Open file..."))
         self.ptx_ResultText.setPlaceholderText(_translate("MainWindow", "En- or decrypted text will appear here"))
         self.btn_TransferSrcToRes.setToolTip(_translate("MainWindow", "Tansfer contents of \'Source text\' field to \'Result text\' field"))
         self.btn_TransferSrcToRes.setText(_translate("MainWindow", "🠖"))
@@ -633,11 +644,13 @@ class Ui_MainWindow(object):
         self.lbl_ReadOnly3.setText(_translate("MainWindow", "Cipher:"))
         self.btn_Decrypt.setToolTip(_translate("MainWindow", "Decrypt source text"))
         self.btn_Decrypt.setText(_translate("MainWindow", "Decrypt"))
-        self.tbt_SaveToFile.setToolTip(_translate("MainWindow", "Save result text to a file"))
-        self.tbt_SaveToFile.setText(_translate("MainWindow", "Save to file..."))
         self.ptx_SourceText.setPlaceholderText(_translate("MainWindow", "Type or paste in source text"))
         self.btn_Copy.setToolTip(_translate("MainWindow", "Copy result text to the clipboard"))
         self.btn_Paste.setToolTip(_translate("MainWindow", "Paste clipboard text as source text"))
         self.btn_TransferResToSrc.setToolTip(_translate("MainWindow", "Tansfer contents of \'Result text\' field to \'Source text\' field"))
         self.btn_TransferResToSrc.setText(_translate("MainWindow", "🠔"))
+        self.tbt_SaveToFile.setToolTip(_translate("MainWindow", "Save result text to a file"))
+        self.tbt_SaveToFile.setText(_translate("MainWindow", "Save to file..."))
+        self.tbt_OpenFile.setToolTip(_translate("MainWindow", "Open a file and paste its contents as source text"))
+        self.tbt_OpenFile.setText(_translate("MainWindow", "Open file..."))
 import res_rc
