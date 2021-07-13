@@ -1,6 +1,28 @@
-styleSheet = '''QListView, QTreeView, QLabel, QLineEdit, QComboBox { color: white; font: 9pt "Segoe UI"; }                                  }
+styleSheet = '''QListView, QTreeView, QColumnView, QLabel, QLineEdit, QComboBox, QToolTip { 
+    color: white;
+    font: 9pt "Segoe UI"; 
+}
 
-QLineEdit, QComboBox { color: white; font: 9pt "Segoe UI"; border: 1px solid white; border-radius: 2px; }
+QLineEdit, QComboBox {
+    color: white;
+    font: 9pt "Segoe UI";
+    border: 1px solid white;
+    border-radius: 2px;
+}
+
+QListView, QTreeView {
+    color: white;
+    font: 9pt "Segoe UI"; 
+    show-decoration-selected: 1;
+}
+
+QListView::item:hover, QTreeView::item:hover {
+    background-color:rgb(70, 175, 38);
+}
+
+QListView::item:selected, QTreeView::item:selected {
+    background-color: rgb(47, 105, 23); 
+}
 
 QPushButton { 
 	color: black;
@@ -31,7 +53,7 @@ QScrollBar:vertical, QScrollBar:horizontal
 }
 
 
- QScrollBar::handle:vertical, QScrollBar::handle:horizontal 
+QScrollBar::handle:vertical, QScrollBar::handle:horizontal 
 {
     background-color: rgb(45, 45, 45);         /* #605F5F; */
     min-height: 5px;
@@ -113,8 +135,12 @@ appStyleSheet = '''QMenu
 {
     background: rgb(215, 215, 215);
     border: 1px solid gray;
-    border-bottom-left-radius: 3px;
-    border-bottom-right-radius: 3px;
+}
+
+QMenu::item {
+    font: 11pt "Segoe UI Semilight";
+    padding-left: 2px;
+    padding-right: 25px;
 }
 
 QMenu::item:hover
@@ -128,7 +154,8 @@ QMenu::item:selected
     background: rgb(47, 105, 23);
 }
 
-QMenu::item#sep1 {
+QMenu::item:disabled
+{
     color: gray;
 }
 '''

@@ -14,7 +14,6 @@ from uibld.style         import *
 gitHubLink = 'https://github.com/StarterCraft/sicrypt'
 
 
-
 class Window(QMainWindow):
     '''
     Main window class
@@ -59,6 +58,37 @@ class Window(QMainWindow):
         self.ui.tbt_SaveToFile.setMenu(self.saveToFileMenu)
 
 
+class PlainTextEdit(QPlainTextEdit):
+    '''
+    An extension to the standard QPlainTextEdit which has an
+    overriden 'keyPressEvent' method, allowing to replace Tab
+    symbols with spaces, if enabled in the config
+    '''
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+
+    def setTabPolicy(self, policy: int) -> None:
+        '''
+        Set the text field's tab policy. Auxilary method.
+
+        :param 'policy': int
+            Policy code, according to which we insert:
+            0           —— tab symbol;
+            {any+1 > 0} —— corresponding spaces number.
+        
+        :returns: None    
+        '''
+        self.tabPolicy = policy
+
+
+    def keyPressEvent(self, event: QKeyEvent):
+        if event.key() == Qt.Key_Tab:
+            QPlainTextEdit.keyPressEvent(self, QKeyEvent(
+                QEvent.KeyPress, Qt.Key_Space,
+                Qt.KeyboardModifiers(event.nativeModifiers()), ' ' * (self.tabPolicy + 1)) if self.tabPolicy else event)
+        else: QPlainTextEdit.keyPressEvent(self, event)
+
+
 class Action(QAction):
     '''
     A class defenition allowing 'QAction' initialization with
@@ -98,20 +128,154 @@ class Settings(QDialog):
     '''
     Settings dialog class
     '''
-    def __init__(self):
+    def __init__(self, root: Window):
         QDialog.__init__(self)
         self.ui = Ui_Dialog()
         self.ui.setupUi(self)
+        self.loadConfig(noFile = True)
+        self.applyConfig(root)
 
-    def loadConfig(self) -> None:
+        #Setup UI elements according to current configuration 
+        
+        #No implementation of language changing yet
+
+        #Text fields configuration
+        config = self.config['textFields']
+
+        #False for default vertical position,
+        #True for horizontal position
+        if config['position'] == False: self.ui.rbt_TextFieldsPositionVertical.setChecked(True)
+        else: self.ui.rbt_TextFieldsPositionHorizontal.setChecked(True)
+
+        #Setting font
+        self.ui.cbb_SourceTextFont.setCurrentFont(QFont(config['font'][0][config['font'][0].index('"'):]))
+        self.ui.cbb_SourceTextFont.setCurrentFont(QFont(config['font'][1][config['font'][0].index('"'):]))
+
+        #Setting line wrap
+        self.ui.ckb_SourceTextFieldTextWrap.setChecked(config['wrap'][0])
+        self.ui.ckb_SourceTextFieldTextWrap.setChecked(config['wrap'][1])
+
+        #Setting tabs policy
+        self.ui.cbb_SourceTextFieldTabPolicy.setCurrentIndex(config['tabs'][0])
+        self.ui.cbb_SourceTextFieldTabPolicy.setCurrentIndex(config['tabs'][0])
+
+
+    def loadConfig(self, noFile: bool = False) -> None:
         '''
-        Load program configuration from 'config.json' file and apply it
-        to the UI.
+        Load program configuration from 'config.json' file and save it
+        to the 'config' dict. If no config file is initialized, create
+        it and write the default config into it.
+
+        :param 'noFile': bool
+            If True and no config file is initialized, it will not be
+            created.
 
         :returns: None
         '''
         self.config = {}
-        with open('config.json', 'r') as file: self.config.update(json.load(file))
+
+        try:
+            with open('config.json', 'x') as configFile:
+                if noFile: 
+                    self.config.update(
+                    {'lang': 'en-US',
+                     'textFields': {
+                     'position': False,
+                     'font': ['13pt "Segoe UI Semilight"', '13pt "Segoe UI Semilight"'],
+                     'wrap': [False, False],
+                     'tabs': [0, 0]
+                     }
+                    })
+
+                else:
+                    self.config.update(
+                        {'lang': 'en-US',
+                            'textFields': {
+                                'position': False,
+                                'font': ['13pt "Segoe UI Semilight"', '13pt "Segoe UI Semilight"'],
+                                'wrap': [False, False],
+                                'tabs': [0, 0]
+                                }
+                            })
+
+                    json.dump(configFile)
+
+        except FileExistsError:
+            with open('config.json', 'r') as configFile:
+                    self.config.update(json.load(configFile))
+
+
+    def applyConfig(self, root: Window) -> None:
+        '''
+        Apply current program configuration from the 'config' dict to the UI.
+
+        :param 'root': Window
+            Main window
+
+        :returns: None
+        '''
+        
+        #No implementation of language changing yet
+
+        #Text fields configuration
+        config = self.config['textFields']
+
+        #False for default vertical position,
+        #True for horizontal position
+        if config['position'] != False:
+            pass
+
+        #Setting font
+        root.ui.ptx_SourceText.setStyleSheet(f'font: {config["font"][0]}')
+        root.ui.ptx_ResultText.setStyleSheet(f'font: {config["font"][1]}')
+
+        #Setting line wrap
+        root.ui.ptx_SourceText.setLineWrapMode(QPlainTextEdit.WidgetWidth if config['wrap'][0] else QPlainTextEdit.NoWrap)
+        root.ui.ptx_ResultText.setLineWrapMode(QPlainTextEdit.WidgetWidth if config['wrap'][1] else QPlainTextEdit.NoWrap)
+
+        #Setting tabs policy
+        root.ui.ptx_SourceText.setTabPolicy(config['tabs'][0])
+        root.ui.ptx_ResultText.setTabPolicy(config['tabs'][1])
+
+
+    def handleDialogAcception(self, root: Window) -> None:
+        '''
+        Read config options selected by user from the UI and make changes
+        to 'config' dict, save it into 'config.json' file, then call
+        'applyConfig' method to apply the new configuration.
+
+        :returns: None
+        '''
+        #No implementation of language changing yet
+        
+        #Text fields configuration
+        config = self.config['textFields']
+
+        #False for default vertical position,
+        #True for horizontal position
+        config['position'] = self.ui.rbt_TextFieldsPositionHorizontal.isChecked()
+        
+        #Setting font
+        fontFamily = self.ui.cbb_SourceTextFont.currentFont().toString().split(',')[0]
+        fontSize   = self.ui.spb_SourceTextFontSize.value()
+        config['font'][0] = f'{fontSize}pt "{fontFamily}"'
+
+        fontFamily = self.ui.cbb_ResultTextFont.currentFont().toString().split(',')[0]
+        fontSize   = self.ui.spb_ResultTextFontSize.value()
+        config['font'][1] = f'{fontSize}pt "{fontFamily}"'
+
+        #Setting line wrap
+        config['wrap'][0] = self.ui.ckb_SourceTextFieldTextWrap.isChecked()
+        config['wrap'][1] = self.ui.ckb_ResultTextFieldTextWrap.isChecked()
+
+        #Setting tabs policy
+        config['tabs'][0] = self.ui.cbb_SourceTextFieldTabPolicy.currentIndex()
+        config['tabs'][1] = self.ui.cbb_ResultTextFieldTabPolicy.currentIndex()
+
+        self.config['textFields'].update(config)
+        with open('config.json', 'w') as configFile: json.dump(self.config, configFile, indent = 4)
+
+        self.applyConfig(root)
 
 
 class Cipher:
@@ -332,7 +496,7 @@ def info(root: Window) -> None:
     '''
     with open('changelog.txt', 'r') as file: changelog = file.read()
     messageBox(root, QMessageBox.Information, root.translate('AboutDialog', 'About'), 
-        root.translate('AboutDialog', 'Developed by: StarterCraft\n Version: 1.1\n2020-2021'),
+        root.translate('AboutDialog', 'Developed by: StarterCraft\nVersion: 1.1\n2020-2021'),
         details = changelog)
 
 
@@ -474,13 +638,13 @@ if __name__ == '__main__':
     app.installTranslator(translator)
 
     root = Window()
-
+    settings = Settings(root)
 
     try:
         #Load ciphers
         loadCiphers(root)
 
-        #Bind functions to actions
+        #Bind functions to actions and buttons
         root.ui.btn_Encrypt.clicked.connect( lambda: encrypt(root) )
         root.ui.btn_Decrypt.clicked.connect( lambda: decrypt(root) )
         root.ui.btn_Paste.clicked.connect( lambda: pasteSourceText(root) )
@@ -488,9 +652,13 @@ if __name__ == '__main__':
         root.ui.btn_TransferResToSrc.clicked.connect( lambda: transferText(root, True) )
         root.ui.btn_TransferSrcToRes.clicked.connect( lambda: transferText(root, False) ) 
         root.ui.btn_About.clicked.connect( lambda: info(root) )
+        root.ui.btn_Settings.clicked.connect( settings.open )
         root.ui.tbt_OpenFile.clicked.connect( lambda: openFileDialog(root, 'utf-8', True) )
         for action in root.openFileEncodingActions: action.triggered.connect( lambda: openFileDialog(root, action.text().lower(), True) )
         for action in root.saveToFileEncodingActions: action.triggered.connect( lambda: openFileDialog(root, action.text().lower(), False) )
+
+        #Settings dialog
+        settings.accepted.connect( lambda: settings.handleDialogAcception(root) )
 
         #Execute the program
         root.show()
@@ -502,8 +670,9 @@ if __name__ == '__main__':
     except Exception as exception:
         messageBox(root, QMessageBox.Critical,
             root.translate('CriticalErrorDialog', 'An unexpected error forced Sicrypt to close'),
-            root.translate('CriticalErrorDialog', f'An critical {type(exception).__name__} occured, see the details below '
-                f'(click "Show details..." button to see details). Please submit an issue on our GitHub here: {gitHubLink}, ',
-                'so we can help you solving this problem. If you have fixed this problem yourself, huge thanks to you, '
-                'please submit a pull request with the code files you have changed.'),
+            root.translate('CriticalErrorDialog', 
+                f'An critical {type(exception).__name__} occured, see the details below (click "Show details..." button '
+                f'to see details). Please submit an issue on our GitHub here: {gitHubLink}, so we can help you solving '
+                'this problem. If you have fixed this problem yourself, huge thanks to you, please submit a pull request'
+                'with the code files you have changed.'),
             details = str(exception))

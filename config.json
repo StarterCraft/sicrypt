@@ -1,4 +1,18 @@
 {
-    "font": "12pt Segoe UI Semilight",
-    "wrap": false
+    "lang": "en-US",
+    "textFields": {
+        "position": false,
+        "font": [
+            "13pt \"Consolas\"",
+            "13pt \"Consolas\""
+        ],
+        "wrap": [
+            true,
+            true
+        ],
+        "tabs": [
+            0,
+            0
+        ]
+    }
 }

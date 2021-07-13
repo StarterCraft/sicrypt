@@ -45,8 +45,14 @@
     font: 13pt &quot;Segoe UI Semilight&quot;;
 }
 
+QToolTip {
+	color: white;
+    font: 11pt &quot;Segoe UI Semilight&quot;;
+}
+
 QPlainTextEdit {
     color: white;
+	border: 1px solid grey;
     font: 12pt &quot;Segoe UI Semilight&quot;;
 }
 
@@ -443,15 +449,33 @@ QToolButton::menu-arrow:open
     top: 1px; left: 1px; /* shift it a bit */
 }
 
-QMenu {
-        background: #ff0;
-        border: 2px solid red;
-        border-radius: 2px;
-    }
-    QMenu::item {
-        color: green;
-        font-size: 22px;
-    }
+QMenu 
+{
+    background: rgb(215, 215, 215);
+    border: 1px solid gray;
+	padding: 5px;
+}
+
+QMenu::item {
+    font: 11pt &quot;Segoe UI Semilight&quot;;
+	padding-right: 10px;
+}
+
+QMenu::item:hover
+{
+    background: rgb(70, 175, 38);
+    color: white;
+}
+
+QMenu::item:selected
+{
+    background: rgb(47, 105, 23);
+}
+
+QMenu::item:disabled
+{
+    color: gray;
+}
 
 QLineEdit
 { 
@@ -464,480 +488,481 @@ QLineEdit:hover
     border-color: rgb(42, 105, 23);
 }</string>
    </property>
-   <widget class="QWidget" name="gridLayoutWidget">
-    <property name="geometry">
-     <rect>
-      <x>0</x>
-      <y>0</y>
-      <width>601</width>
-      <height>601</height>
-     </rect>
-    </property>
-    <layout class="QGridLayout" name="gridLayout">
-     <property name="leftMargin">
-      <number>6</number>
-     </property>
-     <property name="topMargin">
-      <number>6</number>
-     </property>
-     <property name="rightMargin">
-      <number>6</number>
-     </property>
-     <property name="bottomMargin">
-      <number>8</number>
-     </property>
-     <property name="spacing">
-      <number>8</number>
-     </property>
-     <item row="0" column="0" colspan="3">
-      <widget class="QLabel" name="lbl_ReadOnly1">
-       <property name="font">
-        <font>
-         <family>Segoe UI Semibold</family>
-         <pointsize>13</pointsize>
-         <weight>50</weight>
-         <italic>false</italic>
-         <bold>false</bold>
-        </font>
-       </property>
-       <property name="styleSheet">
-        <string notr="true">font: 13pt &quot;Segoe UI Semibold&quot;</string>
-       </property>
-       <property name="text">
-        <string>Source text:</string>
-       </property>
-      </widget>
-     </item>
-     <item row="0" column="6">
-      <widget class="QPushButton" name="btn_About">
-       <property name="sizePolicy">
-        <sizepolicy hsizetype="Minimum" vsizetype="Maximum">
-         <horstretch>0</horstretch>
-         <verstretch>0</verstretch>
-        </sizepolicy>
-       </property>
-       <property name="minimumSize">
-        <size>
-         <width>30</width>
-         <height>30</height>
-        </size>
-       </property>
-       <property name="maximumSize">
-        <size>
-         <width>30</width>
-         <height>30</height>
-        </size>
-       </property>
-       <property name="toolTip">
-        <string>Help/About</string>
-       </property>
-       <property name="styleSheet">
-        <string notr="true">font-size: 13pt</string>
-       </property>
-       <property name="text">
-        <string>?</string>
-       </property>
-      </widget>
-     </item>
-     <item row="6" column="0" colspan="2">
-      <widget class="QComboBox" name="cbb_Cipher">
-       <property name="minimumSize">
-        <size>
-         <width>0</width>
-         <height>30</height>
-        </size>
-       </property>
-       <property name="toolTip">
-        <string>Select your cipher</string>
-       </property>
-      </widget>
-     </item>
-     <item row="0" column="5">
-      <widget class="QPushButton" name="btn_Settings">
-       <property name="sizePolicy">
-        <sizepolicy hsizetype="Minimum" vsizetype="Maximum">
-         <horstretch>0</horstretch>
-         <verstretch>0</verstretch>
-        </sizepolicy>
-       </property>
-       <property name="minimumSize">
-        <size>
-         <width>30</width>
-         <height>30</height>
-        </size>
-       </property>
-       <property name="maximumSize">
-        <size>
-         <width>30</width>
-         <height>30</height>
-        </size>
-       </property>
-       <property name="toolTip">
-        <string>Settings</string>
-       </property>
-       <property name="styleSheet">
-        <string notr="true">font-size: 12pt</string>
-       </property>
-       <property name="icon">
-        <iconset resource="../res.qrc">
-         <normaloff>:/zxc/icons/settings.png</normaloff>:/zxc/icons/settings.png</iconset>
-       </property>
-       <property name="iconSize">
-        <size>
-         <width>20</width>
-         <height>20</height>
-        </size>
-       </property>
-      </widget>
-     </item>
-     <item row="4" column="3" colspan="4">
-      <widget class="QPlainTextEdit" name="ptx_ResultText">
-       <property name="maximumSize">
-        <size>
-         <width>290</width>
-         <height>16777215</height>
-        </size>
-       </property>
-       <property name="placeholderText">
-        <string>En- or decrypted text will appear here</string>
-       </property>
-      </widget>
-     </item>
-     <item row="6" column="6">
-      <widget class="QPushButton" name="btn_TransferSrcToRes">
-       <property name="sizePolicy">
-        <sizepolicy hsizetype="Maximum" vsizetype="Maximum">
-         <horstretch>0</horstretch>
-         <verstretch>0</verstretch>
-        </sizepolicy>
-       </property>
-       <property name="minimumSize">
-        <size>
-         <width>30</width>
-         <height>30</height>
-        </size>
-       </property>
-       <property name="maximumSize">
-        <size>
-         <width>30</width>
-         <height>30</height>
-        </size>
-       </property>
-       <property name="font">
-        <font>
-         <family>Segoe UI Semilight</family>
-         <pointsize>16</pointsize>
-         <weight>50</weight>
-         <italic>false</italic>
-         <bold>false</bold>
-        </font>
-       </property>
-       <property name="toolTip">
-        <string>Tansfer contents of 'Source text' field to 'Result text' field</string>
-       </property>
-       <property name="styleSheet">
-        <string notr="true">font-size: 16pt</string>
-       </property>
-       <property name="text">
-        <string>🠖</string>
-       </property>
-       <property name="iconSize">
-        <size>
-         <width>16</width>
-         <height>16</height>
-        </size>
-       </property>
-      </widget>
-     </item>
-     <item row="0" column="3" colspan="2">
-      <widget class="QLabel" name="lbl_ReadOnly2">
-       <property name="styleSheet">
-        <string notr="true">font: 13pt &quot;Segoe UI Semibold&quot;</string>
-       </property>
-       <property name="text">
-        <string>Result text:</string>
-       </property>
-      </widget>
-     </item>
-     <item row="5" column="2">
-      <widget class="QPushButton" name="btn_Encrypt">
-       <property name="sizePolicy">
-        <sizepolicy hsizetype="Maximum" vsizetype="Maximum">
-         <horstretch>0</horstretch>
-         <verstretch>0</verstretch>
-        </sizepolicy>
-       </property>
-       <property name="minimumSize">
-        <size>
-         <width>150</width>
-         <height>30</height>
-        </size>
-       </property>
-       <property name="maximumSize">
-        <size>
-         <width>150</width>
-         <height>30</height>
-        </size>
-       </property>
-       <property name="toolTip">
-        <string>Encrypt source text</string>
-       </property>
-       <property name="text">
-        <string>Encrypt</string>
-       </property>
-       <property name="shortcut">
-        <string notr="true">Ctrl+E</string>
-       </property>
-      </widget>
-     </item>
-     <item row="5" column="0" colspan="2">
-      <widget class="QLabel" name="lbl_ReadOnly3">
-       <property name="text">
-        <string>Cipher:</string>
-       </property>
-      </widget>
-     </item>
-     <item row="6" column="2">
-      <widget class="QPushButton" name="btn_Decrypt">
-       <property name="sizePolicy">
-        <sizepolicy hsizetype="Maximum" vsizetype="Maximum">
-         <horstretch>0</horstretch>
-         <verstretch>0</verstretch>
-        </sizepolicy>
-       </property>
-       <property name="minimumSize">
-        <size>
-         <width>150</width>
-         <height>30</height>
-        </size>
-       </property>
-       <property name="maximumSize">
-        <size>
-         <width>150</width>
-         <height>30</height>
-        </size>
-       </property>
-       <property name="toolTip">
-        <string>Decrypt source text</string>
-       </property>
-       <property name="autoFillBackground">
-        <bool>false</bool>
-       </property>
-       <property name="text">
-        <string>Decrypt</string>
-       </property>
-       <property name="shortcut">
-        <string notr="true">Ctrl+D</string>
-       </property>
-      </widget>
-     </item>
-     <item row="4" column="0" colspan="3">
-      <widget class="QPlainTextEdit" name="ptx_SourceText">
-       <property name="sizePolicy">
-        <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
-         <horstretch>0</horstretch>
-         <verstretch>0</verstretch>
-        </sizepolicy>
-       </property>
-       <property name="maximumSize">
-        <size>
-         <width>290</width>
-         <height>16777215</height>
-        </size>
-       </property>
-       <property name="styleSheet">
-        <string notr="true">QPlianTextEdit::placeholder-text { color: lightgray; }</string>
-       </property>
-       <property name="placeholderText">
-        <string>Type or paste in source text</string>
-       </property>
-      </widget>
-     </item>
-     <item row="5" column="6">
-      <widget class="QPushButton" name="btn_Copy">
-       <property name="sizePolicy">
-        <sizepolicy hsizetype="Maximum" vsizetype="Maximum">
-         <horstretch>0</horstretch>
-         <verstretch>0</verstretch>
-        </sizepolicy>
-       </property>
-       <property name="minimumSize">
-        <size>
-         <width>30</width>
-         <height>30</height>
-        </size>
-       </property>
-       <property name="maximumSize">
-        <size>
-         <width>30</width>
-         <height>30</height>
-        </size>
-       </property>
-       <property name="toolTip">
-        <string>Copy result text to the clipboard</string>
-       </property>
-       <property name="text">
-        <string/>
-       </property>
-       <property name="icon">
-        <iconset resource="../res.qrc">
-         <normaloff>:/zxc/icons/copy.png</normaloff>:/zxc/icons/copy.png</iconset>
-       </property>
-       <property name="iconSize">
-        <size>
-         <width>20</width>
-         <height>20</height>
-        </size>
-       </property>
-      </widget>
-     </item>
-     <item row="5" column="5">
-      <widget class="QPushButton" name="btn_Paste">
-       <property name="sizePolicy">
-        <sizepolicy hsizetype="Maximum" vsizetype="Maximum">
-         <horstretch>0</horstretch>
-         <verstretch>0</verstretch>
-        </sizepolicy>
-       </property>
-       <property name="minimumSize">
-        <size>
-         <width>30</width>
-         <height>30</height>
-        </size>
-       </property>
-       <property name="maximumSize">
-        <size>
-         <width>30</width>
-         <height>30</height>
-        </size>
-       </property>
-       <property name="toolTip">
-        <string>Paste clipboard text as source text</string>
-       </property>
-       <property name="text">
-        <string/>
-       </property>
-       <property name="icon">
-        <iconset resource="../res.qrc">
-         <normaloff>:/zxc/icons/paste.png</normaloff>:/zxc/icons/paste.png</iconset>
-       </property>
-       <property name="iconSize">
-        <size>
-         <width>22</width>
-         <height>22</height>
-        </size>
-       </property>
-      </widget>
-     </item>
-     <item row="6" column="5">
-      <widget class="QPushButton" name="btn_TransferResToSrc">
-       <property name="sizePolicy">
-        <sizepolicy hsizetype="Maximum" vsizetype="Maximum">
-         <horstretch>0</horstretch>
-         <verstretch>0</verstretch>
-        </sizepolicy>
-       </property>
-       <property name="minimumSize">
-        <size>
-         <width>30</width>
-         <height>30</height>
-        </size>
-       </property>
-       <property name="maximumSize">
-        <size>
-         <width>30</width>
-         <height>30</height>
-        </size>
-       </property>
-       <property name="toolTip">
-        <string>Tansfer contents of 'Result text' field to 'Source text' field</string>
-       </property>
-       <property name="styleSheet">
-        <string notr="true">font-size: 16pt</string>
-       </property>
-       <property name="text">
-        <string>🠔</string>
-       </property>
-      </widget>
-     </item>
-     <item row="6" column="3">
-      <widget class="QToolButton" name="tbt_SaveToFile">
-       <property name="minimumSize">
-        <size>
-         <width>150</width>
-         <height>30</height>
-        </size>
-       </property>
-       <property name="maximumSize">
-        <size>
-         <width>150</width>
-         <height>30</height>
-        </size>
-       </property>
-       <property name="toolTip">
-        <string>Save result text to a file</string>
-       </property>
-       <property name="styleSheet">
-        <string notr="true">padding-right: 20px;</string>
-       </property>
-       <property name="text">
-        <string>Save to file...</string>
-       </property>
-       <property name="popupMode">
-        <enum>QToolButton::MenuButtonPopup</enum>
-       </property>
-       <property name="toolButtonStyle">
-        <enum>Qt::ToolButtonIconOnly</enum>
-       </property>
-       <property name="autoRaise">
-        <bool>false</bool>
-       </property>
-      </widget>
-     </item>
-     <item row="5" column="3">
-      <widget class="QToolButton" name="tbt_OpenFile">
-       <property name="minimumSize">
-        <size>
-         <width>150</width>
-         <height>30</height>
-        </size>
-       </property>
-       <property name="maximumSize">
-        <size>
-         <width>150</width>
-         <height>30</height>
-        </size>
-       </property>
-       <property name="toolTip">
-        <string>Open a file and paste its contents as source text</string>
-       </property>
-       <property name="styleSheet">
-        <string notr="true">padding-right: 20px;</string>
-       </property>
-       <property name="text">
-        <string>Open file...</string>
-       </property>
-       <property name="iconSize">
-        <size>
-         <width>16</width>
-         <height>16</height>
-        </size>
-       </property>
-       <property name="popupMode">
-        <enum>QToolButton::MenuButtonPopup</enum>
-       </property>
-       <property name="toolButtonStyle">
-        <enum>Qt::ToolButtonIconOnly</enum>
-       </property>
-       <property name="autoRaise">
-        <bool>false</bool>
-       </property>
-      </widget>
-     </item>
-    </layout>
-   </widget>
+   <layout class="QGridLayout" name="gridLayout_2">
+    <item row="0" column="0">
+     <layout class="QGridLayout" name="gridLayout">
+      <property name="leftMargin">
+       <number>0</number>
+      </property>
+      <property name="topMargin">
+       <number>0</number>
+      </property>
+      <property name="rightMargin">
+       <number>0</number>
+      </property>
+      <property name="bottomMargin">
+       <number>0</number>
+      </property>
+      <property name="spacing">
+       <number>8</number>
+      </property>
+      <item row="0" column="0" colspan="3">
+       <widget class="QLabel" name="lbl_ReadOnly1">
+        <property name="font">
+         <font>
+          <family>Segoe UI Semibold</family>
+          <pointsize>13</pointsize>
+          <weight>50</weight>
+          <italic>false</italic>
+          <bold>false</bold>
+         </font>
+        </property>
+        <property name="styleSheet">
+         <string notr="true">font: 13pt &quot;Segoe UI Semibold&quot;</string>
+        </property>
+        <property name="text">
+         <string>Source text:</string>
+        </property>
+       </widget>
+      </item>
+      <item row="0" column="6">
+       <widget class="QPushButton" name="btn_About">
+        <property name="sizePolicy">
+         <sizepolicy hsizetype="Minimum" vsizetype="Maximum">
+          <horstretch>0</horstretch>
+          <verstretch>0</verstretch>
+         </sizepolicy>
+        </property>
+        <property name="minimumSize">
+         <size>
+          <width>30</width>
+          <height>30</height>
+         </size>
+        </property>
+        <property name="maximumSize">
+         <size>
+          <width>30</width>
+          <height>30</height>
+         </size>
+        </property>
+        <property name="toolTip">
+         <string>Help/About</string>
+        </property>
+        <property name="styleSheet">
+         <string notr="true">font-size: 13pt</string>
+        </property>
+        <property name="text">
+         <string>?</string>
+        </property>
+       </widget>
+      </item>
+      <item row="6" column="0" colspan="2">
+       <widget class="QComboBox" name="cbb_Cipher">
+        <property name="minimumSize">
+         <size>
+          <width>0</width>
+          <height>30</height>
+         </size>
+        </property>
+        <property name="toolTip">
+         <string>Select your cipher</string>
+        </property>
+       </widget>
+      </item>
+      <item row="0" column="5">
+       <widget class="QPushButton" name="btn_Settings">
+        <property name="sizePolicy">
+         <sizepolicy hsizetype="Minimum" vsizetype="Maximum">
+          <horstretch>0</horstretch>
+          <verstretch>0</verstretch>
+         </sizepolicy>
+        </property>
+        <property name="minimumSize">
+         <size>
+          <width>30</width>
+          <height>30</height>
+         </size>
+        </property>
+        <property name="maximumSize">
+         <size>
+          <width>30</width>
+          <height>30</height>
+         </size>
+        </property>
+        <property name="toolTip">
+         <string>Settings</string>
+        </property>
+        <property name="styleSheet">
+         <string notr="true">font-size: 12pt</string>
+        </property>
+        <property name="icon">
+         <iconset resource="../res.qrc">
+          <normaloff>:/zxc/icons/settings.png</normaloff>:/zxc/icons/settings.png</iconset>
+        </property>
+        <property name="iconSize">
+         <size>
+          <width>20</width>
+          <height>20</height>
+         </size>
+        </property>
+       </widget>
+      </item>
+      <item row="4" column="3" colspan="4">
+       <widget class="PlainTextEdit" name="ptx_ResultText">
+        <property name="maximumSize">
+         <size>
+          <width>290</width>
+          <height>16777215</height>
+         </size>
+        </property>
+        <property name="placeholderText">
+         <string>En- or decrypted text will appear here</string>
+        </property>
+       </widget>
+      </item>
+      <item row="6" column="6">
+       <widget class="QPushButton" name="btn_TransferSrcToRes">
+        <property name="sizePolicy">
+         <sizepolicy hsizetype="Maximum" vsizetype="Maximum">
+          <horstretch>0</horstretch>
+          <verstretch>0</verstretch>
+         </sizepolicy>
+        </property>
+        <property name="minimumSize">
+         <size>
+          <width>30</width>
+          <height>30</height>
+         </size>
+        </property>
+        <property name="maximumSize">
+         <size>
+          <width>30</width>
+          <height>30</height>
+         </size>
+        </property>
+        <property name="font">
+         <font>
+          <family>Segoe UI Semilight</family>
+          <pointsize>16</pointsize>
+          <weight>50</weight>
+          <italic>false</italic>
+          <bold>false</bold>
+         </font>
+        </property>
+        <property name="toolTip">
+         <string>Tansfer contents of 'Source text' field to 'Result text' field</string>
+        </property>
+        <property name="styleSheet">
+         <string notr="true">font-size: 16pt</string>
+        </property>
+        <property name="text">
+         <string>🠖</string>
+        </property>
+        <property name="iconSize">
+         <size>
+          <width>16</width>
+          <height>16</height>
+         </size>
+        </property>
+       </widget>
+      </item>
+      <item row="0" column="3" colspan="2">
+       <widget class="QLabel" name="lbl_ReadOnly2">
+        <property name="styleSheet">
+         <string notr="true">font: 13pt &quot;Segoe UI Semibold&quot;</string>
+        </property>
+        <property name="text">
+         <string>Result text:</string>
+        </property>
+       </widget>
+      </item>
+      <item row="5" column="2">
+       <widget class="QPushButton" name="btn_Encrypt">
+        <property name="sizePolicy">
+         <sizepolicy hsizetype="Maximum" vsizetype="Maximum">
+          <horstretch>0</horstretch>
+          <verstretch>0</verstretch>
+         </sizepolicy>
+        </property>
+        <property name="minimumSize">
+         <size>
+          <width>150</width>
+          <height>30</height>
+         </size>
+        </property>
+        <property name="maximumSize">
+         <size>
+          <width>150</width>
+          <height>30</height>
+         </size>
+        </property>
+        <property name="toolTip">
+         <string>Encrypt source text</string>
+        </property>
+        <property name="text">
+         <string>Encrypt</string>
+        </property>
+        <property name="shortcut">
+         <string notr="true">Ctrl+E</string>
+        </property>
+       </widget>
+      </item>
+      <item row="5" column="0" colspan="2">
+       <widget class="QLabel" name="lbl_ReadOnly3">
+        <property name="text">
+         <string>Cipher:</string>
+        </property>
+       </widget>
+      </item>
+      <item row="6" column="2">
+       <widget class="QPushButton" name="btn_Decrypt">
+        <property name="sizePolicy">
+         <sizepolicy hsizetype="Maximum" vsizetype="Maximum">
+          <horstretch>0</horstretch>
+          <verstretch>0</verstretch>
+         </sizepolicy>
+        </property>
+        <property name="minimumSize">
+         <size>
+          <width>150</width>
+          <height>30</height>
+         </size>
+        </property>
+        <property name="maximumSize">
+         <size>
+          <width>150</width>
+          <height>30</height>
+         </size>
+        </property>
+        <property name="toolTip">
+         <string>Decrypt source text</string>
+        </property>
+        <property name="autoFillBackground">
+         <bool>false</bool>
+        </property>
+        <property name="text">
+         <string>Decrypt</string>
+        </property>
+        <property name="shortcut">
+         <string notr="true">Ctrl+D</string>
+        </property>
+       </widget>
+      </item>
+      <item row="4" column="0" colspan="3">
+       <widget class="PlainTextEdit" name="ptx_SourceText">
+        <property name="sizePolicy">
+         <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+          <horstretch>0</horstretch>
+          <verstretch>0</verstretch>
+         </sizepolicy>
+        </property>
+        <property name="maximumSize">
+         <size>
+          <width>290</width>
+          <height>16777215</height>
+         </size>
+        </property>
+        <property name="styleSheet">
+         <string notr="true">QPlianTextEdit::placeholder-text { color: lightgray; }</string>
+        </property>
+        <property name="placeholderText">
+         <string>Type or paste in source text</string>
+        </property>
+       </widget>
+      </item>
+      <item row="5" column="6">
+       <widget class="QPushButton" name="btn_Copy">
+        <property name="sizePolicy">
+         <sizepolicy hsizetype="Maximum" vsizetype="Maximum">
+          <horstretch>0</horstretch>
+          <verstretch>0</verstretch>
+         </sizepolicy>
+        </property>
+        <property name="minimumSize">
+         <size>
+          <width>30</width>
+          <height>30</height>
+         </size>
+        </property>
+        <property name="maximumSize">
+         <size>
+          <width>30</width>
+          <height>30</height>
+         </size>
+        </property>
+        <property name="toolTip">
+         <string>Copy result text to the clipboard</string>
+        </property>
+        <property name="text">
+         <string/>
+        </property>
+        <property name="icon">
+         <iconset resource="../res.qrc">
+          <normaloff>:/zxc/icons/copy.png</normaloff>:/zxc/icons/copy.png</iconset>
+        </property>
+        <property name="iconSize">
+         <size>
+          <width>20</width>
+          <height>20</height>
+         </size>
+        </property>
+       </widget>
+      </item>
+      <item row="5" column="5">
+       <widget class="QPushButton" name="btn_Paste">
+        <property name="sizePolicy">
+         <sizepolicy hsizetype="Maximum" vsizetype="Maximum">
+          <horstretch>0</horstretch>
+          <verstretch>0</verstretch>
+         </sizepolicy>
+        </property>
+        <property name="minimumSize">
+         <size>
+          <width>30</width>
+          <height>30</height>
+         </size>
+        </property>
+        <property name="maximumSize">
+         <size>
+          <width>30</width>
+          <height>30</height>
+         </size>
+        </property>
+        <property name="toolTip">
+         <string>Paste clipboard text as source text</string>
+        </property>
+        <property name="text">
+         <string/>
+        </property>
+        <property name="icon">
+         <iconset resource="../res.qrc">
+          <normaloff>:/zxc/icons/paste.png</normaloff>:/zxc/icons/paste.png</iconset>
+        </property>
+        <property name="iconSize">
+         <size>
+          <width>22</width>
+          <height>22</height>
+         </size>
+        </property>
+       </widget>
+      </item>
+      <item row="6" column="5">
+       <widget class="QPushButton" name="btn_TransferResToSrc">
+        <property name="sizePolicy">
+         <sizepolicy hsizetype="Maximum" vsizetype="Maximum">
+          <horstretch>0</horstretch>
+          <verstretch>0</verstretch>
+         </sizepolicy>
+        </property>
+        <property name="minimumSize">
+         <size>
+          <width>30</width>
+          <height>30</height>
+         </size>
+        </property>
+        <property name="maximumSize">
+         <size>
+          <width>30</width>
+          <height>30</height>
+         </size>
+        </property>
+        <property name="toolTip">
+         <string>Tansfer contents of 'Result text' field to 'Source text' field</string>
+        </property>
+        <property name="styleSheet">
+         <string notr="true">font-size: 16pt</string>
+        </property>
+        <property name="text">
+         <string>🠔</string>
+        </property>
+       </widget>
+      </item>
+      <item row="6" column="3">
+       <widget class="QToolButton" name="tbt_SaveToFile">
+        <property name="minimumSize">
+         <size>
+          <width>150</width>
+          <height>30</height>
+         </size>
+        </property>
+        <property name="maximumSize">
+         <size>
+          <width>150</width>
+          <height>30</height>
+         </size>
+        </property>
+        <property name="toolTip">
+         <string>Save result text to a file</string>
+        </property>
+        <property name="styleSheet">
+         <string notr="true">padding-right: 20px;</string>
+        </property>
+        <property name="text">
+         <string>Save to file...</string>
+        </property>
+        <property name="popupMode">
+         <enum>QToolButton::MenuButtonPopup</enum>
+        </property>
+        <property name="toolButtonStyle">
+         <enum>Qt::ToolButtonIconOnly</enum>
+        </property>
+        <property name="autoRaise">
+         <bool>false</bool>
+        </property>
+       </widget>
+      </item>
+      <item row="5" column="3">
+       <widget class="QToolButton" name="tbt_OpenFile">
+        <property name="minimumSize">
+         <size>
+          <width>150</width>
+          <height>30</height>
+         </size>
+        </property>
+        <property name="maximumSize">
+         <size>
+          <width>150</width>
+          <height>30</height>
+         </size>
+        </property>
+        <property name="toolTip">
+         <string>Open a file and paste its contents as source text</string>
+        </property>
+        <property name="styleSheet">
+         <string notr="true">padding-right: 20px;</string>
+        </property>
+        <property name="text">
+         <string>Open file...</string>
+        </property>
+        <property name="iconSize">
+         <size>
+          <width>16</width>
+          <height>16</height>
+         </size>
+        </property>
+        <property name="popupMode">
+         <enum>QToolButton::MenuButtonPopup</enum>
+        </property>
+        <property name="toolButtonStyle">
+         <enum>Qt::ToolButtonIconOnly</enum>
+        </property>
+        <property name="autoRaise">
+         <bool>false</bool>
+        </property>
+       </widget>
+      </item>
+     </layout>
+    </item>
+   </layout>
   </widget>
  </widget>
+ <customwidgets>
+  <customwidget>
+   <class>PlainTextEdit</class>
+   <extends>QPlainTextEdit</extends>
+   <header>sicrypt</header>
+  </customwidget>
+ </customwidgets>
  <resources>
   <include location="../res.qrc"/>
   <include location="../res.qrc"/>

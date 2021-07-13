@@ -32,8 +32,14 @@ class Ui_MainWindow(object):
 "    font: 13pt \"Segoe UI Semilight\";\n"
 "}\n"
 "\n"
+"QToolTip {\n"
+"    color: white;\n"
+"    font: 11pt \"Segoe UI Semilight\";\n"
+"}\n"
+"\n"
 "QPlainTextEdit {\n"
 "    color: white;\n"
+"    border: 1px solid grey;\n"
 "    font: 12pt \"Segoe UI Semilight\";\n"
 "}\n"
 "\n"
@@ -430,15 +436,33 @@ class Ui_MainWindow(object):
 "    top: 1px; left: 1px; /* shift it a bit */\n"
 "}\n"
 "\n"
-"QMenu {\n"
-"        background: #ff0;\n"
-"        border: 2px solid red;\n"
-"        border-radius: 2px;\n"
-"    }\n"
-"    QMenu::item {\n"
-"        color: green;\n"
-"        font-size: 22px;\n"
-"    }\n"
+"QMenu \n"
+"{\n"
+"    background: rgb(215, 215, 215);\n"
+"    border: 1px solid gray;\n"
+"    padding: 5px;\n"
+"}\n"
+"\n"
+"QMenu::item {\n"
+"    font: 11pt \"Segoe UI Semilight\";\n"
+"    padding-right: 10px;\n"
+"}\n"
+"\n"
+"QMenu::item:hover\n"
+"{\n"
+"    background: rgb(70, 175, 38);\n"
+"    color: white;\n"
+"}\n"
+"\n"
+"QMenu::item:selected\n"
+"{\n"
+"    background: rgb(47, 105, 23);\n"
+"}\n"
+"\n"
+"QMenu::item:disabled\n"
+"{\n"
+"    color: gray;\n"
+"}\n"
 "\n"
 "QLineEdit\n"
 "{ \n"
@@ -451,14 +475,13 @@ class Ui_MainWindow(object):
 "    border-color: rgb(42, 105, 23);\n"
 "}")
         self.centralwidget.setObjectName("centralwidget")
-        self.gridLayoutWidget = QtWidgets.QWidget(self.centralwidget)
-        self.gridLayoutWidget.setGeometry(QtCore.QRect(0, 0, 601, 601))
-        self.gridLayoutWidget.setObjectName("gridLayoutWidget")
-        self.gridLayout = QtWidgets.QGridLayout(self.gridLayoutWidget)
-        self.gridLayout.setContentsMargins(6, 6, 6, 8)
+        self.gridLayout_2 = QtWidgets.QGridLayout(self.centralwidget)
+        self.gridLayout_2.setObjectName("gridLayout_2")
+        self.gridLayout = QtWidgets.QGridLayout()
+        self.gridLayout.setContentsMargins(0, 0, 0, 0)
         self.gridLayout.setSpacing(8)
         self.gridLayout.setObjectName("gridLayout")
-        self.lbl_ReadOnly1 = QtWidgets.QLabel(self.gridLayoutWidget)
+        self.lbl_ReadOnly1 = QtWidgets.QLabel(self.centralwidget)
         font = QtGui.QFont()
         font.setFamily("Segoe UI Semibold")
         font.setPointSize(13)
@@ -469,7 +492,7 @@ class Ui_MainWindow(object):
         self.lbl_ReadOnly1.setStyleSheet("font: 13pt \"Segoe UI Semibold\"")
         self.lbl_ReadOnly1.setObjectName("lbl_ReadOnly1")
         self.gridLayout.addWidget(self.lbl_ReadOnly1, 0, 0, 1, 3)
-        self.btn_About = QtWidgets.QPushButton(self.gridLayoutWidget)
+        self.btn_About = QtWidgets.QPushButton(self.centralwidget)
         sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Minimum, QtWidgets.QSizePolicy.Maximum)
         sizePolicy.setHorizontalStretch(0)
         sizePolicy.setVerticalStretch(0)
@@ -480,11 +503,11 @@ class Ui_MainWindow(object):
         self.btn_About.setStyleSheet("font-size: 13pt")
         self.btn_About.setObjectName("btn_About")
         self.gridLayout.addWidget(self.btn_About, 0, 6, 1, 1)
-        self.cbb_Cipher = QtWidgets.QComboBox(self.gridLayoutWidget)
+        self.cbb_Cipher = QtWidgets.QComboBox(self.centralwidget)
         self.cbb_Cipher.setMinimumSize(QtCore.QSize(0, 30))
         self.cbb_Cipher.setObjectName("cbb_Cipher")
         self.gridLayout.addWidget(self.cbb_Cipher, 6, 0, 1, 2)
-        self.btn_Settings = QtWidgets.QPushButton(self.gridLayoutWidget)
+        self.btn_Settings = QtWidgets.QPushButton(self.centralwidget)
         sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Minimum, QtWidgets.QSizePolicy.Maximum)
         sizePolicy.setHorizontalStretch(0)
         sizePolicy.setVerticalStretch(0)
@@ -499,11 +522,11 @@ class Ui_MainWindow(object):
         self.btn_Settings.setIconSize(QtCore.QSize(20, 20))
         self.btn_Settings.setObjectName("btn_Settings")
         self.gridLayout.addWidget(self.btn_Settings, 0, 5, 1, 1)
-        self.ptx_ResultText = QtWidgets.QPlainTextEdit(self.gridLayoutWidget)
+        self.ptx_ResultText = PlainTextEdit(self.centralwidget)
         self.ptx_ResultText.setMaximumSize(QtCore.QSize(290, 16777215))
         self.ptx_ResultText.setObjectName("ptx_ResultText")
         self.gridLayout.addWidget(self.ptx_ResultText, 4, 3, 1, 4)
-        self.btn_TransferSrcToRes = QtWidgets.QPushButton(self.gridLayoutWidget)
+        self.btn_TransferSrcToRes = QtWidgets.QPushButton(self.centralwidget)
         sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Maximum, QtWidgets.QSizePolicy.Maximum)
         sizePolicy.setHorizontalStretch(0)
         sizePolicy.setVerticalStretch(0)
@@ -522,11 +545,11 @@ class Ui_MainWindow(object):
         self.btn_TransferSrcToRes.setIconSize(QtCore.QSize(16, 16))
         self.btn_TransferSrcToRes.setObjectName("btn_TransferSrcToRes")
         self.gridLayout.addWidget(self.btn_TransferSrcToRes, 6, 6, 1, 1)
-        self.lbl_ReadOnly2 = QtWidgets.QLabel(self.gridLayoutWidget)
+        self.lbl_ReadOnly2 = QtWidgets.QLabel(self.centralwidget)
         self.lbl_ReadOnly2.setStyleSheet("font: 13pt \"Segoe UI Semibold\"")
         self.lbl_ReadOnly2.setObjectName("lbl_ReadOnly2")
         self.gridLayout.addWidget(self.lbl_ReadOnly2, 0, 3, 1, 2)
-        self.btn_Encrypt = QtWidgets.QPushButton(self.gridLayoutWidget)
+        self.btn_Encrypt = QtWidgets.QPushButton(self.centralwidget)
         sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Maximum, QtWidgets.QSizePolicy.Maximum)
         sizePolicy.setHorizontalStretch(0)
         sizePolicy.setVerticalStretch(0)
@@ -537,10 +560,10 @@ class Ui_MainWindow(object):
         self.btn_Encrypt.setShortcut("Ctrl+E")
         self.btn_Encrypt.setObjectName("btn_Encrypt")
         self.gridLayout.addWidget(self.btn_Encrypt, 5, 2, 1, 1)
-        self.lbl_ReadOnly3 = QtWidgets.QLabel(self.gridLayoutWidget)
+        self.lbl_ReadOnly3 = QtWidgets.QLabel(self.centralwidget)
         self.lbl_ReadOnly3.setObjectName("lbl_ReadOnly3")
         self.gridLayout.addWidget(self.lbl_ReadOnly3, 5, 0, 1, 2)
-        self.btn_Decrypt = QtWidgets.QPushButton(self.gridLayoutWidget)
+        self.btn_Decrypt = QtWidgets.QPushButton(self.centralwidget)
         sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Maximum, QtWidgets.QSizePolicy.Maximum)
         sizePolicy.setHorizontalStretch(0)
         sizePolicy.setVerticalStretch(0)
@@ -552,7 +575,7 @@ class Ui_MainWindow(object):
         self.btn_Decrypt.setShortcut("Ctrl+D")
         self.btn_Decrypt.setObjectName("btn_Decrypt")
         self.gridLayout.addWidget(self.btn_Decrypt, 6, 2, 1, 1)
-        self.ptx_SourceText = QtWidgets.QPlainTextEdit(self.gridLayoutWidget)
+        self.ptx_SourceText = PlainTextEdit(self.centralwidget)
         sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Expanding)
         sizePolicy.setHorizontalStretch(0)
         sizePolicy.setVerticalStretch(0)
@@ -562,7 +585,7 @@ class Ui_MainWindow(object):
         self.ptx_SourceText.setStyleSheet("QPlianTextEdit::placeholder-text { color: lightgray; }")
         self.ptx_SourceText.setObjectName("ptx_SourceText")
         self.gridLayout.addWidget(self.ptx_SourceText, 4, 0, 1, 3)
-        self.btn_Copy = QtWidgets.QPushButton(self.gridLayoutWidget)
+        self.btn_Copy = QtWidgets.QPushButton(self.centralwidget)
         sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Maximum, QtWidgets.QSizePolicy.Maximum)
         sizePolicy.setHorizontalStretch(0)
         sizePolicy.setVerticalStretch(0)
@@ -577,7 +600,7 @@ class Ui_MainWindow(object):
         self.btn_Copy.setIconSize(QtCore.QSize(20, 20))
         self.btn_Copy.setObjectName("btn_Copy")
         self.gridLayout.addWidget(self.btn_Copy, 5, 6, 1, 1)
-        self.btn_Paste = QtWidgets.QPushButton(self.gridLayoutWidget)
+        self.btn_Paste = QtWidgets.QPushButton(self.centralwidget)
         sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Maximum, QtWidgets.QSizePolicy.Maximum)
         sizePolicy.setHorizontalStretch(0)
         sizePolicy.setVerticalStretch(0)
@@ -592,7 +615,7 @@ class Ui_MainWindow(object):
         self.btn_Paste.setIconSize(QtCore.QSize(22, 22))
         self.btn_Paste.setObjectName("btn_Paste")
         self.gridLayout.addWidget(self.btn_Paste, 5, 5, 1, 1)
-        self.btn_TransferResToSrc = QtWidgets.QPushButton(self.gridLayoutWidget)
+        self.btn_TransferResToSrc = QtWidgets.QPushButton(self.centralwidget)
         sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Maximum, QtWidgets.QSizePolicy.Maximum)
         sizePolicy.setHorizontalStretch(0)
         sizePolicy.setVerticalStretch(0)
@@ -603,7 +626,7 @@ class Ui_MainWindow(object):
         self.btn_TransferResToSrc.setStyleSheet("font-size: 16pt")
         self.btn_TransferResToSrc.setObjectName("btn_TransferResToSrc")
         self.gridLayout.addWidget(self.btn_TransferResToSrc, 6, 5, 1, 1)
-        self.tbt_SaveToFile = QtWidgets.QToolButton(self.gridLayoutWidget)
+        self.tbt_SaveToFile = QtWidgets.QToolButton(self.centralwidget)
         self.tbt_SaveToFile.setMinimumSize(QtCore.QSize(150, 30))
         self.tbt_SaveToFile.setMaximumSize(QtCore.QSize(150, 30))
         self.tbt_SaveToFile.setStyleSheet("padding-right: 20px;")
@@ -612,7 +635,7 @@ class Ui_MainWindow(object):
         self.tbt_SaveToFile.setAutoRaise(False)
         self.tbt_SaveToFile.setObjectName("tbt_SaveToFile")
         self.gridLayout.addWidget(self.tbt_SaveToFile, 6, 3, 1, 1)
-        self.tbt_OpenFile = QtWidgets.QToolButton(self.gridLayoutWidget)
+        self.tbt_OpenFile = QtWidgets.QToolButton(self.centralwidget)
         self.tbt_OpenFile.setMinimumSize(QtCore.QSize(150, 30))
         self.tbt_OpenFile.setMaximumSize(QtCore.QSize(150, 30))
         self.tbt_OpenFile.setStyleSheet("padding-right: 20px;")
@@ -622,6 +645,7 @@ class Ui_MainWindow(object):
         self.tbt_OpenFile.setAutoRaise(False)
         self.tbt_OpenFile.setObjectName("tbt_OpenFile")
         self.gridLayout.addWidget(self.tbt_OpenFile, 5, 3, 1, 1)
+        self.gridLayout_2.addLayout(self.gridLayout, 0, 0, 1, 1)
         MainWindow.setCentralWidget(self.centralwidget)
 
         self.retranslateUi(MainWindow)
@@ -653,4 +677,5 @@ class Ui_MainWindow(object):
         self.tbt_SaveToFile.setText(_translate("MainWindow", "Save to file..."))
         self.tbt_OpenFile.setToolTip(_translate("MainWindow", "Open a file and paste its contents as source text"))
         self.tbt_OpenFile.setText(_translate("MainWindow", "Open file..."))
+from sicrypt import PlainTextEdit
 import res_rc
