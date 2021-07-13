@@ -1,10 +1,10 @@
 {
     "lang": "en-US",
     "textFields": {
-        "position": false,
+        "position": true,
         "font": [
-            "13pt \"Consolas\"",
-            "13pt \"Consolas\""
+            "13pt \"Segoe UI Semilight\"",
+            "13pt \"Segoe UI Semilight\""
         ],
         "wrap": [
             true,

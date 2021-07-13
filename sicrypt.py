@@ -1,5 +1,5 @@
 import sys, os, pyperclip, glob, json
-import importlib, requests
+import traceback, importlib, requests
 
 from PyQt5               import QtCore, QtGui, QtWidgets
 from PyQt5.QtCore        import *
@@ -21,9 +21,9 @@ class Window(QMainWindow):
     #Translate function to simplify translation
     translate = QApplication.translate
 
-    def __init__(self):
+    def __init__(self, UIClass: (Ui_MainWindowVertical, Ui_MainWindowHorizontal)):
         QMainWindow.__init__(self)
-        self.ui = Ui_MainWindow()
+        self.ui = UIClass()
         self.ui.setupUi(self)
 
         #Menu for opening a file with specific encoding:
@@ -128,12 +128,11 @@ class Settings(QDialog):
     '''
     Settings dialog class
     '''
-    def __init__(self, root: Window):
+    def __init__(self):
         QDialog.__init__(self)
         self.ui = Ui_Dialog()
         self.ui.setupUi(self)
         self.loadConfig(noFile = True)
-        self.applyConfig(root)
 
         #Setup UI elements according to current configuration 
         
@@ -224,6 +223,11 @@ class Settings(QDialog):
         #True for horizontal position
         if config['position'] != False:
             pass
+
+        if (True if type(self.ui) == Ui_MainWindowHorizontal else False) != self.config['textFields']['position']:
+            messageBox(root, QMessageBox.Information, 
+                root.translate('TextFieldsPositionChangedDialog', 'Text fields` position has been changed'),
+                root.translate('TextFieldsPositionChangedDialog', 'Text fields` position has been changed, changes`ll be applied after restart'))
 
         #Setting font
         root.ui.ptx_SourceText.setStyleSheet(f'font: {config["font"][0]}')
@@ -348,6 +352,9 @@ def loadCiphers(root: Window) -> None:
 
     ciphers, categories, classNames = [], [], {}
     available = glob.glob('ciphers/*')
+    if not available: messageBox(root, QMessageBox.Critical,
+        root.translate('CipherLoadingErrorMessagebox', f'No ciphers found'),
+        root.translate('CipherLoadingErrorMessagebox', f'No ciphers found! Create or download some and put them into "ciphers" directory.'))
     for fileName in available[:]:
         available.remove(fileName)
         available.append(fileName.replace('\\', '/'))
@@ -637,8 +644,9 @@ if __name__ == '__main__':
     translator.load(f'qtbase_{QtCore.QLocale.system().name()}', QtCore.QLibraryInfo.location(QtCore.QLibraryInfo.TranslationsPath))
     app.installTranslator(translator)
 
-    root = Window()
-    settings = Settings(root)
+    settings = Settings()   
+    root = Window(Ui_MainWindowHorizontal if settings.config['textFields']['position'] else Ui_MainWindowVertical)
+    settings.applyConfig(root)
 
     try:
         #Load ciphers
@@ -672,7 +680,7 @@ if __name__ == '__main__':
             root.translate('CriticalErrorDialog', 'An unexpected error forced Sicrypt to close'),
             root.translate('CriticalErrorDialog', 
                 f'An critical {type(exception).__name__} occured, see the details below (click "Show details..." button '
-                f'to see details). Please submit an issue on our GitHub here: {gitHubLink}, so we can help you solving '
-                'this problem. If you have fixed this problem yourself, huge thanks to you, please submit a pull request'
-                'with the code files you have changed.'),
-            details = str(exception))
+                f'to see details). Please submit an issue on our GitHub, so we can help you solving this problem. If you '
+                 'have fixed this problem yourself, huge thanks to you, please submit a pull request with the code files '
+                 'you have changed.'),
+            details = f'Our GitHub: {gitHubLink}\n{traceback.format_exc()}')

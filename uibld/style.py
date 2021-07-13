@@ -24,6 +24,12 @@ QListView::item:selected, QTreeView::item:selected {
     background-color: rgb(47, 105, 23); 
 }
 
+QTextEdit {
+    color: white;
+	border: 1px solid grey;
+    font: 9pt "Segoe UI Semilight";
+}
+
 QPushButton { 
 	color: black;
     background-color: rgb(215, 215, 215);
