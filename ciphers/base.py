@@ -12,7 +12,7 @@ class Base64(Cipher):
     You can use this implementation as an example of a cipher implementation.
     '''
     def __init__(self):
-        Cipher.__init__(self, True, 'Base64', 'btte')
+        Cipher.__init__(self, True, 'Base64', category = 'btte')
 
 
     def encrypt(self, text: str) -> str:
