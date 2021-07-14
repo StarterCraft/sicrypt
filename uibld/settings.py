@@ -23,7 +23,7 @@ class Ui_Dialog(object):
         Dialog.setMinimumSize(QtCore.QSize(420, 450))
         Dialog.setMaximumSize(QtCore.QSize(420, 450))
         icon = QtGui.QIcon()
-        icon.addPixmap(QtGui.QPixmap(":/zxc/icons/icon.ico"), QtGui.QIcon.Normal, QtGui.QIcon.Off)
+        icon.addPixmap(QtGui.QPixmap(":/zxc/icons/icon_-d.ico"), QtGui.QIcon.Normal, QtGui.QIcon.Off)
         Dialog.setWindowIcon(icon)
         Dialog.setStyleSheet("background-color: rgb(45, 45, 45)")
         self.gridLayout_2 = QtWidgets.QGridLayout(Dialog)

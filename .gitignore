@@ -2,6 +2,7 @@
 __pycache__/
 ciphers/__pycache__/
 uibld/__pycache__/
+ciphers/__init__.py
 dl.cache
 *.py[cod]
 *$py.class

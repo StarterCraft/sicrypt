@@ -212,9 +212,24 @@ class Settings(QDialog):
                             }
                         })
 
-                    json.dump(configFile)
+                    json.dump(config, configFile)
 
         except FileExistsError:
+            if noFile: 
+                self.config.update(
+                {'lang': 'en-US',
+                'encryption': {
+                    'dlnew': True,
+                    'dlupd': True
+                },
+                'textFields': {
+                    'position': False,
+                    'font': ['13pt "Segoe UI Semilight"', '13pt "Segoe UI Semilight"'],
+                    'wrap': [False, False],
+                    'tabs': [0, 0]
+                }
+                })
+
             try:
                 with open('config.json', 'r') as configFile:
                     self.config.update(json.load(configFile))
@@ -234,7 +249,7 @@ class Settings(QDialog):
                         'tabs': [0, 0]
                     }
                     })
-                    json.dump(config)
+                    json.dump(config, configFile)
 
 
     def applyConfig(self, root: Window, onInit: bool = False) -> None:
@@ -408,10 +423,8 @@ def loadCiphers(root: Window, allowDownloadingNew: bool, allowDownloadingUpdates
     ciphers, categories, classNames = [], [], {}
     available = glob.glob('ciphers/*')
     if not available:
-        os.mkdir('ciphers')
-        messageBox(root, QMessageBox.Critical,
-        root.translate('CipherLoadingErrorMessagebox', f'No ciphers found'),
-        root.translate('CipherLoadingErrorMessagebox', f'No ciphers found! Create or download some and put them into "ciphers" directory.'))
+        try: os.mkdir('ciphers')
+        except FileExistsError: pass
 
     for fileName in available[:]:
         available.remove(fileName)
@@ -422,15 +435,15 @@ def loadCiphers(root: Window, allowDownloadingNew: bool, allowDownloadingUpdates
         availableOnGitHub = []
         for file in requests.get('https://api.github.com/repos/StarterCraft/sicrypt/git/trees/master?recursive=1').json()['tree']:
             try:
-                if file['path'][:file['path'].index('/')] == 'ciphers': availableOnGitHub.append(file['path'])
+                if (file['path'][:file['path'].index('/')] == 'ciphers' and file['path'].endswith('.py')):
+                    availableOnGitHub.append(file['path'])
             except ValueError: continue
 
         for file in availableOnGitHub:
-            try:
-                if file not in available:
-                    with open(file, 'x') as cipherFile:
-                        cipherFile.write(requests.get(f'https://raw.githubusercontent.com/StarterCraft/sicrypt/master/{file}').text)
-            except: pass
+            if file not in available[:]:
+                with open(file, 'x') as cipherFile:
+                    cipherFile.write(requests.get(f'https://raw.githubusercontent.com/StarterCraft/sicrypt/master/{file}').text)
+                available.append(file)
 
     for fileName in available:
         if fileName.split('/')[len(fileName.split('/'))-1].startswith('__'): continue

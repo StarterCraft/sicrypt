@@ -33,7 +33,7 @@
   </property>
   <property name="windowIcon">
    <iconset resource="../res.qrc">
-    <normaloff>:/zxc/icons/icon.ico</normaloff>:/zxc/icons/icon.ico</iconset>
+    <normaloff>:/zxc/icons/icon_-d.ico</normaloff>:/zxc/icons/icon_-d.ico</iconset>
   </property>
   <property name="styleSheet">
    <string notr="true">background-color: rgb(45, 45, 45)</string>
