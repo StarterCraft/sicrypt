@@ -1,5 +1,10 @@
 {
     "lang": "en-US",
+    "encryption": {
+        "dlnew": true,
+        "dlupd": true
+    },
+
     "textFields": {
         "position": true,
         "font": [

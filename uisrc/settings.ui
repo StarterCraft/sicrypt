@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>420</width>
-    <height>360</height>
+    <height>450</height>
    </rect>
   </property>
   <property name="sizePolicy">
@@ -19,13 +19,13 @@
   <property name="minimumSize">
    <size>
     <width>420</width>
-    <height>360</height>
+    <height>450</height>
    </size>
   </property>
   <property name="maximumSize">
    <size>
     <width>420</width>
-    <height>360</height>
+    <height>450</height>
    </size>
   </property>
   <property name="windowTitle">
@@ -51,7 +51,43 @@
    <property name="bottomMargin">
     <number>9</number>
    </property>
-   <item row="0" column="0">
+   <item row="2" column="0">
+    <widget class="QDialogButtonBox" name="buttonBox">
+     <property name="styleSheet">
+      <string notr="true">QPushButton
+{ 
+    color: black;
+    background-color: rgb(215, 215, 215);
+    border: 1px solid gray;
+    border-radius: 3px;
+	min-width: 80px;
+	min-height: 30px;
+    padding: 0px 4px 0px 4px;
+    font: 11pt &quot;Segoe UI Semilight&quot;;
+}
+
+QPushButton:hover
+{ 
+    background-color: rgb(235, 235, 235);
+}
+
+QPushButton:pressed
+{ 
+    background-color: rgb(221, 221, 221);
+}</string>
+     </property>
+     <property name="orientation">
+      <enum>Qt::Horizontal</enum>
+     </property>
+     <property name="standardButtons">
+      <set>QDialogButtonBox::Cancel|QDialogButtonBox::Save</set>
+     </property>
+     <property name="centerButtons">
+      <bool>true</bool>
+     </property>
+    </widget>
+   </item>
+   <item row="1" column="0">
     <widget class="QFrame" name="frame">
      <property name="styleSheet">
       <string notr="true">QLabel { 
@@ -487,34 +523,57 @@ QLineEdit:hover
       <property name="verticalSpacing">
        <number>6</number>
       </property>
-      <item row="0" column="0" colspan="3">
-       <widget class="QLabel" name="lbl_ReadOnly1">
-        <property name="sizePolicy">
-         <sizepolicy hsizetype="Preferred" vsizetype="MinimumExpanding">
-          <horstretch>0</horstretch>
-          <verstretch>0</verstretch>
-         </sizepolicy>
+      <item row="11" column="0" colspan="3">
+       <widget class="QLabel" name="lbl_ReadOnly5">
+        <property name="styleSheet">
+         <string notr="true">font-family: Segoe UI Semibold</string>
         </property>
+        <property name="text">
+         <string>Text fields' appearance:</string>
+        </property>
+       </widget>
+      </item>
+      <item row="12" column="0">
+       <widget class="QLabel" name="lbl_ReadOnly6">
         <property name="maximumSize">
          <size>
           <width>16777215</width>
           <height>26</height>
          </size>
         </property>
-        <property name="font">
-         <font>
-          <family>Segoe UI Black</family>
-          <pointsize>13</pointsize>
-          <weight>50</weight>
-          <italic>false</italic>
-          <bold>false</bold>
-         </font>
+        <property name="text">
+         <string>Position:</string>
         </property>
+       </widget>
+      </item>
+      <item row="1" column="0" colspan="3">
+       <widget class="Line" name="line">
+        <property name="orientation">
+         <enum>Qt::Horizontal</enum>
+        </property>
+       </widget>
+      </item>
+      <item row="5" column="0">
+       <widget class="QLabel" name="lbl_ReadOnly4">
         <property name="styleSheet">
-         <string notr="true">font-family: Segoe UI Black</string>
+         <string notr="true">font-family: Segoe UI Semibold</string>
         </property>
         <property name="text">
-         <string>Settings</string>
+         <string>Encryption:</string>
+        </property>
+       </widget>
+      </item>
+      <item row="4" column="0">
+       <widget class="Line" name="line_3">
+        <property name="orientation">
+         <enum>Qt::Horizontal</enum>
+        </property>
+       </widget>
+      </item>
+      <item row="10" column="0" colspan="3">
+       <widget class="Line" name="line_2">
+        <property name="orientation">
+         <enum>Qt::Horizontal</enum>
         </property>
        </widget>
       </item>
@@ -539,141 +598,7 @@ QLineEdit:hover
         </item>
        </widget>
       </item>
-      <item row="5" column="0" colspan="3">
-       <widget class="QLabel" name="lbl_ReadOnly4">
-        <property name="styleSheet">
-         <string notr="true">font-family: Segoe UI Semibold</string>
-        </property>
-        <property name="text">
-         <string>Text fields' appearance:</string>
-        </property>
-       </widget>
-      </item>
-      <item row="1" column="0" colspan="3">
-       <widget class="Line" name="line">
-        <property name="orientation">
-         <enum>Qt::Horizontal</enum>
-        </property>
-       </widget>
-      </item>
-      <item row="2" column="0">
-       <widget class="QLabel" name="lbl_ReadOnly2">
-        <property name="styleSheet">
-         <string notr="true">font-family: Segoe UI Semibold</string>
-        </property>
-        <property name="text">
-         <string>General:</string>
-        </property>
-       </widget>
-      </item>
-      <item row="4" column="0" colspan="3">
-       <widget class="Line" name="line_2">
-        <property name="orientation">
-         <enum>Qt::Horizontal</enum>
-        </property>
-       </widget>
-      </item>
-      <item row="6" column="1" colspan="2">
-       <widget class="QFrame" name="frame_TextFieldsPosition">
-        <property name="maximumSize">
-         <size>
-          <width>16777215</width>
-          <height>26</height>
-         </size>
-        </property>
-        <property name="frameShape">
-         <enum>QFrame::StyledPanel</enum>
-        </property>
-        <property name="frameShadow">
-         <enum>QFrame::Raised</enum>
-        </property>
-        <layout class="QHBoxLayout" name="horizontalLayout_2">
-         <property name="leftMargin">
-          <number>2</number>
-         </property>
-         <property name="topMargin">
-          <number>0</number>
-         </property>
-         <property name="rightMargin">
-          <number>0</number>
-         </property>
-         <property name="bottomMargin">
-          <number>0</number>
-         </property>
-         <item>
-          <widget class="QRadioButton" name="rbt_TextFieldsPositionHorizontal">
-           <property name="text">
-            <string>Horizontal</string>
-           </property>
-          </widget>
-         </item>
-         <item>
-          <widget class="QRadioButton" name="rbt_TextFieldsPositionVertical">
-           <property name="text">
-            <string>Vertical</string>
-           </property>
-           <property name="checkable">
-            <bool>true</bool>
-           </property>
-           <property name="checked">
-            <bool>true</bool>
-           </property>
-          </widget>
-         </item>
-        </layout>
-       </widget>
-      </item>
-      <item row="3" column="0">
-       <widget class="QLabel" name="lbl_ReadOnly3">
-        <property name="text">
-         <string>Language:</string>
-        </property>
-       </widget>
-      </item>
-      <item row="6" column="0">
-       <widget class="QLabel" name="lbl_ReadOnly5">
-        <property name="maximumSize">
-         <size>
-          <width>16777215</width>
-          <height>26</height>
-         </size>
-        </property>
-        <property name="text">
-         <string>Position:</string>
-        </property>
-       </widget>
-      </item>
-      <item row="8" column="1" colspan="2">
-       <widget class="QFrame" name="frame_WordWrapSelectors">
-        <property name="maximumSize">
-         <size>
-          <width>16777215</width>
-          <height>26</height>
-         </size>
-        </property>
-        <property name="frameShape">
-         <enum>QFrame::StyledPanel</enum>
-        </property>
-        <property name="frameShadow">
-         <enum>QFrame::Raised</enum>
-        </property>
-        <layout class="QHBoxLayout" name="horizontalLayout">
-         <property name="leftMargin">
-          <number>2</number>
-         </property>
-         <property name="topMargin">
-          <number>0</number>
-         </property>
-         <property name="rightMargin">
-          <number>0</number>
-         </property>
-         <property name="bottomMargin">
-          <number>0</number>
-         </property>
-        </layout>
-       </widget>
-      </item>
-      <item row="7" column="0" rowspan="4" colspan="3">
+      <item row="13" column="0" rowspan="4" colspan="3">
        <widget class="QTabWidget" name="tbs_FieldsSettings">
         <property name="sizePolicy">
          <sizepolicy hsizetype="Expanding" vsizetype="Minimum">
@@ -694,7 +619,7 @@ QLineEdit:hover
          </size>
         </property>
         <property name="currentIndex">
-         <number>1</number>
+         <number>0</number>
         </property>
         <widget class="QWidget" name="tab_SourceTextFieldFont">
          <attribute name="title">
@@ -769,7 +694,7 @@ QLineEdit:hover
            </widget>
           </item>
           <item row="0" column="0">
-           <widget class="QLabel" name="lbl_ReadOnly6">
+           <widget class="QLabel" name="lbl_ReadOnly7">
             <property name="text">
              <string>Font:</string>
             </property>
@@ -834,7 +759,7 @@ QLineEdit:hover
            </widget>
           </item>
           <item row="1" column="0">
-           <widget class="QLabel" name="lbl_ReadOnly7">
+           <widget class="QLabel" name="lbl_ReadOnly8">
             <property name="text">
              <string>Tab policy:</string>
             </property>
@@ -860,14 +785,14 @@ QLineEdit:hover
            <number>6</number>
           </property>
           <item row="2" column="0">
-           <widget class="QLabel" name="lbl_ReadOnly9">
+           <widget class="QLabel" name="lbl_ReadOnly10">
             <property name="text">
              <string>Tab policy:</string>
             </property>
            </widget>
           </item>
           <item row="0" column="0">
-           <widget class="QLabel" name="lbl_ReadOnly8">
+           <widget class="QLabel" name="lbl_ReadOnly9">
             <property name="text">
              <string>Font:</string>
             </property>
@@ -984,43 +909,152 @@ QLineEdit:hover
         </widget>
        </widget>
       </item>
+      <item row="2" column="0" colspan="3">
+       <widget class="QLabel" name="lbl_ReadOnly2">
+        <property name="styleSheet">
+         <string notr="true">font-family: Segoe UI Semibold</string>
+        </property>
+        <property name="text">
+         <string>General:</string>
+        </property>
+       </widget>
+      </item>
+      <item row="14" column="1" colspan="2">
+       <widget class="QFrame" name="frame_WordWrapSelectors">
+        <property name="maximumSize">
+         <size>
+          <width>16777215</width>
+          <height>26</height>
+         </size>
+        </property>
+        <property name="frameShape">
+         <enum>QFrame::StyledPanel</enum>
+        </property>
+        <property name="frameShadow">
+         <enum>QFrame::Raised</enum>
+        </property>
+        <layout class="QHBoxLayout" name="horizontalLayout">
+         <property name="leftMargin">
+          <number>2</number>
+         </property>
+         <property name="topMargin">
+          <number>0</number>
+         </property>
+         <property name="rightMargin">
+          <number>0</number>
+         </property>
+         <property name="bottomMargin">
+          <number>0</number>
+         </property>
+        </layout>
+       </widget>
+      </item>
+      <item row="0" column="0" colspan="3">
+       <widget class="QLabel" name="lbl_ReadOnly1">
+        <property name="sizePolicy">
+         <sizepolicy hsizetype="Preferred" vsizetype="MinimumExpanding">
+          <horstretch>0</horstretch>
+          <verstretch>0</verstretch>
+         </sizepolicy>
+        </property>
+        <property name="maximumSize">
+         <size>
+          <width>16777215</width>
+          <height>26</height>
+         </size>
+        </property>
+        <property name="font">
+         <font>
+          <family>Segoe UI Black</family>
+          <pointsize>13</pointsize>
+          <weight>50</weight>
+          <italic>false</italic>
+          <bold>false</bold>
+         </font>
+        </property>
+        <property name="styleSheet">
+         <string notr="true">font-family: Segoe UI Black</string>
+        </property>
+        <property name="text">
+         <string>Settings</string>
+        </property>
+       </widget>
+      </item>
+      <item row="12" column="1" colspan="2">
+       <widget class="QFrame" name="frame_TextFieldsPosition">
+        <property name="maximumSize">
+         <size>
+          <width>16777215</width>
+          <height>26</height>
+         </size>
+        </property>
+        <property name="frameShape">
+         <enum>QFrame::StyledPanel</enum>
+        </property>
+        <property name="frameShadow">
+         <enum>QFrame::Raised</enum>
+        </property>
+        <layout class="QHBoxLayout" name="horizontalLayout_2">
+         <property name="leftMargin">
+          <number>2</number>
+         </property>
+         <property name="topMargin">
+          <number>0</number>
+         </property>
+         <property name="rightMargin">
+          <number>0</number>
+         </property>
+         <property name="bottomMargin">
+          <number>0</number>
+         </property>
+         <item>
+          <widget class="QRadioButton" name="rbt_TextFieldsPositionHorizontal">
+           <property name="text">
+            <string>Horizontal</string>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QRadioButton" name="rbt_TextFieldsPositionVertical">
+           <property name="text">
+            <string>Vertical</string>
+           </property>
+           <property name="checkable">
+            <bool>true</bool>
+           </property>
+           <property name="checked">
+            <bool>true</bool>
+           </property>
+          </widget>
+         </item>
+        </layout>
+       </widget>
+      </item>
+      <item row="3" column="0">
+       <widget class="QLabel" name="lbl_ReadOnly3">
+        <property name="text">
+         <string>Language:</string>
+        </property>
+       </widget>
+      </item>
+      <item row="6" column="0" colspan="3">
+       <widget class="QCheckBox" name="ckb_CiphersAllowDownloadingUpdates">
+        <property name="toolTip">
+         <string>Updates will be download from our GitHub</string>
+        </property>
+        <property name="text">
+         <string>Update installed ciphers if there are any updates</string>
+        </property>
+       </widget>
+      </item>
+      <item row="7" column="0" colspan="3">
+       <widget class="QCheckBox" name="ckb_CiphersAllowDownloadingNew">
+        <property name="text">
+         <string>Download new ciphers if there are any</string>
+        </property>
+       </widget>
+      </item>
      </layout>
-    </widget>
-   </item>
-   <item row="1" column="0">
-    <widget class="QDialogButtonBox" name="buttonBox">
-     <property name="styleSheet">
-      <string notr="true">QPushButton
-{ 
-    color: black;
-    background-color: rgb(215, 215, 215);
-    border: 1px solid gray;
-    border-radius: 3px;
-	min-width: 80px;
-	min-height: 30px;
-    padding: 0px 4px 0px 4px;
-    font: 11pt &quot;Segoe UI Semilight&quot;;
-}
-
-QPushButton:hover
-{ 
-    background-color: rgb(235, 235, 235);
-}
-
-QPushButton:pressed
-{ 
-    background-color: rgb(221, 221, 221);
-}</string>
-     </property>
-     <property name="orientation">
-      <enum>Qt::Horizontal</enum>
-     </property>
-     <property name="standardButtons">
-      <set>QDialogButtonBox::Cancel|QDialogButtonBox::Save</set>
-     </property>
-     <property name="centerButtons">
-      <bool>true</bool>
-     </property>
     </widget>
    </item>
   </layout>

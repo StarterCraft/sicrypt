@@ -139,6 +139,11 @@ class Settings(QDialog):
         
         #No implementation of language changing yet
 
+        #Ciphers' downloading configuration
+        config = self.config['encryption']
+        self.ui.ckb_CiphersAllowDownloadingNew.setChecked(config['dlnew'])
+        self.ui.ckb_CiphersAllowDownloadingUpdates.setChecked(config['dlupd'])
+
         #Text fields configuration
         config = self.config['textFields']
 
@@ -179,24 +184,33 @@ class Settings(QDialog):
                 if noFile: 
                     self.config.update(
                     {'lang': 'en-US',
-                     'textFields': {
-                     'position': False,
-                     'font': ['13pt "Segoe UI Semilight"', '13pt "Segoe UI Semilight"'],
-                     'wrap': [False, False],
-                     'tabs': [0, 0]
-                     }
+                    'encryption': {
+                        'dlnew': True,
+                        'dlupd': True
+                    },
+                    'textFields': {
+                        'position': False,
+                        'font': ['13pt "Segoe UI Semilight"', '13pt "Segoe UI Semilight"'],
+                        'wrap': [False, False],
+                        'tabs': [0, 0]
+                    }
                     })
 
                 else:
                     self.config.update(
                         {'lang': 'en-US',
-                            'textFields': {
-                                'position': False,
-                                'font': ['13pt "Segoe UI Semilight"', '13pt "Segoe UI Semilight"'],
-                                'wrap': [False, False],
-                                'tabs': [0, 0]
-                                }
-                            })
+                         'encryption': {
+                            'dlnew': True,
+                            'dlupd': True
+                           },
+
+                        'textFields': {
+                            'position': False,
+                            'font': ['13pt "Segoe UI Semilight"', '13pt "Segoe UI Semilight"'],
+                            'wrap': [False, False],
+                            'tabs': [0, 0]
+                            }
+                        })
 
                     json.dump(configFile)
 
@@ -205,18 +219,22 @@ class Settings(QDialog):
                     self.config.update(json.load(configFile))
 
 
-    def applyConfig(self, root: Window) -> None:
+    def applyConfig(self, root: Window, onInit: bool = False) -> None:
         '''
         Apply current program configuration from the 'config' dict to the UI.
 
         :param 'root': Window
             Main window
 
+        :kwparam 'onInit': bool = False
+            If true, no MessageBoxes will be generated during the execution
+            of the method.
+
         :returns: None
         '''
         
         #No implementation of language changing yet
-
+        
         #Text fields configuration
         config = self.config['textFields']
 
@@ -225,7 +243,7 @@ class Settings(QDialog):
         if config['position'] != False:
             pass
 
-        if (True if type(self.ui) == Ui_MainWindowHorizontal else False) != self.config['textFields']['position']:
+        if (type(self.ui) == Ui_MainWindowHorizontal) != self.config['textFields']['position'] and not onInit:
             messageBox(root, QMessageBox.Information, 
                 root.translate('TextFieldsPositionChangedDialog', 'Text fields` position has been changed'),
                 root.translate('TextFieldsPositionChangedDialog', 'Text fields` position has been changed, changes`ll be applied after restart'))
@@ -253,6 +271,11 @@ class Settings(QDialog):
         '''
         #No implementation of language changing yet
         
+        #Ciphers' downloading configuration
+        config = self.config['encryption']
+        config['dlnew'] = self.ui.ckb_CiphersAllowDownloadingNew.isChecked()
+        config['dlupd'] = self.ui.ckb_CiphersAllowDownloadingUpdates.isChecked()
+
         #Text fields configuration
         config = self.config['textFields']
 
@@ -325,7 +348,7 @@ class Cipher:
             The cipher's name that is going to be shown in the ciphers'
             selection combo box.
 
-        :param 'category': str
+        :kwparam 'category': str
             Name of the category the cipher belongs to. For example,
             there are hashes, simple cryptography methods like magic
             square, etc. Available categories are:
@@ -335,7 +358,7 @@ class Cipher:
             By default, the cipher has no category, since categorization
             feature is not yet implemented.
 
-        :param 'version': tuple<int, int>
+        :kwparam 'version': tuple<int, int>
             Version of the cipher
         '''
         self.type = type
@@ -345,7 +368,7 @@ class Cipher:
 
 
 #Major functions are defined below
-def loadCiphers(root: Window) -> None:
+def loadCiphers(root: Window, allowDownloadingNew: bool, allowDownloadingUpdates: bool) -> None:
     '''
     Load ciphers from '*.py' files in 'ciphers' directory,
     initialize them, collect them into 'ciphers' list and
@@ -353,6 +376,12 @@ def loadCiphers(root: Window) -> None:
 
     :param 'root': Window
         Main window
+
+    :param 'allowDownloadingNew': bool
+        Allow downloading new (uninstalled locally) ciphers from our GitHub
+
+    :param 'allowDownloadingUpdates': bool
+        Allow downloading updated ciphers from our GitHub
 
     :returns: None
     '''
@@ -367,6 +396,21 @@ def loadCiphers(root: Window) -> None:
     for fileName in available[:]:
         available.remove(fileName)
         available.append(fileName.replace('\\', '/'))
+
+    #Find now ciphers on GitHub
+    if allowDownloadingNew:
+        availableOnGitHub = []
+        for file in requests.get('https://api.github.com/repos/StarterCraft/sicrypt/git/trees/master?recursive=1').json()['tree']:
+            try:
+                if file['path'][:file['path'].index('/')] == 'ciphers': availableOnGitHub.append(file['path'])
+            except ValueError: continue
+
+        for file in availableOnGitHub:
+            try:
+                if file not in available:
+                    with open(file, 'x') as cipherFile:
+                        cipherFile.write(requests.get(f'https://raw.githubusercontent.com/StarterCraft/sicrypt/master/{file}').text)
+            except: pass
 
     for fileName in available:
         if fileName.split('/')[len(fileName.split('/'))-1].startswith('__'): continue
@@ -388,21 +432,22 @@ def loadCiphers(root: Window) -> None:
                 if (callable(getattr(_class, 'encrypt')) and
                     callable(getattr(_class, 'decrypt'))):
 
-                    #Check cipher version via GitHub:
-                    #If the cipher is not hosted on GitHub — skip it;
-                    #If the cipher is hosted on GitHub and the version there is the same — skip it;
-                    #If the cipher is hosted on GitHub and the version there is newer — update it!
-                    with open('ciphers/dl.cache', 'w') as file:
-                        response = requests.get(f'https://raw.githubusercontent.com/StarterCraft/sicrypt/master/{classFile.replace(".", "/")}')
-                        if response == 200: 
-                            file.write(response.text)
-                            _compareClass = getattr(importlib.import_module('ciphers.dl', 'ciphers'), className)
-                            if _compareClass.version == _class.version: pass
-                            elif _compareClass.version[0] > _class.version[0] or _compareClass.version[1] > _class.version[1]:
-                                with open(classFile, 'w') as originalFile: originalFile.write(response.text)
-                                ciphers.append(_compareClass)
+                    if allowDownloadingUpdates:
+                        #Check cipher version via GitHub:
+                        #If the cipher is not hosted on GitHub — skip it;
+                        #If the cipher is hosted on GitHub and the version there is the same — skip it;
+                        #If the cipher is hosted on GitHub and the version there is newer — update it!
+                        with open('ciphers/dl.cache', 'w') as file:
+                            response = requests.get(f'https://raw.githubusercontent.com/StarterCraft/sicrypt/master/{classFile.replace(".", "/")}')
+                            if response == 200: 
+                                file.write(response.text)
+                                _compareClass = getattr(importlib.import_module('ciphers.dl', 'ciphers'), className)
+                                if _compareClass.version == _class.version: pass
+                                elif _compareClass.version[0] > _class.version[0] or _compareClass.version[1] > _class.version[1]:
+                                    with open(classFile, 'w') as originalFile: originalFile.write(response.text)
+                                    ciphers.append(_compareClass())
 
-                    ciphers.append(_class)
+                    ciphers.append(_class())
                     os.system('del ciphers\\dl.cache')
 
                 else: messageBox(root, QMessageBox.Critical,
@@ -670,6 +715,7 @@ def messageBox(root: Window, icon: QMessageBox.Icon, title: str, text: str,
         btn.setStyleSheet(buttonStyleSheet)
 
     _messageBox.setStyleSheet(styleSheet)
+    _messageBox.layout().setSizeConstraint(QLayout.SetMinimumSize)
     return _messageBox.exec()
 
 
@@ -683,11 +729,11 @@ if __name__ == '__main__':
 
     settings = Settings()   
     root = Window(Ui_MainWindowHorizontal if settings.config['textFields']['position'] else Ui_MainWindowVertical)
-    settings.applyConfig(root)
+    settings.applyConfig(root, onInit = True)
 
     try:
         #Load ciphers
-        loadCiphers(root)
+        loadCiphers(root, settings.config['encryption']['dlnew'], settings.config['encryption']['dlupd'])
 
         #Bind functions to actions and buttons
         root.ui.btn_Encrypt.clicked.connect( lambda: encrypt(root) )
