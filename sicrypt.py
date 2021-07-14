@@ -195,6 +195,7 @@ class Settings(QDialog):
                         'tabs': [0, 0]
                     }
                     })
+                    return
 
                 else:
                     self.config.update(
@@ -212,29 +213,14 @@ class Settings(QDialog):
                             }
                         })
 
-                    json.dump(config, configFile)
+                    json.dump(self.config, configFile)
 
         except FileExistsError:
-            if noFile: 
-                self.config.update(
-                {'lang': 'en-US',
-                'encryption': {
-                    'dlnew': True,
-                    'dlupd': True
-                },
-                'textFields': {
-                    'position': False,
-                    'font': ['13pt "Segoe UI Semilight"', '13pt "Segoe UI Semilight"'],
-                    'wrap': [False, False],
-                    'tabs': [0, 0]
-                }
-                })
-
             try:
                 with open('config.json', 'r') as configFile:
                     self.config.update(json.load(configFile))
 
-            except json.JSONDecodeError:
+            except:
                 with open('config.json', 'w') as configFile:
                     self.config.update(
                     {'lang': 'en-US',
@@ -249,7 +235,7 @@ class Settings(QDialog):
                         'tabs': [0, 0]
                     }
                     })
-                    json.dump(config, configFile)
+                    json.dump(self.config, configFile)
 
 
     def applyConfig(self, root: Window, onInit: bool = False) -> None:
@@ -273,9 +259,6 @@ class Settings(QDialog):
 
         #False for default vertical position,
         #True for horizontal position
-        if config['position'] != False:
-            pass
-
         if (type(self.ui) == Ui_MainWindowHorizontal) != self.config['textFields']['position'] and not onInit:
             messageBox(root, QMessageBox.Information, 
                 root.translate('TextFieldsPositionChangedDialog', 'Text fields` position has been changed'),
@@ -361,9 +344,9 @@ class Cipher:
         List of ciphers categories you can pick while initializing a Cipher
         instance
     '''
-    categories = {'hash': Action(Window.translate('CipherCategories', 'Hashing algorithms')),
-                  'simple': Action(Window.translate('CipherCategories', 'Simple cryptography')),
-                  'btte': Action(Window.translate('CipherCategories', 'Binary-to-text encoding'))}
+    categories = {'hash': Action(QApplication.translate('CipherCategories', 'Hashing algorithms')),
+                  'simple': Action(QApplication.translate('CipherCategories', 'Simple cryptography')),
+                  'btte': Action(QApplication.translate('CipherCategories', 'Binary-to-text encoding'))}
 
 
 
@@ -460,7 +443,7 @@ def loadCiphers(root: Window, allowDownloadingNew: bool, allowDownloadingUpdates
 
     for classFile, classNames in classNames.items():
         for className in classNames:
-            _class = getattr(importlib.import_module(classFile[:-3], 'ciphers'), className)
+            _class = getattr(importlib.import_module(classFile[:-3]), className)
             try:
                 if (callable(getattr(_class, 'encrypt')) and
                     callable(getattr(_class, 'decrypt'))):
@@ -474,7 +457,7 @@ def loadCiphers(root: Window, allowDownloadingNew: bool, allowDownloadingUpdates
                             response = requests.get(f'https://raw.githubusercontent.com/StarterCraft/sicrypt/master/{classFile.replace(".", "/")}')
                             if response == 200: 
                                 file.write(response.text)
-                                _compareClass = getattr(importlib.import_module('ciphers.dl', 'ciphers'), className)
+                                _compareClass = getattr(importlib.import_module('ciphers.dl'), className)
                                 if _compareClass.version == _class.version: pass
                                 elif _compareClass.version[0] > _class.version[0] or _compareClass.version[1] > _class.version[1]:
                                     with open(classFile, 'w') as originalFile: originalFile.write(response.text)
@@ -802,4 +785,4 @@ if __name__ == '__main__':
                 f'to see details). Please submit an issue on our GitHub, so we can help you solving this problem. If you '
                  'have fixed this problem yourself, huge thanks to you, please submit a pull request with the code files '
                  'you have changed.'),
-            details = f'Our GitHub: {gitHubLink}\n{traceback.format_exc()}')
+                details = f'Our GitHub: {gitHubLink}\n{traceback.format_exc()}')

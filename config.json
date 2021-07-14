@@ -4,9 +4,8 @@
         "dlnew": true,
         "dlupd": true
     },
-
     "textFields": {
-        "position": true,
+        "position": false,
         "font": [
             "13pt \"Segoe UI Semilight\"",
             "13pt \"Segoe UI Semilight\""

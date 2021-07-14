@@ -33,7 +33,7 @@
   </property>
   <property name="windowIcon">
    <iconset resource="../res.qrc">
-    <normaloff>:/zxc/icons/icon_-d.ico</normaloff>:/zxc/icons/icon_-d.ico</iconset>
+    <normaloff>:/zxc/icons/icon.ico</normaloff>:/zxc/icons/icon.ico</iconset>
   </property>
   <property name="styleSheet">
    <string notr="true">background-color: rgb(45, 45, 45)</string>
@@ -506,6 +506,37 @@ QLineEdit:hover
       <property name="spacing">
        <number>8</number>
       </property>
+      <item row="6" column="5">
+       <widget class="QPushButton" name="btn_TransferResToSrc">
+        <property name="sizePolicy">
+         <sizepolicy hsizetype="Maximum" vsizetype="Maximum">
+          <horstretch>0</horstretch>
+          <verstretch>0</verstretch>
+         </sizepolicy>
+        </property>
+        <property name="minimumSize">
+         <size>
+          <width>30</width>
+          <height>30</height>
+         </size>
+        </property>
+        <property name="maximumSize">
+         <size>
+          <width>30</width>
+          <height>30</height>
+         </size>
+        </property>
+        <property name="toolTip">
+         <string>Tansfer contents of 'Result text' field to 'Source text' field</string>
+        </property>
+        <property name="styleSheet">
+         <string notr="true">font-size: 16pt</string>
+        </property>
+        <property name="text">
+         <string>🠔</string>
+        </property>
+       </widget>
+      </item>
       <item row="5" column="2">
        <widget class="QPushButton" name="btn_Encrypt">
         <property name="sizePolicy">
@@ -537,14 +568,25 @@ QLineEdit:hover
         </property>
        </widget>
       </item>
-      <item row="6" column="2">
-       <widget class="QPushButton" name="btn_Decrypt">
-        <property name="sizePolicy">
-         <sizepolicy hsizetype="Maximum" vsizetype="Maximum">
-          <horstretch>0</horstretch>
-          <verstretch>0</verstretch>
-         </sizepolicy>
+      <item row="5" column="0" colspan="2">
+       <widget class="QLabel" name="lbl_ReadOnly3">
+        <property name="text">
+         <string>Cipher:</string>
         </property>
+       </widget>
+      </item>
+      <item row="0" column="3" colspan="2">
+       <widget class="QLabel" name="lbl_ReadOnly2">
+        <property name="styleSheet">
+         <string notr="true">font: 13pt &quot;Segoe UI Semibold&quot;</string>
+        </property>
+        <property name="text">
+         <string>Result text:</string>
+        </property>
+       </widget>
+      </item>
+      <item row="6" column="3">
+       <widget class="QToolButton" name="tbt_SaveToFile">
         <property name="minimumSize">
          <size>
           <width>150</width>
@@ -558,16 +600,22 @@ QLineEdit:hover
          </size>
         </property>
         <property name="toolTip">
-         <string>Decrypt source text</string>
+         <string>Save result text to a file</string>
         </property>
-        <property name="autoFillBackground">
-         <bool>false</bool>
+        <property name="styleSheet">
+         <string notr="true">padding-right: 20px;</string>
         </property>
         <property name="text">
-         <string>Decrypt</string>
+         <string>Save to file...</string>
         </property>
-        <property name="shortcut">
-         <string notr="true">Ctrl+D</string>
+        <property name="popupMode">
+         <enum>QToolButton::MenuButtonPopup</enum>
+        </property>
+        <property name="toolButtonStyle">
+         <enum>Qt::ToolButtonIconOnly</enum>
+        </property>
+        <property name="autoRaise">
+         <bool>false</bool>
         </property>
        </widget>
       </item>
@@ -655,8 +703,27 @@ QLineEdit:hover
         </property>
        </widget>
       </item>
-      <item row="6" column="5">
-       <widget class="QPushButton" name="btn_TransferResToSrc">
+      <item row="0" column="0" colspan="3">
+       <widget class="QLabel" name="lbl_ReadOnly1">
+        <property name="font">
+         <font>
+          <family>Segoe UI Semibold</family>
+          <pointsize>13</pointsize>
+          <weight>50</weight>
+          <italic>false</italic>
+          <bold>false</bold>
+         </font>
+        </property>
+        <property name="styleSheet">
+         <string notr="true">font: 13pt &quot;Segoe UI Semibold&quot;</string>
+        </property>
+        <property name="text">
+         <string>Source text:</string>
+        </property>
+       </widget>
+      </item>
+      <item row="5" column="6">
+       <widget class="QPushButton" name="btn_Copy">
         <property name="sizePolicy">
          <sizepolicy hsizetype="Maximum" vsizetype="Maximum">
           <horstretch>0</horstretch>
@@ -676,23 +743,54 @@ QLineEdit:hover
          </size>
         </property>
         <property name="toolTip">
-         <string>Tansfer contents of 'Result text' field to 'Source text' field</string>
-        </property>
-        <property name="styleSheet">
-         <string notr="true">font-size: 16pt</string>
+         <string>Copy result text to the clipboard</string>
         </property>
         <property name="text">
-         <string>🠔</string>
+         <string/>
+        </property>
+        <property name="icon">
+         <iconset resource="../res.qrc">
+          <normaloff>:/zxc/icons/copy.png</normaloff>:/zxc/icons/copy.png</iconset>
+        </property>
+        <property name="iconSize">
+         <size>
+          <width>20</width>
+          <height>20</height>
+         </size>
         </property>
        </widget>
       </item>
-      <item row="0" column="3" colspan="2">
-       <widget class="QLabel" name="lbl_ReadOnly2">
-        <property name="styleSheet">
-         <string notr="true">font: 13pt &quot;Segoe UI Semibold&quot;</string>
+      <item row="6" column="2">
+       <widget class="QPushButton" name="btn_Decrypt">
+        <property name="sizePolicy">
+         <sizepolicy hsizetype="Maximum" vsizetype="Maximum">
+          <horstretch>0</horstretch>
+          <verstretch>0</verstretch>
+         </sizepolicy>
+        </property>
+        <property name="minimumSize">
+         <size>
+          <width>150</width>
+          <height>30</height>
+         </size>
+        </property>
+        <property name="maximumSize">
+         <size>
+          <width>150</width>
+          <height>30</height>
+         </size>
+        </property>
+        <property name="toolTip">
+         <string>Decrypt source text</string>
+        </property>
+        <property name="autoFillBackground">
+         <bool>false</bool>
         </property>
         <property name="text">
-         <string>Result text:</string>
+         <string>Decrypt</string>
+        </property>
+        <property name="shortcut">
+         <string notr="true">Ctrl+D</string>
         </property>
        </widget>
       </item>
@@ -734,44 +832,25 @@ QLineEdit:hover
         </property>
        </widget>
       </item>
-      <item row="5" column="0" colspan="2">
-       <widget class="QLabel" name="lbl_ReadOnly3">
-        <property name="text">
-         <string>Cipher:</string>
-        </property>
-       </widget>
-      </item>
-      <item row="6" column="3">
-       <widget class="QToolButton" name="tbt_SaveToFile">
-        <property name="minimumSize">
-         <size>
-          <width>150</width>
-          <height>30</height>
-         </size>
+      <item row="4" column="0" colspan="3">
+       <widget class="PlainTextEdit" name="ptx_SourceText">
+        <property name="sizePolicy">
+         <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+          <horstretch>0</horstretch>
+          <verstretch>0</verstretch>
+         </sizepolicy>
         </property>
         <property name="maximumSize">
          <size>
-          <width>150</width>
-          <height>30</height>
+          <width>290</width>
+          <height>16777215</height>
          </size>
         </property>
-        <property name="toolTip">
-         <string>Save result text to a file</string>
-        </property>
         <property name="styleSheet">
-         <string notr="true">padding-right: 20px;</string>
+         <string notr="true">QPlianTextEdit::placeholder-text { color: lightgray; }</string>
         </property>
-        <property name="text">
-         <string>Save to file...</string>
-        </property>
-        <property name="popupMode">
-         <enum>QToolButton::MenuButtonPopup</enum>
-        </property>
-        <property name="toolButtonStyle">
-         <enum>Qt::ToolButtonIconOnly</enum>
-        </property>
-        <property name="autoRaise">
-         <bool>false</bool>
+        <property name="placeholderText">
+         <string>Type or paste in source text</string>
         </property>
        </widget>
       </item>
@@ -828,47 +907,6 @@ QLineEdit:hover
         </property>
        </widget>
       </item>
-      <item row="4" column="0" colspan="3">
-       <widget class="PlainTextEdit" name="ptx_SourceText">
-        <property name="sizePolicy">
-         <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
-          <horstretch>0</horstretch>
-          <verstretch>0</verstretch>
-         </sizepolicy>
-        </property>
-        <property name="maximumSize">
-         <size>
-          <width>290</width>
-          <height>16777215</height>
-         </size>
-        </property>
-        <property name="styleSheet">
-         <string notr="true">QPlianTextEdit::placeholder-text { color: lightgray; }</string>
-        </property>
-        <property name="placeholderText">
-         <string>Type or paste in source text</string>
-        </property>
-       </widget>
-      </item>
-      <item row="0" column="0" colspan="3">
-       <widget class="QLabel" name="lbl_ReadOnly1">
-        <property name="font">
-         <font>
-          <family>Segoe UI Semibold</family>
-          <pointsize>13</pointsize>
-          <weight>50</weight>
-          <italic>false</italic>
-          <bold>false</bold>
-         </font>
-        </property>
-        <property name="styleSheet">
-         <string notr="true">font: 13pt &quot;Segoe UI Semibold&quot;</string>
-        </property>
-        <property name="text">
-         <string>Source text:</string>
-        </property>
-       </widget>
-      </item>
       <item row="0" column="6">
        <widget class="QPushButton" name="btn_About">
         <property name="sizePolicy">
@@ -897,44 +935,6 @@ QLineEdit:hover
         </property>
         <property name="text">
          <string>?</string>
-        </property>
-       </widget>
-      </item>
-      <item row="5" column="6">
-       <widget class="QPushButton" name="btn_Copy">
-        <property name="sizePolicy">
-         <sizepolicy hsizetype="Maximum" vsizetype="Maximum">
-          <horstretch>0</horstretch>
-          <verstretch>0</verstretch>
-         </sizepolicy>
-        </property>
-        <property name="minimumSize">
-         <size>
-          <width>30</width>
-          <height>30</height>
-         </size>
-        </property>
-        <property name="maximumSize">
-         <size>
-          <width>30</width>
-          <height>30</height>
-         </size>
-        </property>
-        <property name="toolTip">
-         <string>Copy result text to the clipboard</string>
-        </property>
-        <property name="text">
-         <string/>
-        </property>
-        <property name="icon">
-         <iconset resource="../res.qrc">
-          <normaloff>:/zxc/icons/copy.png</normaloff>:/zxc/icons/copy.png</iconset>
-        </property>
-        <property name="iconSize">
-         <size>
-          <width>20</width>
-          <height>20</height>
-         </size>
         </property>
        </widget>
       </item>
