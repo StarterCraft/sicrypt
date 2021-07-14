@@ -1,5 +1,6 @@
 import sys, os, pyperclip, glob, json
 import traceback, importlib, requests
+import nltk
 
 from PyQt5               import QtCore, QtGui, QtWidgets
 from PyQt5.QtCore        import *
@@ -310,7 +311,8 @@ class Cipher:
 
 
 
-    def __init__(self, type: bool, displayName: str, category: str in categories.keys()):
+    def __init__(self, type: bool, displayName: str,
+        category: str in categories.keys() = '', version: tuple = (1, 0)):
         '''
         Initialize a cipher instance with the following parameters:
 
@@ -330,10 +332,16 @@ class Cipher:
                 'hash'   —— Hashing algorithms;
                 'simple' —— Simple cryptography;
                 'btte'   —— Binary-to-text encoding.
+            By default, the cipher has no category, since categorization
+            feature is not yet implemented.
+
+        :param 'version': tuple<int, int>
+            Version of the cipher
         '''
         self.type = type
         self.displayName = displayName
         self.category = category
+        self.version = version
 
 
 #Major functions are defined below
@@ -355,6 +363,7 @@ def loadCiphers(root: Window) -> None:
     if not available: messageBox(root, QMessageBox.Critical,
         root.translate('CipherLoadingErrorMessagebox', f'No ciphers found'),
         root.translate('CipherLoadingErrorMessagebox', f'No ciphers found! Create or download some and put them into "ciphers" directory.'))
+
     for fileName in available[:]:
         available.remove(fileName)
         available.append(fileName.replace('\\', '/'))
@@ -375,11 +384,27 @@ def loadCiphers(root: Window) -> None:
     for classFile, classNames in classNames.items():
         for className in classNames:
             _class = getattr(importlib.import_module(classFile[:-3], 'ciphers'), className)
-
             try:
                 if (callable(getattr(_class, 'encrypt')) and
                     callable(getattr(_class, 'decrypt'))):
-                    ciphers.append(_class())
+
+                    #Check cipher version via GitHub:
+                    #If the cipher is not hosted on GitHub — skip it;
+                    #If the cipher is hosted on GitHub and the version there is the same — skip it;
+                    #If the cipher is hosted on GitHub and the version there is newer — update it!
+                    with open('ciphers/dl.cache', 'w') as file:
+                        response = requests.get(f'https://raw.githubusercontent.com/StarterCraft/sicrypt/master/{classFile.replace(".", "/")}')
+                        if response == 200: 
+                            file.write(response.text)
+                            _compareClass = getattr(importlib.import_module('ciphers.dl', 'ciphers'), className)
+                            if _compareClass.version == _class.version: pass
+                            elif _compareClass.version[0] > _class.version[0] or _compareClass.version[1] > _class.version[1]:
+                                with open(classFile, 'w') as originalFile: originalFile.write(response.text)
+                                ciphers.append(_compareClass)
+
+                    ciphers.append(_class)
+                    os.system('del ciphers\\dl.cache')
+
                 else: messageBox(root, QMessageBox.Critical,
                     root.translate('CipherLoadingErrorMessagebox', f'Failed to load cipher {className}'),
                     root.translate('CipherLoadingErrorMessagebox', f'Cipher {className}, declared in {classFile}, appears to be invalid'))
@@ -390,9 +415,7 @@ def loadCiphers(root: Window) -> None:
                         f'Cipher {className}, declared in {classFile}, failed to load due to {type(exception).__name__}. See the details below'),
                         details = str(exception))
 
-    for cipher in ciphers: 
-        if cipher.category not in categories: categories.append(cipher.category)
-        root.ui.cbb_Cipher.addItem(cipher.displayName)
+    for cipher in ciphers: root.ui.cbb_Cipher.addItem(cipher.displayName)
         
     #TODO No.1: Implement QComboBox with categories 
     #Setup model for the cipher selection combobox
@@ -428,8 +451,15 @@ def encrypt(root: Window) -> None:
 
     :returns: None
     '''
-    root.ui.ptx_ResultText.setPlainText(str(
-        getCipherByDisplayName(root.ui.cbb_Cipher.currentText()).encrypt(root.ui.ptx_SourceText.toPlainText())))
+    try:
+        root.ui.ptx_ResultText.setPlainText(str(
+            getCipherByDisplayName(root.ui.cbb_Cipher.currentText()).encrypt(root.ui.ptx_SourceText.toPlainText())))
+
+    except Exception as exception:
+        messageBox(root, QMessageBox.Critical,
+            root.translate('EncryptionErrorDialog', 'Failed to encrypt'),
+            root.translate('EncryptionErrorDialog', 'Failed to encrypt your text due to an unexpected error.'),
+            details = f'Our GitHub: {gitHubLink}\n{traceback.format_exc()}')
 
         
 def decrypt(root: Window) -> None:
@@ -442,8 +472,15 @@ def decrypt(root: Window) -> None:
 
     :returns: None
     '''
-    root.ui.ptx_ResultText.setPlainText(str(
-        getCipherByDisplayName(root.ui.cbb_Cipher.currentText()).decrypt(root.ui.ptx_SourceText.toPlainText())))
+    try:
+        root.ui.ptx_ResultText.setPlainText(str(
+            getCipherByDisplayName(root.ui.cbb_Cipher.currentText()).decrypt(root.ui.ptx_SourceText.toPlainText())))
+
+    except Exception as exception:
+        messageBox(root, QMessageBox.Critical,
+            root.translate('DecryptionErrorDialog', 'Failed to decrypt'),
+            root.translate('DecryptionErrorDialog', 'Failed to decrypt your text due to an unexpected error.'),
+            details = f'Our GitHub: {gitHubLink}\n{traceback.format_exc()}')
 
 
 def transferText(root: Window, flag: bool) -> None:
@@ -662,6 +699,9 @@ if __name__ == '__main__':
         root.ui.btn_About.clicked.connect( lambda: info(root) )
         root.ui.btn_Settings.clicked.connect( settings.open )
         root.ui.tbt_OpenFile.clicked.connect( lambda: openFileDialog(root, 'utf-8', True) )
+        root.ui.cbb_Cipher.currentTextChanged.connect( 
+           lambda: (root.ui.btn_Decrypt.setEnabled(False) if not getCipherByDisplayName(root.ui.cbb_Cipher.currentText()).type
+               else root.ui.btn_Decrypt.setEnabled(True)) )
         for action in root.openFileEncodingActions: action.triggered.connect( lambda: openFileDialog(root, action.text().lower(), True) )
         for action in root.saveToFileEncodingActions: action.triggered.connect( lambda: openFileDialog(root, action.text().lower(), False) )
 
