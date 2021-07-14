@@ -1,4 +1,4 @@
-styleSheet = '''*
+styleSheet = '''QListView, QTreeView, QColumnView, QLabel, QLineEdit, QComboBox, QToolTip
 { 
     color: white;
     font: 11pt "Segoe UI"; 

@@ -5,7 +5,7 @@
         "dlupd": true
     },
     "textFields": {
-        "position": false,
+        "position": true,
         "font": [
             "13pt \"Segoe UI Semilight\"",
             "13pt \"Segoe UI Semilight\""

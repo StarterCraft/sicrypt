@@ -4,3 +4,10 @@ CHANGELOG
 Initial version. Supported Base64 encryption only
 
 1.1
+First public version. The following features are introduced:
+ —— Revamped UI now supports vertical and horizontal positioning of the text fields;
+ —— Added support for multiple ciphering algorithms, named `ciphers` in the documentation, which can be downloaded from the program's GitHub or written by the user himself in Python;
+ —— If some of the installed ciphers will be hosted on GitHub and will be outdated, they'll be updated;
+ —— Added program configuration, the settings dialog and their dependencies (see documentation for details);
+ —— Added file opening feature (open a file and paste its contents as source text). UTF-8 encoding is used by default, some other encodings can be specified via the button's popup menu;
+ —— Added file saving feature (save result text into a file). UTF-8 encoding is used by default, some other encodings can be specified via the button's popup menu.
