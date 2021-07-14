@@ -215,8 +215,26 @@ class Settings(QDialog):
                     json.dump(configFile)
 
         except FileExistsError:
-            with open('config.json', 'r') as configFile:
+            try:
+                with open('config.json', 'r') as configFile:
                     self.config.update(json.load(configFile))
+
+            except json.JSONDecodeError:
+                with open('config.json', 'w') as configFile:
+                    self.config.update(
+                    {'lang': 'en-US',
+                    'encryption': {
+                        'dlnew': True,
+                        'dlupd': True
+                    },
+                    'textFields': {
+                        'position': False,
+                        'font': ['13pt "Segoe UI Semilight"', '13pt "Segoe UI Semilight"'],
+                        'wrap': [False, False],
+                        'tabs': [0, 0]
+                    }
+                    })
+                    json.dump(config)
 
 
     def applyConfig(self, root: Window, onInit: bool = False) -> None:
@@ -389,7 +407,9 @@ def loadCiphers(root: Window, allowDownloadingNew: bool, allowDownloadingUpdates
 
     ciphers, categories, classNames = [], [], {}
     available = glob.glob('ciphers/*')
-    if not available: messageBox(root, QMessageBox.Critical,
+    if not available:
+        os.mkdir('ciphers')
+        messageBox(root, QMessageBox.Critical,
         root.translate('CipherLoadingErrorMessagebox', f'No ciphers found'),
         root.translate('CipherLoadingErrorMessagebox', f'No ciphers found! Create or download some and put them into "ciphers" directory.'))
 
