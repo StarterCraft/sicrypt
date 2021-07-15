@@ -27,7 +27,7 @@ If you have faced a critical error during usage of the program, please open an i
 ## Installation
 1. [Download](https://github.com/StarterCraft/sicrypt/releases/latest) the latest release.
 2. Follow the installation guidance below:
-    - For version 1.1:
+    - For version 1.1, please specify the installation folder and click *Start*.
         
 
 ## Usage
@@ -35,13 +35,11 @@ If you have faced a critical error during usage of the program, please open an i
 1. To encrypt some text, please place the text inside the *Source text* field.
 2. Afterwards, please select a cipher in the *Cipher* combo box. 
 3. After selecting the cipher, click the *Encrypt* button, and then the encrypted text will be shown in the *Result text* field.
-![Description image](https://user-images.githubusercontent.com/43516901/125636677-776632ef-999a-4fe7-93b6-242f7fc34ed8.jpg)
 
 ### Decryption
 1. To decrypt some text, please place the text inside the *Source text* field.
 2. Afterwards, please select a cipher in the *Cipher* combo box. 
 3. After selecting the cipher, click the *Decrypt* button, and then the encrypted text will be shown in the *Result text* field.
-![Description image](https://user-images.githubusercontent.com/43516901/125637288-4f1ec6de-bc17-4f05-b460-ad95b2958b8b.jpg)
 
 ### Opening
 You can open a text file to make its text appear inside of the *Source text* field.
