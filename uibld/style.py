@@ -1,7 +1,8 @@
-styleSheet = '''QListView, QTreeView, QColumnView, QLabel, QLineEdit, QComboBox, QToolTip
+styleSheet = '''QListView, QTreeView, QColumnView, QLabel, QLineEdit, QComboBox
 { 
     color: white;
-    font: 11pt "Segoe UI"; 
+    font: 11pt "Segoe UI";
+    background-color: rgb(45, 45, 45);
 }
 
 QLineEdit, QPlainTextEdit, QComboBox
@@ -182,5 +183,10 @@ QMenu::item:selected
 QMenu::item:disabled
 {
     color: gray;
+}
+
+QToolTip
+{
+    font-size: 11pt;
 }
 '''

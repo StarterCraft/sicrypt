@@ -32,11 +32,6 @@ class Ui_MainWindowVertical(object):
 "    font: 13pt \"Segoe UI Semilight\";\n"
 "}\n"
 "\n"
-"QToolTip {\n"
-"    color: white;\n"
-"    font: 11pt \"Segoe UI Semilight\";\n"
-"}\n"
-"\n"
 "QPlainTextEdit {\n"
 "    color: white;\n"
 "    border: 1px solid grey;\n"
@@ -445,7 +440,7 @@ class Ui_MainWindowVertical(object):
 "\n"
 "QMenu::item {\n"
 "    font: 11pt \"Segoe UI Semilight\";\n"
-"    padding-right: 10px;\n"
+"    padding-right: 12px;\n"
 "}\n"
 "\n"
 "QMenu::item:hover\n"
@@ -519,7 +514,9 @@ class Ui_MainWindowVertical(object):
         font.setItalic(False)
         font.setWeight(50)
         self.btn_TransferSrcToRes.setFont(font)
-        self.btn_TransferSrcToRes.setStyleSheet("font-size: 16pt")
+        self.btn_TransferSrcToRes.setStyleSheet("QPushButton {\n" 
+        "font-size: 16pt;\n"
+        "}")
         self.btn_TransferSrcToRes.setIconSize(QtCore.QSize(16, 16))
         self.btn_TransferSrcToRes.setObjectName("btn_TransferSrcToRes")
         self.gridLayout.addWidget(self.btn_TransferSrcToRes, 6, 6, 1, 1)
@@ -546,7 +543,9 @@ class Ui_MainWindowVertical(object):
         self.btn_TransferResToSrc.setSizePolicy(sizePolicy)
         self.btn_TransferResToSrc.setMinimumSize(QtCore.QSize(30, 30))
         self.btn_TransferResToSrc.setMaximumSize(QtCore.QSize(30, 30))
-        self.btn_TransferResToSrc.setStyleSheet("font-size: 16pt")
+        self.btn_TransferResToSrc.setStyleSheet("QPushButton {\n" 
+        "font-size: 16pt;\n"
+        "}")
         self.btn_TransferResToSrc.setObjectName("btn_TransferResToSrc")
         self.gridLayout.addWidget(self.btn_TransferResToSrc, 6, 5, 1, 1)
         self.lbl_ReadOnly2 = QtWidgets.QLabel(self.centralwidget)
@@ -561,7 +560,9 @@ class Ui_MainWindowVertical(object):
         self.btn_Settings.setSizePolicy(sizePolicy)
         self.btn_Settings.setMinimumSize(QtCore.QSize(30, 30))
         self.btn_Settings.setMaximumSize(QtCore.QSize(30, 30))
-        self.btn_Settings.setStyleSheet("font-size: 12pt")
+        self.btn_Settings.setStyleSheet("QPushButton {\n" 
+        "font-size: 12pt;\n"
+        "}")
         icon2 = QtGui.QIcon()
         icon2.addPixmap(QtGui.QPixmap(":/zxc/icons/settings.png"), QtGui.QIcon.Normal, QtGui.QIcon.Off)
         self.btn_Settings.setIcon(icon2)
@@ -601,7 +602,7 @@ class Ui_MainWindowVertical(object):
         sizePolicy.setHeightForWidth(self.ptx_SourceText.sizePolicy().hasHeightForWidth())
         self.ptx_SourceText.setSizePolicy(sizePolicy)
         self.ptx_SourceText.setMaximumSize(QtCore.QSize(290, 16777215))
-        self.ptx_SourceText.setStyleSheet("QPlianTextEdit::placeholder-text { color: lightgray; }")
+        self.ptx_SourceText.setStyleSheet("QPlainTextEdit::placeholder-text { color: lightgray; }")
         self.ptx_SourceText.setObjectName("ptx_SourceText")
         self.gridLayout.addWidget(self.ptx_SourceText, 4, 0, 1, 3)
         self.lbl_ReadOnly1 = QtWidgets.QLabel(self.centralwidget)
@@ -623,7 +624,9 @@ class Ui_MainWindowVertical(object):
         self.btn_About.setSizePolicy(sizePolicy)
         self.btn_About.setMinimumSize(QtCore.QSize(30, 30))
         self.btn_About.setMaximumSize(QtCore.QSize(30, 30))
-        self.btn_About.setStyleSheet("font-size: 13pt")
+        self.btn_About.setStyleSheet("QPushButton {\n" 
+        "font-size: 13pt;\n"
+        "}")
         self.btn_About.setObjectName("btn_About")
         self.gridLayout.addWidget(self.btn_About, 0, 6, 1, 1)
         self.btn_Copy = QtWidgets.QPushButton(self.centralwidget)
@@ -658,10 +661,10 @@ class Ui_MainWindowVertical(object):
         self.btn_Encrypt.setText(_translate("MainWindow", "Encrypt"))
         self.btn_Decrypt.setToolTip(_translate("MainWindow", "Decrypt source text"))
         self.btn_Decrypt.setText(_translate("MainWindow", "Decrypt"))
-        self.btn_TransferSrcToRes.setToolTip(_translate("MainWindow", "Tansfer contents of \'Source text\' field to \'Result text\' field"))
+        self.btn_TransferSrcToRes.setToolTip(_translate("MainWindow", "Transfer contents of \'Source text\' field to \'Result text\' field"))
         self.btn_TransferSrcToRes.setText(_translate("MainWindow", "🠖"))
         self.btn_Paste.setToolTip(_translate("MainWindow", "Paste clipboard text as source text"))
-        self.btn_TransferResToSrc.setToolTip(_translate("MainWindow", "Tansfer contents of \'Result text\' field to \'Source text\' field"))
+        self.btn_TransferResToSrc.setToolTip(_translate("MainWindow", "Transfer contents of \'Result text\' field to \'Source text\' field"))
         self.btn_TransferResToSrc.setText(_translate("MainWindow", "🠔"))
         self.lbl_ReadOnly2.setText(_translate("MainWindow", "Result text:"))
         self.btn_Settings.setToolTip(_translate("MainWindow", "Settings"))
@@ -698,11 +701,6 @@ class Ui_MainWindowHorizontal(object):
         self.centralwidget.setStyleSheet("QLabel { \n"
 "    color: white;\n"
 "    font: 13pt \"Segoe UI Semilight\";\n"
-"}\n"
-"\n"
-"QToolTip {\n"
-"    color: white;\n"
-"    font: 11pt \"Segoe UI Semilight\";\n"
 "}\n"
 "\n"
 "QPlainTextEdit {\n"
@@ -1113,7 +1111,7 @@ class Ui_MainWindowHorizontal(object):
 "\n"
 "QMenu::item {\n"
 "    font: 11pt \"Segoe UI Semilight\";\n"
-"    padding-right: 10px;\n"
+"    padding-right: -1px;\n"
 "}\n"
 "\n"
 "QMenu::item:hover\n"
@@ -1187,7 +1185,9 @@ class Ui_MainWindowHorizontal(object):
         font.setItalic(False)
         font.setWeight(50)
         self.btn_TransferSrcToRes.setFont(font)
-        self.btn_TransferSrcToRes.setStyleSheet("font-size: 16pt")
+        self.btn_TransferSrcToRes.setStyleSheet("QPushButton {\n" 
+        "font-size: 16pt;\n"
+        "}")
         self.btn_TransferSrcToRes.setIconSize(QtCore.QSize(16, 16))
         self.btn_TransferSrcToRes.setObjectName("btn_TransferSrcToRes")
         self.gridLayout.addWidget(self.btn_TransferSrcToRes, 6, 6, 1, 1)
@@ -1214,7 +1214,9 @@ class Ui_MainWindowHorizontal(object):
         self.btn_TransferResToSrc.setSizePolicy(sizePolicy)
         self.btn_TransferResToSrc.setMinimumSize(QtCore.QSize(30, 30))
         self.btn_TransferResToSrc.setMaximumSize(QtCore.QSize(30, 30))
-        self.btn_TransferResToSrc.setStyleSheet("font-size: 16pt")
+        self.btn_TransferResToSrc.setStyleSheet("QPushButton {\n" 
+        "font-size: 13pt;\n"
+        "}")
         self.btn_TransferResToSrc.setObjectName("btn_TransferResToSrc")
         self.gridLayout.addWidget(self.btn_TransferResToSrc, 5, 6, 1, 1)
         self.btn_Settings = QtWidgets.QPushButton(self.centralwidget)
@@ -1266,7 +1268,9 @@ class Ui_MainWindowHorizontal(object):
         self.btn_About.setSizePolicy(sizePolicy)
         self.btn_About.setMinimumSize(QtCore.QSize(30, 30))
         self.btn_About.setMaximumSize(QtCore.QSize(30, 30))
-        self.btn_About.setStyleSheet("font-size: 13pt")
+        self.btn_About.setStyleSheet("QPushButton {\n" 
+        "font-size: 13pt;\n"
+        "}")
         self.btn_About.setObjectName("btn_About")
         self.gridLayout.addWidget(self.btn_About, 0, 6, 1, 1)
         self.btn_Copy = QtWidgets.QPushButton(self.centralwidget)
@@ -1293,11 +1297,11 @@ class Ui_MainWindowHorizontal(object):
         self.ptx_SourceText.setMaximumSize(QtCore.QSize(16777215, 16777215))
         self.ptx_SourceText.setStyleSheet("QPlianTextEdit::placeholder-text { color: lightgray; }")
         self.ptx_SourceText.setObjectName("ptx_SourceText")
-        self.gridLayout.addWidget(self.ptx_SourceText, 4, 0, 1, 7)
+        self.gridLayout.addWidget(self.ptx_SourceText, 1, 0, 1, 7)
         self.ptx_ResultText = PlainTextEdit(self.centralwidget)
         self.ptx_ResultText.setMaximumSize(QtCore.QSize(16777215, 16777215))
         self.ptx_ResultText.setObjectName("ptx_ResultText")
-        self.gridLayout.addWidget(self.ptx_ResultText, 1, 0, 1, 7)
+        self.gridLayout.addWidget(self.ptx_ResultText, 4, 0, 1, 7)
         self.lbl_ReadOnly2 = QtWidgets.QLabel(self.centralwidget)
         self.lbl_ReadOnly2.setStyleSheet("font: 13pt \"Segoe UI Semibold\"")
         self.lbl_ReadOnly2.setObjectName("lbl_ReadOnly2")
@@ -1326,10 +1330,10 @@ class Ui_MainWindowHorizontal(object):
         self.btn_Encrypt.setText(_translate("MainWindow", "Encrypt"))
         self.btn_Decrypt.setToolTip(_translate("MainWindow", "Decrypt source text"))
         self.btn_Decrypt.setText(_translate("MainWindow", "Decrypt"))
-        self.btn_TransferSrcToRes.setToolTip(_translate("MainWindow", "Tansfer contents of \'Source text\' field to \'Result text\' field"))
+        self.btn_TransferSrcToRes.setToolTip(_translate("MainWindow", "Transfer contents of \'Source text\' field to \'Result text\' field"))
         self.btn_TransferSrcToRes.setText(_translate("MainWindow", "🠗"))
         self.btn_Paste.setToolTip(_translate("MainWindow", "Paste clipboard text as source text"))
-        self.btn_TransferResToSrc.setToolTip(_translate("MainWindow", "Tansfer contents of \'Result text\' field to \'Source text\' field"))
+        self.btn_TransferResToSrc.setToolTip(_translate("MainWindow", "Transfer contents of \'Result text\' field to \'Source text\' field"))
         self.btn_TransferResToSrc.setText(_translate("MainWindow", "🠕"))
         self.btn_Settings.setToolTip(_translate("MainWindow", "Settings"))
         self.lbl_ReadOnly3.setText(_translate("MainWindow", "Cipher:"))

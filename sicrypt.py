@@ -474,7 +474,7 @@ def loadCiphers(root: Window, allowDownloadingNew: bool, allowDownloadingUpdates
                 messageBox(root, QMessageBox.Critical, root.translate('CipherLoadingErrorMessagebox', f'Failed to load cipher {className}'),
                     root.translate('CipherLoadingErrorMessagebox',
                         f'Cipher {className}, declared in {classFile}, failed to load due to {type(exception).__name__}. See the details below'),
-                        details = str(exception))
+                        detalis = f'Our GitHub:{gitHubLink}\n{traceback.format_exc()}')
 
     for cipher in ciphers: root.ui.cbb_Cipher.addItem(cipher.displayName)
         
@@ -520,7 +520,7 @@ def encrypt(root: Window) -> None:
         messageBox(root, QMessageBox.Critical,
             root.translate('EncryptionErrorDialog', 'Failed to encrypt'),
             root.translate('EncryptionErrorDialog', 'Failed to encrypt your text due to an unexpected error.'),
-            details = f'Our GitHub: {gitHubLink}\n{traceback.format_exc()}')
+            details = f'Our GitHub: {gitHubLink}\n\n{traceback.format_exc()}')
 
         
 def decrypt(root: Window) -> None:
@@ -541,7 +541,7 @@ def decrypt(root: Window) -> None:
         messageBox(root, QMessageBox.Critical,
             root.translate('DecryptionErrorDialog', 'Failed to decrypt'),
             root.translate('DecryptionErrorDialog', 'Failed to decrypt your text due to an unexpected error.'),
-            details = f'Our GitHub: {gitHubLink}\n{traceback.format_exc()}')
+            details = f'Our GitHub: {gitHubLink}\n\n{traceback.format_exc()}')
 
 
 def transferText(root: Window, flag: bool) -> None:
@@ -656,8 +656,8 @@ def openFile(root: Window, name: str, encoding: str) -> None:
     except Exception as exception:
         messageBox(root, QMessageBox.Critical,
             root.translate('FileOpeningErrorMessagebox', 'An error ocurred while opening file'),
-            root.translate('FileOpeningErrorMessagebox', f'Failed to open file "{name}" due to {type(exception).__name__}',
-            details = str(exception)))
+            root.translate('FileOpeningErrorMessagebox', f'Failed to open file "{name}" due to {type(exception).__name__}.'),
+            details = f'Our GitHub:{gitHubLink}\n\n{traceback.format_exc()}')
 
 
 def saveToFile(root: Window, name: str, encoding: str) -> None:
@@ -688,8 +688,8 @@ def saveToFile(root: Window, name: str, encoding: str) -> None:
     except Exception as exception:
         messageBox(root, QMessageBox.Critical,
             root.translate('SavingToFileErrorMessagebox', 'An error ocurred while saving to file'),
-            root.translate('SavingToFileErrorMessagebox', f'Failed to save to file "{name}" due to {type(exception).__name__}',
-            details = str(exception)))
+            root.translate('SavingToFileErrorMessagebox', f'Failed to save to file "{name}" due to {type(exception).__name__}.'),
+            detais = f'Our GitHub:{gitHubLink}\n\n{traceback.format_exc()}')
 
 
 def messageBox(root: Window, icon: QMessageBox.Icon, title: str, text: str,
@@ -785,4 +785,4 @@ if __name__ == '__main__':
                 f'to see details). Please submit an issue on our GitHub, so we can help you solving this problem. If you '
                  'have fixed this problem yourself, huge thanks to you, please submit a pull request with the code files '
                  'you have changed.'),
-                details = f'Our GitHub: {gitHubLink}\n{traceback.format_exc()}')
+                details = f'Our GitHub: {gitHubLink}\n\n{traceback.format_exc()}')
