@@ -157,36 +157,7 @@ QPushButton:pressed
 '''
 
 
-appStyleSheet = '''QMenu 
-{
-    background: rgb(215, 215, 215);
-    border: 1px solid gray;
-}
-
-QMenu::item {
-    font: 11pt "Segoe UI Semilight";
-    padding-left: 2px;
-    padding-right: 25px;
-}
-
-QMenu::item:hover
-{
-    background: rgb(70, 175, 38);
-    color: white;
-}
-
-QMenu::item:selected
-{
-    background: rgb(47, 105, 23);
-}
-
-QMenu::item:disabled
-{
-    color: gray;
-}
-
-QToolTip
-{
+appStyleSheet = '''QToolTip {
     font-size: 11pt;
 }
 '''

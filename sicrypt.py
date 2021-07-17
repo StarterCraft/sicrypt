@@ -1,11 +1,15 @@
-import sys, os, pyperclip, glob, json
+import sys, os, pyperclip, glob, json, typing
 import traceback, importlib, requests
-import nltk
+import nltk, base64, hashlib, cryptography
 
 from PyQt5               import QtCore, QtGui, QtWidgets
 from PyQt5.QtCore        import *
 from PyQt5.QtGui         import *
 from PyQt5.QtWidgets     import *
+from typing              import (List as list,
+                                 Tuple as tuple,
+                                 Dict as dict,
+                                 Callable)
 from uibld               import *
 from uibld.settings      import *
 from uibld.style         import *
@@ -22,37 +26,55 @@ class Window(QMainWindow):
     #Translate function to simplify translation
     translate = QApplication.translate
 
-    def __init__(self, UIClass: (Ui_MainWindowVertical, Ui_MainWindowHorizontal)):
+    def __init__(self, UIClass: (Ui_MainWindowVertical, Ui_MainWindowHorizontal), config):
         QMainWindow.__init__(self)
         self.ui = UIClass()
         self.ui.setupUi(self)
 
         #Menu for opening a file with specific encoding:
         self.openFileMenu = QMenu()
-
-        #Define and setup encoding actions
-        self.openFileEncodingActions = [
-            Action('ASCII'),
-            Action('ANSI'),
-            Action('UTF-8'),
-            Action('UTF-16'),
-            Action('UTF-32'),
-            Action('Windows-1251')]
-
-        self.openFileMenu.addActions(self.openFileEncodingActions)
+        #self.openFileMenu.setTitle('Open')
 
         #Menu for saving into a file with specific encoding:
         self.saveToFileMenu = QMenu()
+        #self.saveToFileMenu.setTitle('Close')
+
+        #Add actions to select a text field to get the file's text into
+        self.openFileActionGroup = QActionGroup(self)
+        self.openFileActionGroup.addAction(Action(self.tr("'Source text' field"), data = False))
+        self.openFileActionGroup.addAction(Action(self.tr("'Result text' field"), data = False))
+        self.openFileActionGroup.setExclusive(True)
+
+        for action in self.openFileActionGroup.actions():
+            action.setCheckable(True)
+            self.openFileMenu.addAction(action)
+
+        self.openFileMenu.addSeparator()
+            
+        #Add actions to select a text field to get the file's text into
+        self.saveToFileActionGroup = QActionGroup(self)
+        self.saveToFileActionGroup.addAction(Action(self.tr("'Source text' field"), data = True))
+        self.saveToFileActionGroup.addAction(Action(self.tr("'Result text' field"), data = True))
+        self.saveToFileActionGroup.setExclusive(True)
+
+        for action in self.saveToFileActionGroup.actions():
+            action.setCheckable(True)
+            self.saveToFileMenu.addAction(action)
+
+        self.saveToFileMenu.addSeparator()
 
         #Define and setup encoding actions
-        self.saveToFileEncodingActions = [
+        self.encodingActions = [
             Action('ASCII'),
             Action('ANSI'),
             Action('UTF-8'),
             Action('UTF-16'),
             Action('UTF-32'),
             Action('Windows-1251')]
-        self.saveToFileMenu.addActions(self.saveToFileEncodingActions)
+
+        for action in self.encodingActions:
+            self.openFileMenu.addAction(action.modifyData(False))
+            self.saveToFileMenu.addAction(action.modifyData(True))
 
         #Bind menus to toolButtons
         self.ui.tbt_OpenFile.setMenu(self.openFileMenu)
@@ -93,19 +115,42 @@ class PlainTextEdit(QPlainTextEdit):
 class Action(QAction):
     '''
     A class defenition allowing 'QAction' initialization with
-    'data' parameter
+    additional settings, such as setting data, automatically adding
+    the action to one menu or multiple ones, or connect 'triggered'
+    signal to a method.
     '''
-    def __init__(self, name: str, data = None, *args, **kwargs):
+    def __init__(self, name: str, data = None,
+                 menu: QMenu = None, menus: list[QMenu] = None,
+                 onTriggered: Callable = None,  
+                 *args, **kwargs):
         '''
         Initialize QAction with a possibility to set action
         data while initializing
 
         :kwparam 'data': Any = None
             Optional data
+
+        :kwparam 'menu': QMenu = None
+            Optional QMenu to add the action to
         '''
         QAction.__init__(self, *args, **kwargs)
         self.setText(name)
         if data: self.setData(data)
+        if menu: menu.addAction(self)
+        if onTriggered: self.triggered.connect(onTriggered)
+
+
+    def modifyData(self, data):
+        '''
+        Set action data and return the action itself
+
+        :param 'data': Any
+            Data
+
+        :returns: Action
+        '''
+        self.setData(data)
+        return self
 
 
 class Item(QStandardItem):
@@ -183,18 +228,19 @@ class Settings(QDialog):
             with open('config.json', 'x') as configFile:
                 if noFile: 
                     self.config.update(
-                    {'lang': 'en-US',
-                    'encryption': {
-                        'dlnew': True,
-                        'dlupd': True
-                    },
-                    'textFields': {
-                        'position': False,
-                        'font': ['13pt "Segoe UI Semilight"', '13pt "Segoe UI Semilight"'],
-                        'wrap': [False, False],
-                        'tabs': [0, 0]
-                    }
-                    })
+                        {'lang': 'en-US',
+                        'encryption': {
+                            'dlnew': True,
+                            'dlupd': True
+                        },
+                        'textFields': {
+                            'position': False,
+                            'open': False,
+                            'save': True,
+                            'font': ['13pt "Segoe UI Semilight"', '13pt "Segoe UI Semilight"'],
+                            'wrap': [False, False],
+                            'tabs': [0, 0]
+                        }})
                     return
 
                 else:
@@ -207,6 +253,8 @@ class Settings(QDialog):
 
                         'textFields': {
                             'position': False,
+                            'open': False,
+                            'save': True,
                             'font': ['13pt "Segoe UI Semilight"', '13pt "Segoe UI Semilight"'],
                             'wrap': [False, False],
                             'tabs': [0, 0]
@@ -223,18 +271,22 @@ class Settings(QDialog):
             except:
                 with open('config.json', 'w') as configFile:
                     self.config.update(
-                    {'lang': 'en-US',
-                    'encryption': {
-                        'dlnew': True,
-                        'dlupd': True
-                    },
-                    'textFields': {
-                        'position': False,
-                        'font': ['13pt "Segoe UI Semilight"', '13pt "Segoe UI Semilight"'],
-                        'wrap': [False, False],
-                        'tabs': [0, 0]
-                    }
-                    })
+                        {'lang': 'en-US',
+                         'encryption': {
+                            'dlnew': True,
+                            'dlupd': True
+                           },
+
+                        'textFields': {
+                            'position': False,
+                            'open': False,
+                            'save': True,
+                            'font': ['13pt "Segoe UI Semilight"', '13pt "Segoe UI Semilight"'],
+                            'wrap': [False, False],
+                            'tabs': [0, 0]
+                            }
+                        })
+
                     json.dump(self.config, configFile)
 
 
@@ -351,7 +403,7 @@ class Cipher:
 
 
     def __init__(self, type: bool, displayName: str,
-        category: str in categories.keys() = '', version: tuple = (1, 0)):
+        category: str in categories.keys() = '', version: tuple[int] = (1, 0)):
         '''
         Initialize a cipher instance with the following parameters:
 
@@ -416,7 +468,7 @@ def loadCiphers(root: Window, allowDownloadingNew: bool, allowDownloadingUpdates
     #Find now ciphers on GitHub
     if allowDownloadingNew:
         availableOnGitHub = []
-        for file in requests.get('https://api.github.com/repos/StarterCraft/sicrypt/git/trees/master?recursive=1').json()['tree']:
+        for file in getRequest(root, 'https://api.github.com/repos/StarterCraft/sicrypt/git/trees/master?recursive=1').json()['tree']:
             try:
                 if (file['path'][:file['path'].index('/')] == 'ciphers' and file['path'].endswith('.py')):
                     availableOnGitHub.append(file['path'])
@@ -425,7 +477,7 @@ def loadCiphers(root: Window, allowDownloadingNew: bool, allowDownloadingUpdates
         for file in availableOnGitHub:
             if file not in available[:]:
                 with open(file, 'x') as cipherFile:
-                    cipherFile.write(requests.get(f'https://raw.githubusercontent.com/StarterCraft/sicrypt/master/{file}').text)
+                    cipherFile.write(getRequest(root, f'https://raw.githubusercontent.com/StarterCraft/sicrypt/master/{file}').text)
                 available.append(file)
 
     for fileName in available:
@@ -454,7 +506,7 @@ def loadCiphers(root: Window, allowDownloadingNew: bool, allowDownloadingUpdates
                         #If the cipher is hosted on GitHub and the version there is the same — skip it;
                         #If the cipher is hosted on GitHub and the version there is newer — update it!
                         with open('ciphers/dl.cache', 'w') as file:
-                            response = requests.get(f'https://raw.githubusercontent.com/StarterCraft/sicrypt/master/{classFile.replace(".", "/")}')
+                            response = getRequest(root, f'https://raw.githubusercontent.com/StarterCraft/sicrypt/master/{classFile.replace(".", "/")}')
                             if response == 200: 
                                 file.write(response.text)
                                 _compareClass = getattr(importlib.import_module('ciphers.dl'), className)
@@ -474,7 +526,7 @@ def loadCiphers(root: Window, allowDownloadingNew: bool, allowDownloadingUpdates
                 messageBox(root, QMessageBox.Critical, root.translate('CipherLoadingErrorMessagebox', f'Failed to load cipher {className}'),
                     root.translate('CipherLoadingErrorMessagebox',
                         f'Cipher {className}, declared in {classFile}, failed to load due to {type(exception).__name__}. See the details below'),
-                        detalis = f'Our GitHub:{gitHubLink}\n{traceback.format_exc()}')
+                        details = f'Our GitHub:{gitHubLink}\n{traceback.format_exc()}')
 
     for cipher in ciphers: root.ui.cbb_Cipher.addItem(cipher.displayName)
         
@@ -599,7 +651,7 @@ def info(root: Window) -> None:
 
     :returns: None
     '''
-    with open('changelog.txt', 'r') as file: changelog = file.read()
+    changelog = getRequest(root, 'https://raw.githubusercontent.com/StarterCraft/sicrypt/master/changelog.txt').text
     messageBox(root, QMessageBox.Information, root.translate('AboutDialog', 'About'), 
         root.translate('AboutDialog', 'Developed by: StarterCraft\nVersion: 1.1\n2020-2021'),
         details = changelog)
@@ -693,7 +745,7 @@ def saveToFile(root: Window, name: str, encoding: str) -> None:
 
 
 def messageBox(root: Window, icon: QMessageBox.Icon, title: str, text: str,
-    details: str = None, buttons: list = [QMessageBox.Close]) -> int:
+    details: str = None, buttons: list[QMessageBox.StandardButton] = [QMessageBox.Close]) -> int:
     '''
     Show a messagebox with the given icon, title, and text.
     Buttons of the message box can be modified and detailed
@@ -735,6 +787,14 @@ def messageBox(root: Window, icon: QMessageBox.Icon, title: str, text: str,
     return _messageBox.exec()
 
 
+def getRequest(root: Window, url: str):
+    try: return requests.get(url)
+    except Exception as exception: messageBox(root, QMessageBox.Critical,
+        root.translate('RequestErrorMessagebox', 'Internet connection error'),
+        root.translate('RequestErrorMessagebox', f'Failed to make a GET request due to {type(exception).__name__}.'),
+        details = f'Our GitHub:{gitHubLink}\n\n{traceback.format_exc()}')
+
+
 if __name__ == '__main__':
     app = QApplication(sys.argv)
     app.setStyleSheet(appStyleSheet)
@@ -744,7 +804,7 @@ if __name__ == '__main__':
     app.installTranslator(translator)
 
     settings = Settings()   
-    root = Window(Ui_MainWindowHorizontal if settings.config['textFields']['position'] else Ui_MainWindowVertical)
+    root = Window(Ui_MainWindowHorizontal if settings.config['textFields']['position'] else Ui_MainWindowVertical, settings)
     settings.applyConfig(root, onInit = True)
 
     try:
@@ -764,8 +824,15 @@ if __name__ == '__main__':
         root.ui.cbb_Cipher.currentTextChanged.connect( 
            lambda: (root.ui.btn_Decrypt.setEnabled(False) if not getCipherByDisplayName(root.ui.cbb_Cipher.currentText()).type
                else root.ui.btn_Decrypt.setEnabled(True)) )
-        for action in root.openFileEncodingActions: action.triggered.connect( lambda: openFileDialog(root, action.text().lower(), True) )
-        for action in root.saveToFileEncodingActions: action.triggered.connect( lambda: openFileDialog(root, action.text().lower(), False) )
+
+        for action in root.openFileActionGroup.actions(): 
+            if action.text()[1:7] == 'Source': action.setChecked(True)
+
+        for action in root.saveToFileActionGroup.actions(): 
+            if action.text()[1:7] == 'Result': action.setChecked(True)
+
+        for action in root.encodingActions:
+            action.triggered.connect( lambda: openFileDialog(root, action.text().lower(), action.data()) )
 
         #Settings dialog
         settings.accepted.connect( lambda: settings.handleDialogAcception(root) )
