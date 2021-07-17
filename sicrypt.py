@@ -1,5 +1,5 @@
 import sys, os, pyperclip, glob, json, typing
-import traceback, importlib, requests
+import traceback, importlib, requests, subprocess
 import nltk, base64, hashlib, cryptography
 
 from PyQt5               import QtCore, QtGui, QtWidgets
@@ -17,6 +17,7 @@ from uibld.style         import *
 
 #Global variables declaration
 gitHubLink = 'https://github.com/StarterCraft/sicrypt'
+version = 'v1.2'
 
 
 class Window(QMainWindow):
@@ -31,13 +32,17 @@ class Window(QMainWindow):
         self.ui = UIClass()
         self.ui.setupUi(self)
 
+        #Menu for encrypting text with specific encoding:
+        self.encryptMenu = QMenu()
+
+        #Menu for decrypting text with specific encoding:
+        self.decryptMenu = QMenu()
+
         #Menu for opening a file with specific encoding:
         self.openFileMenu = QMenu()
-        #self.openFileMenu.setTitle('Open')
 
         #Menu for saving into a file with specific encoding:
         self.saveToFileMenu = QMenu()
-        #self.saveToFileMenu.setTitle('Close')
 
         #Add actions to select a text field to get the file's text into
         self.openFileActionGroup = QActionGroup(self)
@@ -73,10 +78,21 @@ class Window(QMainWindow):
             Action('Windows-1251')]
 
         for action in self.encodingActions:
-            self.openFileMenu.addAction(action.modifyData(False))
-            self.saveToFileMenu.addAction(action.modifyData(True))
+            self.encryptMenu.addAction(action.modifyData(2))
+            self.decryptMenu.addAction(action.modifyData(3))
+            self.openFileMenu.addAction(action.modifyData(0))
+            self.saveToFileMenu.addAction(action.modifyData(1))
+
+        self.customEncodingAction = Action(self.tr('Other...'))
+
+        self.encryptMenu.addAction(self.customEncodingAction.modifyData(2))
+        self.decryptMenu.addAction(self.customEncodingAction.modifyData(3))
+        self.openFileMenu.addAction(self.customEncodingAction.modifyData(0))
+        self.saveToFileMenu.addAction(self.customEncodingAction.modifyData(1))
 
         #Bind menus to toolButtons
+        self.ui.tbt_Encrypt.setMenu(self.encryptMenu)
+        self.ui.tbt_Decrypt.setMenu(self.decryptMenu)
         self.ui.tbt_OpenFile.setMenu(self.openFileMenu)
         self.ui.tbt_SaveToFile.setMenu(self.saveToFileMenu)
 
@@ -156,9 +172,10 @@ class Action(QAction):
 class Item(QStandardItem):
     '''
     A class defenition allowing 'QStandardItem' initialization with
-    'data' parameter.
+    additional settings, such as setting data and adding a tooltip
+    with the given text.
     '''
-    def __init__(self, data = None, *args, **kwargs):
+    def __init__(self, text: str, data = None, toolTipText: str = None, *args, **kwargs):
         '''
         Initialize QStandardItem with a possibility to set item
         data while initializing
@@ -168,6 +185,7 @@ class Item(QStandardItem):
         '''
         QStandardItem.__init__(self, *args, **kwargs)
         if data: self.setData(data)
+        if toolTipText: self.setToolTip(toolTipText)
 
 
 class Settings(QDialog):
@@ -386,8 +404,10 @@ class Cipher:
     the 'ciphers' directory and defining class(-es) which inherit the
     'Cipher' class. In your child class you must define two specific
     methods:
-        encrypt(self, str) -> str —— the encryption method;
-        decrypt(self, str) -> str —— the decryption method.
+        encrypt(self, str, encoding) -> str —— the encryption method;
+        decrypt(self, str, encoding) -> str —— the decryption method.
+
+    By default, UTF-8 encoding is used.
 
     As an example, you can refer to the standard 'base64.py' inplemen-
     tation.
@@ -396,14 +416,13 @@ class Cipher:
         List of ciphers categories you can pick while initializing a Cipher
         instance
     '''
-    categories = {'hash': Action(QApplication.translate('CipherCategories', 'Hashing algorithms')),
+    categories = {'hash': Action(QApplication.translate('CipherCategories', 'Hashing algorithm')),
                   'simple': Action(QApplication.translate('CipherCategories', 'Simple cryptography')),
                   'btte': Action(QApplication.translate('CipherCategories', 'Binary-to-text encoding'))}
 
 
-
-    def __init__(self, type: bool, displayName: str,
-        category: str in categories.keys() = '', version: tuple[int] = (1, 0)):
+    def __init__(self, type: bool, displayName: str, origin: str,
+        category: str in categories.keys(), version: tuple[int] = (1, 0)):
         '''
         Initialize a cipher instance with the following parameters:
 
@@ -416,6 +435,10 @@ class Cipher:
             The cipher's name that is going to be shown in the ciphers'
             selection combo box.
 
+        :param 'origin': str
+            Name of the origin file. While creating a child class,
+            send the '__name__' property to this argumen
+            
         :kwparam 'category': str
             Name of the category the cipher belongs to. For example,
             there are hashes, simple cryptography methods like magic
@@ -423,19 +446,68 @@ class Cipher:
                 'hash'   —— Hashing algorithms;
                 'simple' —— Simple cryptography;
                 'btte'   —— Binary-to-text encoding.
-            By default, the cipher has no category, since categorization
-            feature is not yet implemented.
 
         :kwparam 'version': tuple<int, int>
             Version of the cipher
         '''
-        self.type = type
-        self.displayName = displayName
-        self.category = category
-        self.version = version
+        self.type, self.displayName, self.origin, self.category, self.version = (
+            type, displayName, f'{origin[8:]}.py', category, version)
+        
+
+    def getInformation(self, root: Window) -> str:
+        '''
+        Get a string representing cipher's properties to show it in 
+        the UI.
+
+        :returns: str
+        '''
+        translatedStrings = (
+            root.translate('CiphersInfo', 'Category'),
+            root.translate('CiphersInfo', 'Type'),
+            root.translate('CiphersInfo', 'one-way'),
+            root.translate('CiphersInfo', 'two-way'),
+            root.translate('CiphersInfo', 'Defined in'),
+            root.translate('CiphersInfo', 'Version'))
+
+        return (
+            f'{translatedStrings[0]}: {self.categories[self.category].text()}\n'
+            f'{translatedStrings[1]}: {(translatedStrings[3] if self.type else translatedStrings[2])}\n'
+            f'{translatedStrings[4]}: {self.origin}\n'
+            f'{translatedStrings[5]}: {self.version[0]}.{self.version[1]}')
 
 
 #Major functions are defined below
+def checkForUpdates(root: Window):
+    '''
+    Check for updates, and if there is one, ask the user
+    if he wants to update the program.
+
+    :param 'root': Window
+        Main window
+
+    :returns: None
+    '''
+    response = getRequest(root, 'https://api.github.com/repos/StarterCraft/sicrypt/releases/latest').json()
+    tag = response['tag_name']
+    if int(tag[1:2]) > int(version[1:2]) or int(tag[3:4]) > int(version[3:4]):
+        if messageBox(root, QMessageBox.Information,
+            root.translate('UpdateDialog', 'Update available'),
+            root.translate('UpdateDialog', f'Update {tag} is available, would you like to download and install it?'),
+            details = getRequest(root, 'https://raw.githubusercontent.com/StarterCraft/sicrypt/master/changelog.txt').text,
+            buttons = [QMessageBox.Yes, QMessageBox.No]):
+            installerURL = getRequest(root, response['assets_url']).json()['browser_download_url']
+
+            with requests.get(installerURL, stream = True) as request:
+                request.raise_for_status()
+                with open('installer.exe', 'wb') as f:
+                    for chunk in request.iter_content(chunk_size = None):
+                        if chunk: f.write(chunk)
+
+            subprocess.Popen('installer.exe', creationflags = subprocess.CREATE_NEW_CONSOLE)
+            exit(1)
+        else: return
+
+
 def loadCiphers(root: Window, allowDownloadingNew: bool, allowDownloadingUpdates: bool) -> None:
     '''
     Load ciphers from '*.py' files in 'ciphers' directory,
@@ -494,12 +566,11 @@ def loadCiphers(root: Window, allowDownloadingNew: bool, allowDownloadingUpdates
                         classNames.update({fileName.replace('/', '.'): savedNames})
 
     for classFile, classNames in classNames.items():
-        print(classFile, className)
         for className in classNames:
             _class = getattr(importlib.import_module(classFile[:-3]), className)
             try:
                 if (callable(getattr(_class, 'encrypt')) and
-                    callable(getattr(_class, 'decrypt'))):
+                   (callable(getattr(_class, 'decrypt')) if getattr(_class(), 'type') else True)):
 
                     if allowDownloadingUpdates:
                         #Check cipher version via GitHub:
@@ -529,7 +600,17 @@ def loadCiphers(root: Window, allowDownloadingNew: bool, allowDownloadingUpdates
                         f'Cipher {className}, declared in {classFile}, failed to load due to {type(exception).__name__}. See the details below'),
                         details = f'Our GitHub:{gitHubLink}\n{traceback.format_exc()}')
 
-    for cipher in ciphers: root.ui.cbb_Cipher.addItem(cipher.displayName)
+    for cipher in ciphers:
+        if cipher.category not in categories: categories.append(cipher.category)
+
+    for category in categories:
+        i = 0
+
+        for cipher in ciphers: 
+            if cipher.category == category: root.ui.cbb_Cipher.addItem(cipher.displayName)
+            i += 1
+
+        if len(categories) > 1: root.ui.cbb_Cipher.insertSeparator(i)
         
     #TODO No.1: Implement QComboBox with categories 
     #Setup model for the cipher selection combobox
@@ -555,7 +636,21 @@ def getCipherByDisplayName(name: str) -> Cipher:
         if cipher.displayName == name: return cipher
 
 
-def encrypt(root: Window) -> None:
+def switchCurrentCipher(root: Window) -> None:
+    '''
+    Switch the current selected cipher.
+        
+    :param 'root': Window
+        Main window
+
+    :returns: None
+    '''
+    root.ui.tbt_Decrypt.setEnabled(False) if not getCipherByDisplayName(root.ui.cbb_Cipher.currentText()).type else root.ui.tbt_Decrypt.setEnabled(True)
+    root.ui.cbb_Cipher.setToolTip(root.tr('Select your cipher\n\nSelected cipher`s propreties:\n') + 
+                                  getCipherByDisplayName(root.ui.cbb_Cipher.currentText()).getInformation(root))
+
+
+def encrypt(root: Window, encoding: str) -> None:
     '''
     Encrypt contents of 'Source text' field, and place the encrypted
     text into the 'Result text' field.
@@ -563,11 +658,14 @@ def encrypt(root: Window) -> None:
     :param 'root': Window
         Main window
 
+    :param 'encoding': str
+        Encoding to encrypt the text with
+
     :returns: None
     '''
     try:
         root.ui.ptx_ResultText.setPlainText(str(
-            getCipherByDisplayName(root.ui.cbb_Cipher.currentText()).encrypt(root.ui.ptx_SourceText.toPlainText())))
+            getCipherByDisplayName(root.ui.cbb_Cipher.currentText()).encrypt(root.ui.ptx_SourceText.toPlainText(), encoding)))
 
     except Exception as exception:
         messageBox(root, QMessageBox.Critical,
@@ -576,7 +674,7 @@ def encrypt(root: Window) -> None:
             details = f'Our GitHub: {gitHubLink}\n\n{traceback.format_exc()}')
 
         
-def decrypt(root: Window) -> None:
+def decrypt(root: Window, encoding: str) -> None:
     '''
     Decrypt contents of 'Source text' field, and place the decrypted
     text into the 'Result text' field.
@@ -584,11 +682,14 @@ def decrypt(root: Window) -> None:
     :param 'root': Window
         Main window
 
+    :param 'encoding': str
+        Encoding to decrypt the text with
+
     :returns: None
     '''
     try:
         root.ui.ptx_ResultText.setPlainText(str(
-            getCipherByDisplayName(root.ui.cbb_Cipher.currentText()).decrypt(root.ui.ptx_SourceText.toPlainText())))
+            getCipherByDisplayName(root.ui.cbb_Cipher.currentText()).decrypt(root.ui.ptx_SourceText.toPlainText(), encoding)))
 
     except Exception as exception:
         messageBox(root, QMessageBox.Critical,
@@ -654,11 +755,11 @@ def info(root: Window) -> None:
     '''
     changelog = getRequest(root, 'https://raw.githubusercontent.com/StarterCraft/sicrypt/master/changelog.txt').text
     messageBox(root, QMessageBox.Information, root.translate('AboutDialog', 'About'), 
-        root.translate('AboutDialog', 'Developed by: StarterCraft\nVersion: 1.1\n2020-2021'),
+        root.translate('AboutDialog', f'Developed by: StarterCraft\nVersion: {version}\n2020-2021'),
         details = changelog)
 
 
-def openFileDialog(root: Window, encoding: str, flag: bool) -> None:
+def openFileDialog(root: Window, encoding: str, flag: int) -> None:
     '''
     Open file selection dialog for opening a file or saving into a file.
 
@@ -669,10 +770,10 @@ def openFileDialog(root: Window, encoding: str, flag: bool) -> None:
         Encoding to open/save a file with. This parameter is transferred
         to the 'openFile'/'saveToFile' methods respectively.
 
-    :param 'flag': bool
-        If True, then 'openFile' method will be called after an existing
+    :param 'flag': int
+        If 0, then 'openFile' method will be called after an existing
         file is selected by the user;
-        if False, then 'saveToFile' method will be called after any file,
+        if 1, then 'saveToFile' method will be called after any file,
         including a nonexistent one, is selected by the user.
 
     :returns: None
@@ -788,6 +889,32 @@ def messageBox(root: Window, icon: QMessageBox.Icon, title: str, text: str,
     return _messageBox.exec()
 
 
+def inputDialog(root: Window, title: str, text: str) -> str:
+    '''
+    Show an input dialog with the given title and text.
+        
+    :param 'root': Window
+        Main window
+
+    :param 'title': str
+        Input dialog's title
+
+    :param 'text': str
+        Input dialog's main text
+
+    :returns: str
+        String the user entered.
+    '''
+    _dialog = QInputDialog(root)
+    _dialog.setWindowTitle(title)
+    _dialog.setLabelText(text)
+    _dialog.setStyleSheet(styleSheet)
+    _dialog.setOkButtonText(_dialog.tr('Confirm and resume'))
+    _dialog.setInputMode(QInputDialog.TextInput)
+    _dialog.exec_()
+    return _dialog.textValue()
+
+
 def getRequest(root: Window, url: str):
     try: return requests.get(url)
     except Exception as exception: messageBox(root, QMessageBox.Critical,
@@ -812,9 +939,11 @@ if __name__ == '__main__':
         #Load ciphers
         loadCiphers(root, settings.config['encryption']['dlnew'], settings.config['encryption']['dlupd'])
 
+        checkForUpdates(root)
+
         #Bind functions to actions and buttons
-        root.ui.btn_Encrypt.clicked.connect( lambda: encrypt(root) )
-        root.ui.btn_Decrypt.clicked.connect( lambda: decrypt(root) )
+        root.ui.tbt_Encrypt.clicked.connect( lambda: encrypt(root, 'utf-8') )
+        root.ui.tbt_Decrypt.clicked.connect( lambda: decrypt(root, 'utf-8') )
         root.ui.btn_Paste.clicked.connect( lambda: pasteSourceText(root) )
         root.ui.btn_Copy.clicked.connect( lambda: copyResultText(root) )
         root.ui.btn_TransferResToSrc.clicked.connect( lambda: transferText(root, True) )
@@ -822,9 +951,7 @@ if __name__ == '__main__':
         root.ui.btn_About.clicked.connect( lambda: info(root) )
         root.ui.btn_Settings.clicked.connect( settings.open )
         root.ui.tbt_OpenFile.clicked.connect( lambda: openFileDialog(root, 'utf-8', True) )
-        root.ui.cbb_Cipher.currentTextChanged.connect( 
-           lambda: (root.ui.btn_Decrypt.setEnabled(False) if not getCipherByDisplayName(root.ui.cbb_Cipher.currentText()).type
-               else root.ui.btn_Decrypt.setEnabled(True)) )
+        root.ui.cbb_Cipher.currentTextChanged.connect( lambda: switchCurrentCipher(root) )
 
         for action in root.openFileActionGroup.actions(): 
             if action.text()[1:7] == 'Source': action.setChecked(True)
@@ -833,7 +960,25 @@ if __name__ == '__main__':
             if action.text()[1:7] == 'Result': action.setChecked(True)
 
         for action in root.encodingActions:
-            action.triggered.connect( lambda: openFileDialog(root, action.text().lower(), action.data()) )
+            if action.data() in range(0, 2):
+                action.triggered.connect( lambda: openFileDialog(root, action.text().lower(), action.data()) )
+
+            elif action.data() == 2:
+                action.triggered.connect( lambda: encrypt(root, action.text().lower()) )
+
+            elif action.data() == 3:
+                action.triggered.connect( lambda: decrypt(root, action.text().lower()) )
+
+        root.customEncodingAction.triggered.connect( 
+           lambda: (openFileDialog(root,
+               inputDialog(root, root.tr('Custom encoding'), root.tr('Specify an encoding...')).lower(), root.customEncodingAction.data()) 
+               if root.customEncodingAction.data() in range(0, 2) else (root.customEncodingAction.triggered.connect(
+                   lambda: encrypt(root, inputDialog(root, root.tr('Custom encoding'), root.tr('Specify an encoding...')).lower())
+                   if action.data() == 2 else root.customEncodingAction.triggered.connect(
+                       lambda: decrypt(root, inputDialog(root, root.tr('Custom encoding'), root.tr('Specify an encoding...')).lower())
+               )))))
+
+        root.ui.cbb_Cipher.setToolTip(ciphers[0].getInformation(root))
 
         #Settings dialog
         settings.accepted.connect( lambda: settings.handleDialogAcception(root) )

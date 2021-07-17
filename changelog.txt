@@ -11,3 +11,9 @@ First public version. The following features are introduced:
  —— Added program configuration, the settings dialog and their dependencies (see documentation for details);
  —— Added file opening feature (open a file and paste its contents as source text). UTF-8 encoding is used by default, some other encodings can be specified via the button's popup menu;
  —— Added file saving feature (save result text into a file). UTF-8 encoding is used by default, some other encodings can be specified via the button's popup menu.
+
+1.2
+ —— It's now possible to specify encoding for encryption and decryption;
+ —— Categorization is now implemented into the cipher selection combo box;
+ —— Selected cipher's properties are now shown in the cipher selection combo box;
+ —— It is now possible to select text fields for opening a file and saving into a file.

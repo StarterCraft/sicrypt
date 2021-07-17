@@ -5,7 +5,7 @@
         "dlupd": true
     },
     "textFields": {
-        "position": true,
+        "position": false,
         "open": false,
         "save": true,
         "font": [
