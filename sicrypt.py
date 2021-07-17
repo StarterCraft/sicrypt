@@ -69,26 +69,28 @@ class Window(QMainWindow):
         self.saveToFileMenu.addSeparator()
 
         #Define and setup encoding actions
-        self.encodingActions = [
-            Action('ASCII'),
-            Action('ANSI'),
-            Action('UTF-8'),
-            Action('UTF-16'),
-            Action('UTF-32'),
-            Action('Windows-1251')]
+        self.encodingActions = [] 
 
-        for action in self.encodingActions:
-            self.encryptMenu.addAction(action.modifyData(2))
-            self.decryptMenu.addAction(action.modifyData(3))
-            self.openFileMenu.addAction(action.modifyData(0))
-            self.saveToFileMenu.addAction(action.modifyData(1))
+        for i in range(0, 4):
+            self.encodingActions.append([
+                Action('ASCII', data = i),
+                Action('ANSI', data = i),
+                Action('UTF-8', data = i),
+                Action('UTF-16', data = i),
+                Action('UTF-32', data = i),
+                Action('Windows-1251', data = i)])
 
-        self.customEncodingAction = Action(self.tr('Other...'))
+        for action in self.encodingActions[2]: self.encryptMenu.addAction(action)
+        for action in self.encodingActions[3]: self.decryptMenu.addAction(action)
+        for action in self.encodingActions[0]: self.openFileMenu.addAction(action)
+        for action in self.encodingActions[1]: self.saveToFileMenu.addAction(action)
 
-        self.encryptMenu.addAction(self.customEncodingAction.modifyData(2))
-        self.decryptMenu.addAction(self.customEncodingAction.modifyData(3))
-        self.openFileMenu.addAction(self.customEncodingAction.modifyData(0))
-        self.saveToFileMenu.addAction(self.customEncodingAction.modifyData(1))
+        self.customEncodingActions = [Action(self.tr('Other...'), data = i) for i in range(0, 4)]
+
+        self.encryptMenu.addAction(self.customEncodingActions[2])
+        self.decryptMenu.addAction(self.customEncodingActions[3])
+        self.openFileMenu.addAction(self.customEncodingActions[0])
+        self.saveToFileMenu.addAction(self.customEncodingActions[1])
 
         #Bind menus to toolButtons
         self.ui.tbt_Encrypt.setMenu(self.encryptMenu)
@@ -938,7 +940,8 @@ if __name__ == '__main__':
     try:
         #Load ciphers
         loadCiphers(root, settings.config['encryption']['dlnew'], settings.config['encryption']['dlupd'])
-
+        root.ui.cbb_Cipher.setToolTip(ciphers[0].getInformation(root))
+ 
         checkForUpdates(root)
 
         #Bind functions to actions and buttons
@@ -959,17 +962,13 @@ if __name__ == '__main__':
         for action in root.saveToFileActionGroup.actions(): 
             if action.text()[1:7] == 'Result': action.setChecked(True)
 
-        for action in root.encodingActions:
-            if action.data() in range(0, 2):
-                action.triggered.connect( lambda: openFileDialog(root, action.text().lower(), action.data()) )
+        for i in range(0, 4):
+            for action in root.encodingActions[i]:
+                if i in range(0, 2): action.triggered.connect( lambda: openFileDialog(root, action.text().lower(), action.data()) )
+                elif i == 2: action.triggered.connect( lambda: encrypt(root, action.text().lower()) )
+                elif i == 3: action.triggered.connect( lambda: decrypt(root, action.text().lower()) )
 
-            elif action.data() == 2:
-                action.triggered.connect( lambda: encrypt(root, action.text().lower()) )
-
-            elif action.data() == 3:
-                action.triggered.connect( lambda: decrypt(root, action.text().lower()) )
-
-        root.customEncodingAction.triggered.connect( 
+        for customEncodingAction in root.customEncodingActions: customEncodingAction.triggered.connect( 
            lambda: (openFileDialog(root,
                inputDialog(root, root.tr('Custom encoding'), root.tr('Specify an encoding...')).lower(), root.customEncodingAction.data()) 
                if root.customEncodingAction.data() in range(0, 2) else (root.customEncodingAction.triggered.connect(
@@ -977,8 +976,6 @@ if __name__ == '__main__':
                    if action.data() == 2 else root.customEncodingAction.triggered.connect(
                        lambda: decrypt(root, inputDialog(root, root.tr('Custom encoding'), root.tr('Specify an encoding...')).lower())
                )))))
-
-        root.ui.cbb_Cipher.setToolTip(ciphers[0].getInformation(root))
 
         #Settings dialog
         settings.accepted.connect( lambda: settings.handleDialogAcception(root) )
