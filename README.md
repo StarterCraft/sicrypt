@@ -27,7 +27,7 @@ If you have faced a critical error during usage of the program, please open an i
 ## Installation
 1. [Download](https://github.com/StarterCraft/sicrypt/releases/latest) the latest release.
 2. Follow the installation guidance below:
-    - For version 1.1, please specify the installation folder and click *Start*.
+    - For versions 1.1 and 1.2, please specify the installation folder and click *Start*.
         
 
 ## Usage
