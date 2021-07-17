@@ -486,7 +486,7 @@ def loadCiphers(root: Window, allowDownloadingNew: bool, allowDownloadingUpdates
             for line in file.readlines():
                 if line.startswith('class '):
                     className = line[5:line.index('(')].strip()
-                    if fileName not in classNames.keys():
+                    if fileName.replace('/', '.') not in classNames.keys():
                         classNames.update({fileName.replace('/', '.'): [className]})
                     else:
                         savedNames = classNames[fileName.replace('/', '.')]
@@ -494,6 +494,7 @@ def loadCiphers(root: Window, allowDownloadingNew: bool, allowDownloadingUpdates
                         classNames.update({fileName.replace('/', '.'): savedNames})
 
     for classFile, classNames in classNames.items():
+        print(classFile, className)
         for className in classNames:
             _class = getattr(importlib.import_module(classFile[:-3]), className)
             try:
