@@ -1,7 +1,7 @@
 # Sicrypt
 ### Languages / Языки
 - [English (International)](#EN-INT)
-- [Russian (Russian Federation](#RU-RU)
+- [Russian (Russian Federation)](#RU-RU)
 
 ### EN-INT
 A light, handy, customizable, open-source cryptography tool
@@ -47,13 +47,13 @@ If you have faced a critical error during usage of the program, please open an i
 1. To encrypt some text, please place the text inside the *Source text* field.
 2. Afterwards, please select a cipher in the *Cipher* combo box.
 3. After selecting the cipher, click the *Encrypt* button, and then the encrypted text will be shown in the *Result text* field. By default,   
-`UTF-8` encoding is used, but you can use the *Encrypt* button popup menu actions to open a file with another encoding, you can also use *Other...* menu action to specify your own encoding.
+`UTF-8` encoding is used, but you can use the *Encrypt* button popup menu actions to encrypt the text with another encoding, you can also use *Other...* menu action to specify your own encoding.
 
 ### Decryption
 1. To decrypt some text, please place the text inside the *Source text* field.
 2. Afterwards, please select a cipher in the *Cipher* combo box. 
 3. After selecting the cipher, click the *Decrypt* button, and then the encrypted text will be shown in the *Result text* field. By default,  
-`UTF-8` encoding is used, but you can use the *Decrypt* button popup menu actions to open a file with another encoding, you can also use *Other...* menu action to specify your own encoding.
+`UTF-8` encoding is used, but you can use the *Decrypt* button popup menu actions to decrypt the text with another encoding, you can also use *Other...* menu action to specify your own encoding.
 
 ### Opening
 You can open a text file to make its text appear inside of the *Source text* field.
