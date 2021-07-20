@@ -156,6 +156,8 @@ QTabBar::tab {
     border: 1px solid white;
     border-top-left-radius: 4px;
     border-top-right-radius: 4px;
+    padding-left: 10px;
+    padding-right: 10px;
     padding-top: 3px;
     padding-bottom: 2px;
     font: 63 11pt &quot;Segoe UI Semibold&quot;;
@@ -1001,7 +1003,7 @@ QLineEdit:hover
              </size>
             </property>
             <property name="text">
-             <string>Word wrap</string>
+             <string>Line wrap</string>
             </property>
             <property name="checked">
              <bool>true</bool>
@@ -1025,16 +1027,16 @@ QLineEdit:hover
       <item row="10" column="0" colspan="3">
        <widget class="QTabWidget" name="tabWidget">
         <property name="currentIndex">
-         <number>1</number>
+         <number>0</number>
         </property>
         <widget class="QWidget" name="tab_">
          <attribute name="title">
-          <string>Tab 1</string>
+          <string>   Hashing   </string>
          </attribute>
         </widget>
         <widget class="QWidget" name="tab_2">
          <attribute name="title">
-          <string>Other</string>
+          <string>  Other  </string>
          </attribute>
         </widget>
        </widget>

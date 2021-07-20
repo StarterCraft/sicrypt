@@ -688,7 +688,7 @@ class Ui_Dialog(object):
         self.cbb_ResultTextFieldTabPolicy.setItemText(1, _translate("Dialog", "2 spaces"))
         self.cbb_ResultTextFieldTabPolicy.setItemText(2, _translate("Dialog", "3 spaces"))
         self.cbb_ResultTextFieldTabPolicy.setItemText(3, _translate("Dialog", "4 spaces"))
-        self.ckb_ResultTextFieldTextWrap.setText(_translate("Dialog", "Word wrap"))
+        self.ckb_ResultTextFieldTextWrap.setText(_translate("Dialog", "Line wrap"))
         self.tbs_FieldsSettings.setTabText(self.tbs_FieldsSettings.indexOf(self.tab_ResultTextFieldFont), _translate("Dialog", "    Result text    "))
         self.lbl_ReadOnly3.setText(_translate("Dialog", "Language:"))
         self.lbl_ReadOnly1.setText(_translate("Dialog", "Settings"))

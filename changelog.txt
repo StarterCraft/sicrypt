@@ -16,4 +16,5 @@ First public version. The following features are introduced:
  —— It's now possible to specify encoding for encryption and decryption;
  —— Categorization is now implemented into the cipher selection combo box;
  —— Selected cipher's properties are now shown in the cipher selection combo box;
- —— It is now possible to select text fields for opening a file and saving into a file.
+ —— It is now possible to select text fields for opening a file and saving into a file;
+ —— Automatic updates are implemented

@@ -693,6 +693,12 @@ def decrypt(root: Window, encoding: str) -> None:
         root.ui.ptx_ResultText.setPlainText(str(
             getCipherByDisplayName(root.ui.cbb_Cipher.currentText()).decrypt(root.ui.ptx_SourceText.toPlainText(), encoding)))
 
+    except AttributeError:
+        messageBox(root, QMessageBox.Critical,
+            root.translate('DecryptionErrorDialog', 'Failed to decrypt: this cipher is one-way'),
+            root.translate('DecryptionErrorDialog', 'Failed to decrypt your text due to the selected cipher not suppporting decryption.'),
+            details = f'Our GitHub: {gitHubLink}\n\n{traceback.format_exc()}')
+
     except Exception as exception:
         messageBox(root, QMessageBox.Critical,
             root.translate('DecryptionErrorDialog', 'Failed to decrypt'),
@@ -761,7 +767,7 @@ def info(root: Window) -> None:
         details = changelog)
 
 
-def openFileDialog(root: Window, encoding: str, flag: int) -> None:
+def openFileDialog(root: Window, encoding: str, flag: int, fieldFlag: bool) -> None:
     '''
     Open file selection dialog for opening a file or saving into a file.
 
@@ -778,6 +784,11 @@ def openFileDialog(root: Window, encoding: str, flag: int) -> None:
         if 1, then 'saveToFile' method will be called after any file,
         including a nonexistent one, is selected by the user.
 
+    :param 'fieldFlag': bool
+        Determines which text field is going to be used while working
+        with the text; False for 'Source text', True for 'Result text'
+        fields.
+
     :returns: None
     '''
     dlg = QFileDialog(root)
@@ -787,11 +798,11 @@ def openFileDialog(root: Window, encoding: str, flag: int) -> None:
     else: dlg.setFileMode(QFileDialog.AnyFile)
     dlg.show()
 
-    if flag: dlg.fileSelected.connect( lambda: openFile(root, dlg.selectedFiles()[0], encoding) )
-    else: dlg.fileSelected.connect( lambda: saveToFile(root, dlg.selectedFiles()[0], encoding) )
+    if flag: dlg.fileSelected.connect( lambda: openFile(root, dlg.selectedFiles()[0], encoding, fieldFlag) )
+    else: dlg.fileSelected.connect( lambda: saveToFile(root, dlg.selectedFiles()[0], encoding, fieldFlag) )
 
 
-def openFile(root: Window, name: str, encoding: str) -> None:
+def openFile(root: Window, name: str, encoding: str, fieldFlag: bool) -> None:
     '''
     Open existing file with specified name and encoding, and place
     the loaded text into the 'Source text' field.
@@ -805,10 +816,16 @@ def openFile(root: Window, name: str, encoding: str) -> None:
     :param 'encoding': str
         An encoding to open the file with
 
+    :param 'fieldFlag': bool
+        Determines which text field is going to be used while working
+        with the text; False for 'Source text', True for 'Result text'
+        fields.
+
     :returns: None
     '''
     try:
-        with open(name, 'r', encoding = encoding) as file: root.ui.ptx_SourceText.setPlainText(file.read())
+        with open(name, 'r', encoding = encoding) as file: 
+            (root.ui.ptx_SourceText.setPlainText(file.read()) if fieldFlag else root.ui.ptx_ResultText.setPlainText(file.read()))
     except Exception as exception:
         messageBox(root, QMessageBox.Critical,
             root.translate('FileOpeningErrorMessagebox', 'An error ocurred while opening file'),
@@ -816,7 +833,7 @@ def openFile(root: Window, name: str, encoding: str) -> None:
             details = f'Our GitHub:{gitHubLink}\n\n{traceback.format_exc()}')
 
 
-def saveToFile(root: Window, name: str, encoding: str) -> None:
+def saveToFile(root: Window, name: str, encoding: str, fieldFlag: bool) -> None:
     '''
     Take the text from the 'Resut text' field and save it into a file
     with specified name and encoding.
@@ -830,22 +847,30 @@ def saveToFile(root: Window, name: str, encoding: str) -> None:
     :param 'encoding': str
         An encoding to save to the file with
 
+    :param 'fieldFlag': bool
+        Determines which text field is going to be used while working
+        with the text; False for 'Source text', True for 'Result text'
+        fields.
+
     :returns: None
     '''
     try:
-        with open(name, 'x', encoding = encoding) as file: file.write(root.ui.ptx_ResultText.toPlainText())
+        with open(name, 'x', encoding = encoding) as file:
+            (file.write(root.ui.ptx_SourceText.toPlainText()) if fieldFlag else file.write(root.ui.ptx_ResultText.toPlainText()))
     except FileExistsError:
         if messageBox(root, QMessageBox.Warning,
             root.translate('SavingToFileRewriteMessagebox', 'File you specified already exists'),
             root.translate('SavingToFileRewriteMessagebox', f'File {name} already exists. Should we rewrite it?'),
             buttons = [QMessageBox.Yes, QMessageBox.No]):
-            with open(name, 'w', encoding = encoding) as file: file.write(root.ui.ptx_ResultText.toPlainText())
+            with open(name, 'w', encoding = encoding) as file: 
+                (file.write(root.ui.ptx_SourceText.toPlainText()) if fieldFlag else file.write(root.ui.ptx_ResultText.toPlainText()))
         else: return
+
     except Exception as exception:
         messageBox(root, QMessageBox.Critical,
             root.translate('SavingToFileErrorMessagebox', 'An error ocurred while saving to file'),
             root.translate('SavingToFileErrorMessagebox', f'Failed to save to file "{name}" due to {type(exception).__name__}.'),
-            detais = f'Our GitHub:{gitHubLink}\n\n{traceback.format_exc()}')
+            details = f'Our GitHub:{gitHubLink}\n\n{traceback.format_exc()}')
 
 
 def messageBox(root: Window, icon: QMessageBox.Icon, title: str, text: str,
@@ -953,7 +978,8 @@ if __name__ == '__main__':
         root.ui.btn_TransferSrcToRes.clicked.connect( lambda: transferText(root, False) ) 
         root.ui.btn_About.clicked.connect( lambda: info(root) )
         root.ui.btn_Settings.clicked.connect( settings.open )
-        root.ui.tbt_OpenFile.clicked.connect( lambda: openFileDialog(root, 'utf-8', True) )
+        root.ui.tbt_OpenFile.clicked.connect( lambda: openFileDialog(root, 'utf-8', True, root.openFileActionGroup.actions()[0].isChecked()) )
+        root.ui.tbt_SaveToFile.clicked.connect( lambda: openFileDialog(root, 'utf-8', False, root.saveToFileActionGroup.actions()[0].isChecked()) )
         root.ui.cbb_Cipher.currentTextChanged.connect( lambda: switchCurrentCipher(root) )
 
         for action in root.openFileActionGroup.actions(): 
@@ -970,10 +996,10 @@ if __name__ == '__main__':
 
         for customEncodingAction in root.customEncodingActions: customEncodingAction.triggered.connect( 
            lambda: (openFileDialog(root,
-               inputDialog(root, root.tr('Custom encoding'), root.tr('Specify an encoding...')).lower(), root.customEncodingAction.data()) 
-               if root.customEncodingAction.data() in range(0, 2) else (root.customEncodingAction.triggered.connect(
+               inputDialog(root, root.tr('Custom encoding'), root.tr('Specify an encoding...')).lower(), customEncodingAction.data()) 
+               if customEncodingAction.data() in range(0, 2) else (customEncodingAction.triggered.connect(
                    lambda: encrypt(root, inputDialog(root, root.tr('Custom encoding'), root.tr('Specify an encoding...')).lower())
-                   if action.data() == 2 else root.customEncodingAction.triggered.connect(
+                   if action.data() == 2 else customEncodingAction.triggered.connect(
                        lambda: decrypt(root, inputDialog(root, root.tr('Custom encoding'), root.tr('Specify an encoding...')).lower())
                )))))
 
