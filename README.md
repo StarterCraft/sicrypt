@@ -128,8 +128,9 @@ class MyCipher(Cipher):
     def __init__(self):
         #Initialize a Cipher instance (more parameters related info can be found
         #in the Cipher class documentation)
-        Cipher.__init__(self, type: bool (False -> Monodirectional/True -> Bidirectional),
+        #Cipher.__init__(self, type: bool (False -> Monodirectional/True -> Bidirectional),
             displayName: str, __name__, category: str)
+        Cipher.__init__(self, True, 'MyTestCipher', __name__, 'btte')
 
 
     #Every class inherited from `Cipher` class must have an `encrypt` method,
