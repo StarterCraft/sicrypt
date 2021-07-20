@@ -123,10 +123,10 @@ class PlainTextEdit(QPlainTextEdit):
 
 
     def keyPressEvent(self, event: QKeyEvent):
-        if event.key() == Qt.Key_Tab:
+        if event.key() == Qt.Key_Tab and self.tabPolicy:
             QPlainTextEdit.keyPressEvent(self, QKeyEvent(
                 QEvent.KeyPress, Qt.Key_Space,
-                Qt.KeyboardModifiers(event.nativeModifiers()), ' ' * (self.tabPolicy + 1)) if self.tabPolicy else event)
+                Qt.KeyboardModifiers(event.nativeModifiers()), ' ' * (self.tabPolicy + 1))
         else: QPlainTextEdit.keyPressEvent(self, event)
 
 
