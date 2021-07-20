@@ -27,7 +27,7 @@ A light, handy, customizable, open-source cryptography tool
 Sicrypt is the ideal solution for encrypting and decrypting your text with any cipher you want, and you can even create your own cipher algorithm on Python very easily. By the way, the program can work offline, so you can replace your favorite web cryptography services with Sicrypt.
 The solution will be very useful for people who work with cryptography every day, for programmers that work with cryptography in their projects, for people who want to experiment with cryptography to implement or in their life, etc.
 
-The most important feature of Sicrypt is that you can implement your own cipher algorithm very easily, using Python programming language, even without having Python interpreter installed! See section 3 for more information about this.
+The most important feature of Sicrypt is that you can implement your own cipher algorithm very easily, using Python programming language, even without having Python interpreter installed! See [**Ciphers**](#Ciphers) section for more information about this.
 
 If you have faced a critical error during usage of the program, please open an issue card with the details of the error, which you can copy from the error messagebox. If you would like to contribute to Sicrypt development, please start pull requests with your changes. 
 
