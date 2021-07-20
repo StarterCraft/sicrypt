@@ -20,7 +20,7 @@ A light, handy, customizable, open-source cryptography tool
 4. [Ciphers: creating your own, downloading](#Ciphers)
 
 ## About
-![Image](https://user-images.githubusercontent.com/43516901/126314893-83302bcc-8541-44a1-b7b6-fcb80fffe0bb.png)
+![Image](https://user-images.githubusercontent.com/43516901/126315183-95e3296a-fbac-43ba-8d15-742001dbace8.png)
 Sicrypt is the ideal solution for encrypting and decrypting your text with any cipher you want, and you can even create your own cipher algorithm on Python very easily. By the way, the program can work offline, so you can replace your favorite web cryptography services with Sicrypt.
 The solution will be very useful for people who work with cryptography every day, for programmers that work with cryptography in their projects, for people who want to experiment with cryptography to implement or in their life, etc.
 
@@ -38,12 +38,14 @@ If you have faced a critical error during usage of the program, please open an i
 ### Encryption
 1. To encrypt some text, please place the text inside the *Source text* field.
 2. Afterwards, please select a cipher in the *Cipher* combo box.
-4. After selecting the cipher, click the *Encrypt* button, and then the encrypted text will be shown in the *Result text* field. By default, `UTF-8` encoding is used, but you can use the *Encrypt* button popup menu actions to open a file with another encoding, you can also use *Other...* menu action to specify your own encoding.
+3. After selecting the cipher, click the *Encrypt* button, and then the encrypted text will be shown in the *Result text* field. By default,   
+`UTF-8` encoding is used, but you can use the *Encrypt* button popup menu actions to open a file with another encoding, you can also use *Other...* menu action to specify your own encoding.
 
 ### Decryption
 1. To decrypt some text, please place the text inside the *Source text* field.
 2. Afterwards, please select a cipher in the *Cipher* combo box. 
-3. After selecting the cipher, click the *Decrypt* button, and then the encrypted text will be shown in the *Result text* field. By default, `UTF-8` encoding is used, but you can use the *Decrypt* button popup menu actions to open a file with another encoding, you can also use *Other...* menu action to specify your own encoding.
+3. After selecting the cipher, click the *Decrypt* button, and then the encrypted text will be shown in the *Result text* field. By default,  
+`UTF-8` encoding is used, but you can use the *Decrypt* button popup menu actions to open a file with another encoding, you can also use *Other...* menu action to specify your own encoding.
 
 ### Opening
 You can open a text file to make its text appear inside of the *Source text* field.
@@ -53,7 +55,6 @@ By default, `UTF-8` encoding is used, but you can use the *Open file...* button 
 3. Select an existing file you want to open. 
 4. After selecting the file, if opening succeeded, you can see the contents of the file in the specified field.
 
-
 ### Saving 
 You can create or overwrite a file to save the contents of the *Result text* field into it.
 By default, `UTF-8` encoding is used, but you can use the *Save to file...* button popup menu actions to save to a file with another encoding, you can also use *Other...* menu action to specify your own encoding.
@@ -61,3 +62,34 @@ By default, `UTF-8` encoding is used, but you can use the *Save to file...* butt
 1. Click on the *Save to file...* button or click on one of the actions inside of its popup menu. 
 2. Select any file you want to save to; if the specified file exists, you'll be asked if you wish to overwrite it. 
 3. After selecting the file, if saving succeeded, you can see the contents of your specified field in your specified file.
+
+### Copying&Pasting
+- You can paste the contents of your clipboard (please ensure the contents can be interpreted as text) to the *Source text* field. To do so, please click on the *Paste* button in the bottom right corner, which is shown as a standard pasting symbol (like 📋).
+- You can copy the contents of the *Result text* field into your clipboard. To do so, please click on the *Copy* button in the bottom right corner, which is shown as a standard copying symbol (like 📄).
+
+### Transferring
+You can transfer the contents of *Source text* and *Result text* fields between them. To do so, please use buttons in the bottom right corner, which are shown as arrows facing the transfer direction. While using *Vertical* (default) or *Horizontal* layouts of the text fields, the direction of the arrows will change correspondingly.
+
+### Settings
+The configuration options and the possible values are listed in the table below.
+`F` prefix in the option name means that the option is configured separately for each text field.
+
+#### General options
+**Option name** | **Possible values** | **Remarks** | 
+--- | --- | --- |
+*Language* | English | No localization support implemented yet | 
+
+#### Encryption options
+**Option name** | **Possible values** | **Remarks** | 
+--- | --- | --- |
+*Update installed ciphers if there are any updates* | Yes/No | Should the installed ciphers, if these are hosted on our GitHub, be redownloaded if there is a newer version on GitHub? |
+| *Download new ciphers if there are any* | Yes/No | Should ciphers present on our GitHub, but unpresent in the local `ciphers` folder, be downloaded? |
+
+#### Text fields' appearance options
+**Option name** | **Possible values** | **Remarks** | 
+--- | --- | --- |
+*Position* | Vertical/Horizontal | How should the border between the text fields be positioned? |
+`F` *Font* | `InstalledFont` & `int<8, 99>` | Which font family & font size must be used in the specified text field? |
+`F` *Tab policy* | Tab symbol/2 spaces/3 spaces/4 spaces | Which character(s) must be inserted while `Tab` key is pressed in the specified text field?
+`F` *Line wrap* | Yes/No | Must the lines be wrapped in the specified text field?
+
