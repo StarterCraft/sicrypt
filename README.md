@@ -17,7 +17,9 @@ A light, handy, customizable, open-source cryptography tool
     5. [Copying to the clipboard and pasting from it](#Copying&Pasting)
     6. [Trasferring text between the text fields](#Transferring)
     7. [Cofiguring the program](#Settings)
-4. [Ciphers: creating your own, downloading](#Ciphers)
+4. [Ciphers](#Ciphers)
+    1. [Downloading ciphers](#Downloading)
+    2. [Creating your own cipher](#Creating)
 
 ## About
 ![Image](https://user-images.githubusercontent.com/43516901/126315183-95e3296a-fbac-43ba-8d15-742001dbace8.png)
@@ -93,3 +95,50 @@ The configuration options and the possible values are listed in the table below.
 `F` *Tab policy* | Tab symbol/2 spaces/3 spaces/4 spaces | Which character(s) must be inserted while `Tab` key is pressed in the specified text field?
 `F` *Line wrap* | Yes/No | Must the lines be wrapped in the specified text field?
 
+### Ciphers
+Ciphers are represented as `.py` files stored in the `ciphers` directory at the program's location. Inside of such a file there is a defined class, inherited from [`Cipher`](https://github.com/StarterCraft/sicrypt/blob/master/sicrypt.py#L397) class.
+
+Ciphers can be monodirectional (encryption-only, like hashing alghorythms) and bidirectional (encryption and decryption). They have categories, like *Binary-to-text-encoding*, (more information about categorization see in the class documentation) and a display name, which is shown in the cipher selection combo box.
+
+#### Downloading
+Sicrypt automatically tries to download all ciphers hosted on this GitHub repository on first launch. As stated in [**Settings**](#Settings) section, you can switch on and off the ciphers' downloading from GitHub. But with ciphers' downloading turned on, you don't need to manually download ciphers for Sicrypt, it'll do it itself. In case of no Internet connection available, you might need to define the ciphers yourself (see the next section for more info).
+
+#### Creating
+To create a cipher, you need to create a `{fileName}.py` file in the `ciphers` directory. You can use the template and guidance below to define your ciphers, by the way you can define as many ciphers in one file as you want, and as many cipher definition files as you want. See also [`Cipher` class documentation](https://github.com/StarterCraft/sicrypt/blob/master/sicrypt.py#L397).
+
+```python
+#Always import 'Cipher' class!
+from sicrypt  import Cipher
+
+#Import libraries if necessary for your cipher definition 
+from base64   import *
+from binascii import Error as BaseCipherDecodingError
+
+#Define a class inheriting 'Cipher' class
+class MyCipher(Cipher):
+    '''
+    Write a brief description of your cipher.
+    '''
+    def __init__(self):
+        #Initialize a Cipher instance (more parameters related info can be found
+        #in the Cipher class documentation)
+        Cipher.__init__(self, type: bool (False -> Monodirectional/True -> Bidirectional),
+            displayName: str, __name__, category: str )
+
+
+    #Every class inherited from `Cipher` class must have an `encrypt` method,
+    #and, in case of bidirectional cipher, a `decrypt` method. Each method
+    #must accept two string arguments (text to encrypt/decrypt, encoding) and
+    #return a string.
+    def encrypt(self, text: str, encoding: str) -> str:
+        #Do some cryptography-related routine here
+        s = f'MyText: {text}'
+        return s
+
+
+    #The method below must be defined in case of a bidirectional cipher
+    def decrypt(self, text: str, encoding: str) -> str:
+        #Do some cryptography-related routine here
+        s = f'MyText: {text}'
+        return s
+```
