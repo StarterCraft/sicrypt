@@ -8,8 +8,9 @@ A light, handy, customizable, open-source cryptography tool
 
 ## Contents
 1. [What is Sicrypt?](#About)
-2. [Installation](#Installation)
-3. [Features summary](#Usage) 
+2. [Built with...](#Used)
+3. [Installation](#Installation)
+4. [Features summary](#Usage) 
     1. [Encryption](#Encryption)
     2. [Decryption](#Decryption)
     3. [Opening a file](#Opening)
@@ -17,7 +18,7 @@ A light, handy, customizable, open-source cryptography tool
     5. [Copying to the clipboard and pasting from it](#Copying&Pasting)
     6. [Trasferring text between the text fields](#Transferring)
     7. [Cofiguring the program](#Settings)
-4. [Ciphers](#Ciphers)
+5. [Ciphers](#Ciphers)
     1. [Downloading ciphers](#Downloading)
     2. [Creating your own cipher](#Creating)
 
@@ -30,12 +31,17 @@ The most important feature of Sicrypt is that you can implement your own cipher 
 
 If you have faced a critical error during usage of the program, please open an issue card with the details of the error, which you can copy from the error messagebox. If you would like to contribute to Sicrypt development, please start pull requests with your changes. 
 
+## Used
+- Python 3.8.2
+- PyQt5 5.15.2
+- [pyperclip](https://github.com/asweigart/pyperclip)
+- [requests](https://github.com/psf/requests)
+
 ## Installation
 1. [Download](https://github.com/StarterCraft/sicrypt/releases/latest) the latest release.
 2. Follow the installation guidance below:
     - For versions 1.1 and 1.2, please specify the installation folder and click *Start*.
         
-
 ## Usage
 ### Encryption
 1. To encrypt some text, please place the text inside the *Source text* field.
