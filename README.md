@@ -9,8 +9,9 @@ A light, handy, customizable, open-source cryptography tool
 ## Contents
 1. [What is Sicrypt?](#About)
 2. [Built with...](#Used)
-3. [Installation](#Installation)
-4. [Features summary](#Usage) 
+3. [Changelog](https://github.com/StarterCraft/sicrypt/blob/master/changelog.txt)
+4. [Installation](#Installation)
+5. [Features summary](#Usage) 
     1. [Encryption](#Encryption)
     2. [Decryption](#Decryption)
     3. [Opening a file](#Opening)
@@ -18,7 +19,7 @@ A light, handy, customizable, open-source cryptography tool
     5. [Copying to the clipboard and pasting from it](#Copying&Pasting)
     6. [Trasferring text between the text fields](#Transferring)
     7. [Cofiguring the program](#Settings)
-5. [Ciphers](#Ciphers)
+6. [Ciphers](#Ciphers)
     1. [Downloading ciphers](#Downloading)
     2. [Creating your own cipher](#Creating)
 
