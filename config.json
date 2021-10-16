@@ -9,8 +9,8 @@
         "open": false,
         "save": true,
         "font": [
-            "13pt \"Segoe UI Semilight\"",
-            "13pt \"Segoe UI Semilight\""
+            "13pt \"Cascadia Code\"",
+            "13pt \"Cascadia Code\""
         ],
         "wrap": [
             true,

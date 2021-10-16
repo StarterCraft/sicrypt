@@ -833,7 +833,13 @@ QLineEdit:hover
        <widget class="QComboBox" name="cbb_Cipher">
         <property name="minimumSize">
          <size>
-          <width>0</width>
+          <width>125</width>
+          <height>30</height>
+         </size>
+        </property>
+        <property name="maximumSize">
+         <size>
+          <width>125</width>
           <height>30</height>
          </size>
         </property>

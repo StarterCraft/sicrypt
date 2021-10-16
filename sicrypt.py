@@ -126,7 +126,7 @@ class PlainTextEdit(QPlainTextEdit):
         if event.key() == Qt.Key_Tab and self.tabPolicy:
             QPlainTextEdit.keyPressEvent(self, QKeyEvent(
                 QEvent.KeyPress, Qt.Key_Space,
-                Qt.KeyboardModifiers(event.nativeModifiers()), ' ' * (self.tabPolicy + 1))
+                Qt.KeyboardModifiers(event.nativeModifiers()), ' ' * (self.tabPolicy + 1)))
         else: QPlainTextEdit.keyPressEvent(self, event)
 
 
@@ -556,7 +556,7 @@ def loadCiphers(root: Window, allowDownloadingNew: bool, allowDownloadingUpdates
 
     for fileName in available:
         if fileName.split('/')[len(fileName.split('/'))-1].startswith('__'): continue
-        with open(fileName, 'r') as file:
+        with open(fileName, 'r', encoding = 'utf-8') as file:
             for line in file.readlines():
                 if line.startswith('class '):
                     className = line[5:line.index('(')].strip()
@@ -579,7 +579,7 @@ def loadCiphers(root: Window, allowDownloadingNew: bool, allowDownloadingUpdates
                         #If the cipher is not hosted on GitHub — skip it;
                         #If the cipher is hosted on GitHub and the version there is the same — skip it;
                         #If the cipher is hosted on GitHub and the version there is newer — update it!
-                        with open('ciphers/dl.cache', 'w') as file:
+                        with open('ciphers/dl.cache', 'w', encoding = 'utf-8') as file:
                             response = getRequest(root, f'https://raw.githubusercontent.com/StarterCraft/sicrypt/master/{classFile.replace(".", "/")}')
                             if response == 200: 
                                 file.write(response.text)
