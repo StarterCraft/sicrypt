@@ -1,15 +1,12 @@
-import sys, os, pyperclip, glob, json, typing
+import sys, os, pyperclip, glob, json
+from PyQt5.QtWidgets import QWidget
 import traceback, importlib, requests, subprocess
-import nltk, base64, hashlib, cryptography
 
-from PyQt5               import QtCore, QtGui, QtWidgets
+from PyQt5               import QtCore
 from PyQt5.QtCore        import *
 from PyQt5.QtGui         import *
 from PyQt5.QtWidgets     import *
-from typing              import (List as list,
-                                 Tuple as tuple,
-                                 Dict as dict,
-                                 Callable)
+from typing              import Callable, Iterator, Tuple
 from uibld               import *
 from uibld.settings      import *
 from uibld.style         import *
@@ -17,7 +14,9 @@ from uibld.style         import *
 
 #Global variables declaration
 gitHubLink = 'https://github.com/StarterCraft/sicrypt'
-version = 'v1.2'
+version = 'v1.3'
+ciphers = []
+categories = []
 
 
 class Window(QMainWindow):
@@ -27,7 +26,7 @@ class Window(QMainWindow):
     #Translate function to simplify translation
     translate = QApplication.translate
 
-    def __init__(self, UIClass: (Ui_MainWindowVertical, Ui_MainWindowHorizontal), config):
+    def __init__(self, UIClass: Ui_MainWindowVertical | Ui_MainWindowHorizontal, config):
         QMainWindow.__init__(self)
         self.ui = UIClass()
         self.ui.setupUi(self)
@@ -107,6 +106,7 @@ class PlainTextEdit(QPlainTextEdit):
     '''
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
+
 
     def setTabPolicy(self, policy: int) -> None:
         '''
@@ -331,10 +331,12 @@ class Settings(QDialog):
 
         #False for default vertical position,
         #True for horizontal position
-        if (type(self.ui) == Ui_MainWindowHorizontal) != self.config['textFields']['position'] and not onInit:
-            messageBox(root, QMessageBox.Information, 
-                root.translate('TextFieldsPositionChangedDialog', 'Text fields` position has been changed'),
-                root.translate('TextFieldsPositionChangedDialog', 'Text fields` position has been changed, changes`ll be applied after restart'))
+        if (not onInit):
+            print(('Гориз сейчас' if type(root.ui) == Ui_MainWindowHorizontal else'Верт сейчас'), "хочу", ('гориз' if self.config['textFields']['position'] else 'верт'))
+            if (type(root.ui) == Ui_MainWindowHorizontal) != self.config['textFields']['position']:
+                root.ui = (Ui_MainWindowHorizontal if self.config['textFields']['position'] else Ui_MainWindowVertical)()
+                root.ui.setupUi(root)
+                initUi(root, self)
 
         #Setting font
         root.ui.ptx_SourceText.setStyleSheet(f'font: {config["font"][0]}')
@@ -392,6 +394,18 @@ class Settings(QDialog):
         with open('config.json', 'w') as configFile: json.dump(self.config, configFile, indent = 4)
 
         self.applyConfig(root)
+
+
+class CipherLoadingDialog(QDialog):
+    def __init__(self):
+        QDialog.__init__()
+
+        self.setStyleSheet(styleSheet)
+
+        self.label = QLabel(self.tr('Загрузка шифров... Пожалуйста, подождите.'))
+        self.pgbar = QProgressBar()
+
+        self.show()
 
 
 class Cipher:
@@ -479,6 +493,48 @@ class Cipher:
 
 
 #Major functions are defined below
+def initUi(root: Window, settings: Settings):
+    root.ui.cbb_Cipher.setToolTip(ciphers[0].getInformation(root))
+
+    checkForUpdates(root)
+
+    #Bind functions to actions and buttons
+    root.ui.tbt_Encrypt.clicked.connect( lambda: encrypt(root, 'utf-8') )
+    root.ui.tbt_Decrypt.clicked.connect( lambda: decrypt(root, 'utf-8') )
+    root.ui.btn_Paste.clicked.connect( lambda: pasteSourceText(root) )
+    root.ui.btn_Copy.clicked.connect( lambda: copyResultText(root) )
+    root.ui.btn_TransferResToSrc.clicked.connect( lambda: transferText(root, True) )
+    root.ui.btn_TransferSrcToRes.clicked.connect( lambda: transferText(root, False) ) 
+    root.ui.btn_About.clicked.connect( lambda: info(root) )
+    root.ui.btn_Settings.clicked.connect( settings.open )
+    root.ui.tbt_OpenFile.clicked.connect( lambda: openFileDialog(root, 'utf-8', True, root.openFileActionGroup.actions()[0].isChecked()) )
+    root.ui.tbt_SaveToFile.clicked.connect( lambda: openFileDialog(root, 'utf-8', False, root.saveToFileActionGroup.actions()[0].isChecked()) )
+    root.ui.cbb_Cipher.currentTextChanged.connect( lambda: switchCurrentCipher(root) )
+
+    for action in root.openFileActionGroup.actions(): 
+        if action.text()[1:7] == 'Source': action.setChecked(True)
+
+    for action in root.saveToFileActionGroup.actions(): 
+        if action.text()[1:7] == 'Result': action.setChecked(True)
+
+    for i in range(0, 4):
+        for action in root.encodingActions[i]:
+            if i in range(0, 2): action.triggered.connect( lambda: openFileDialog(root, action.text().lower(), action.data()) )
+            elif i == 2: action.triggered.connect( lambda: encrypt(root, action.text().lower()) )
+            elif i == 3: action.triggered.connect( lambda: decrypt(root, action.text().lower()) )
+
+    for customEncodingAction in root.customEncodingActions: customEncodingAction.triggered.connect( 
+        lambda: (openFileDialog(root,
+            inputDialog(root, root.tr('Custom encoding'), root.tr('Specify an encoding...')).lower(), customEncodingAction.data()) 
+            if customEncodingAction.data() in range(0, 2) else (customEncodingAction.triggered.connect(
+                lambda: encrypt(root, inputDialog(root, root.tr('Custom encoding'), root.tr('Specify an encoding...')).lower())
+                if action.data() == 2 else customEncodingAction.triggered.connect(
+                    lambda: decrypt(root, inputDialog(root, root.tr('Custom encoding'), root.tr('Specify an encoding...')).lower())
+            )))))
+        
+    addCiphersToCbbCipher(root)
+
+
 def checkForUpdates(root: Window):
     '''
     Check for updates, and if there is one, ask the user
@@ -489,25 +545,28 @@ def checkForUpdates(root: Window):
 
     :returns: None
     '''
-    response = getRequest(root, 'https://api.github.com/repos/StarterCraft/sicrypt/releases/latest').json()
-    tag = response['tag_name']
-    if int(tag[1:2]) > int(version[1:2]) or int(tag[3:4]) > int(version[3:4]):
-        if messageBox(root, QMessageBox.Information,
-            root.translate('UpdateDialog', 'Update available'),
-            root.translate('UpdateDialog', f'Update {tag} is available, would you like to download and install it?'),
-            details = getRequest(root, 'https://raw.githubusercontent.com/StarterCraft/sicrypt/master/changelog.txt').text,
-            buttons = [QMessageBox.Yes, QMessageBox.No]):
-            installerURL = getRequest(root, response['assets_url']).json()['browser_download_url']
+    try:
+        response = getRequest(root, 'https://api.github.com/repos/StarterCraft/sicrypt/releases/latest').json()
+        tag = response['tag_name']
+        if int(tag[1:2]) > int(version[1:2]) or int(tag[3:4]) > int(version[3:4]):
+            if messageBox(root, QMessageBox.Information,
+                root.translate('UpdateDialog', 'Update available'),
+                root.translate('UpdateDialog', f'Update {tag} is available, would you like to download and install it?'),
+                details = getRequest(root, 'https://raw.githubusercontent.com/StarterCraft/sicrypt/master/changelog.txt').text,
+                buttons = [QMessageBox.Yes, QMessageBox.No]):
+                installerURL = getRequest(root, response['assets_url']).json()['browser_download_url']
 
-            with requests.get(installerURL, stream = True) as request:
-                request.raise_for_status()
-                with open('installer.exe', 'wb') as f:
-                    for chunk in request.iter_content(chunk_size = None):
-                        if chunk: f.write(chunk)
+                with requests.get(installerURL, stream = True) as request:
+                    request.raise_for_status()
+                    with open('installer.exe', 'wb') as f:
+                        for chunk in request.iter_content(chunk_size = None):
+                            if chunk: f.write(chunk)
 
-            subprocess.Popen('installer.exe', creationflags = subprocess.CREATE_NEW_CONSOLE)
-            exit(1)
-        else: return
+                subprocess.Popen('installer.exe', creationflags = subprocess.CREATE_NEW_CONSOLE)
+                exit(1)
+            else: return
+    except KeyError: #github api does not return a valid message
+        pass
 
 
 def loadCiphers(root: Window, allowDownloadingNew: bool, allowDownloadingUpdates: bool) -> None:
@@ -527,7 +586,7 @@ def loadCiphers(root: Window, allowDownloadingNew: bool, allowDownloadingUpdates
 
     :returns: None
     '''
-    global ciphers
+    global ciphers, categories
 
     ciphers, categories, classNames = [], [], {}
     available = glob.glob('ciphers/*')
@@ -542,11 +601,15 @@ def loadCiphers(root: Window, allowDownloadingNew: bool, allowDownloadingUpdates
     #Find now ciphers on GitHub
     if allowDownloadingNew:
         availableOnGitHub = []
-        for file in getRequest(root, 'https://api.github.com/repos/StarterCraft/sicrypt/git/trees/master?recursive=1').json()['tree']:
-            try:
-                if (file['path'][:file['path'].index('/')] == 'ciphers' and file['path'].endswith('.py')):
-                    availableOnGitHub.append(file['path'])
-            except ValueError: continue
+
+        try:
+            for file in getRequest(root, 'https://api.github.com/repos/StarterCraft/sicrypt/git/trees/master?recursive=1').json()['tree']:
+                try:
+                    if (file['path'][:file['path'].index('/')] == 'ciphers' and file['path'].endswith('.py')):
+                        availableOnGitHub.append(file['path'])
+                except ValueError: continue
+        except KeyError:
+            pass
 
         for file in availableOnGitHub:
             if file not in available[:]:
@@ -567,7 +630,17 @@ def loadCiphers(root: Window, allowDownloadingNew: bool, allowDownloadingUpdates
                         savedNames.append(className)
                         classNames.update({fileName.replace('/', '.'): savedNames})
 
+    loading = QProgressDialog('Downloading ciphers...', 'Abort', 0, len(classNames.items()))
+    loading.setWindowTitle('Downloading ciphers...')
+    loading.setWindowModality(Qt.WindowModality.WindowModal)
+    loading.setValue(0)
+    loading.show()
+    print(638)
+    cix = 0
+
     for classFile, classNames in classNames.items():
+        loading.setValue(cix)
+
         for className in classNames:
             _class = getattr(importlib.import_module(classFile[:-3]), className)
             try:
@@ -583,6 +656,7 @@ def loadCiphers(root: Window, allowDownloadingNew: bool, allowDownloadingUpdates
                             response = getRequest(root, f'https://raw.githubusercontent.com/StarterCraft/sicrypt/master/{classFile.replace(".", "/")}')
                             if response == 200: 
                                 file.write(response.text)
+                    
                                 _compareClass = getattr(importlib.import_module('ciphers.dl'), className)
                                 if _compareClass.version == _class.version: pass
                                 elif _compareClass.version[0] > _class.version[0] or _compareClass.version[1] > _class.version[1]:
@@ -590,7 +664,7 @@ def loadCiphers(root: Window, allowDownloadingNew: bool, allowDownloadingUpdates
                                     ciphers.append(_compareClass())
 
                     ciphers.append(_class())
-                    os.system('del ciphers\\dl.cache')
+                    os.remove('ciphers/dl.cache')
 
                 else: messageBox(root, QMessageBox.Critical,
                     root.translate('CipherLoadingErrorMessagebox', f'Failed to load cipher {className}'),
@@ -600,8 +674,17 @@ def loadCiphers(root: Window, allowDownloadingNew: bool, allowDownloadingUpdates
                 messageBox(root, QMessageBox.Critical, root.translate('CipherLoadingErrorMessagebox', f'Failed to load cipher {className}'),
                     root.translate('CipherLoadingErrorMessagebox',
                         f'Cipher {className}, declared in {classFile}, failed to load due to {type(exception).__name__}. See the details below'),
-                        details = f'Our GitHub:{gitHubLink}\n{traceback.format_exc()}')
+                        details = f'Our GitHub: {gitHubLink}\n{traceback.format_exc()}')
+                
+        cix += 1
 
+        if (loading.wasCanceled()): 
+            return
+        
+    loading.hide()
+
+
+def addCiphersToCbbCipher(root: Window):
     for cipher in ciphers:
         if cipher.category not in categories: categories.append(cipher.category)
 
@@ -749,7 +832,7 @@ def pasteSourceText(root: Window) -> None:
 
     :returns: None
     '''
-    root.ui.plainTextEdit.setPlainText(str(pyperclip.paste()))
+    root.ui.ptx_SourceText.setPlainText(str(pyperclip.paste()))
 
 
 def info(root: Window) -> None:
@@ -950,7 +1033,7 @@ def getRequest(root: Window, url: str):
         details = f'Our GitHub:{gitHubLink}\n\n{traceback.format_exc()}')
 
 
-if __name__ == '__main__':
+def main():
     app = QApplication(sys.argv)
     app.setStyleSheet(appStyleSheet)
 
@@ -965,43 +1048,10 @@ if __name__ == '__main__':
     try:
         #Load ciphers
         loadCiphers(root, settings.config['encryption']['dlnew'], settings.config['encryption']['dlupd'])
-        root.ui.cbb_Cipher.setToolTip(ciphers[0].getInformation(root))
- 
+        
         checkForUpdates(root)
 
-        #Bind functions to actions and buttons
-        root.ui.tbt_Encrypt.clicked.connect( lambda: encrypt(root, 'utf-8') )
-        root.ui.tbt_Decrypt.clicked.connect( lambda: decrypt(root, 'utf-8') )
-        root.ui.btn_Paste.clicked.connect( lambda: pasteSourceText(root) )
-        root.ui.btn_Copy.clicked.connect( lambda: copyResultText(root) )
-        root.ui.btn_TransferResToSrc.clicked.connect( lambda: transferText(root, True) )
-        root.ui.btn_TransferSrcToRes.clicked.connect( lambda: transferText(root, False) ) 
-        root.ui.btn_About.clicked.connect( lambda: info(root) )
-        root.ui.btn_Settings.clicked.connect( settings.open )
-        root.ui.tbt_OpenFile.clicked.connect( lambda: openFileDialog(root, 'utf-8', True, root.openFileActionGroup.actions()[0].isChecked()) )
-        root.ui.tbt_SaveToFile.clicked.connect( lambda: openFileDialog(root, 'utf-8', False, root.saveToFileActionGroup.actions()[0].isChecked()) )
-        root.ui.cbb_Cipher.currentTextChanged.connect( lambda: switchCurrentCipher(root) )
-
-        for action in root.openFileActionGroup.actions(): 
-            if action.text()[1:7] == 'Source': action.setChecked(True)
-
-        for action in root.saveToFileActionGroup.actions(): 
-            if action.text()[1:7] == 'Result': action.setChecked(True)
-
-        for i in range(0, 4):
-            for action in root.encodingActions[i]:
-                if i in range(0, 2): action.triggered.connect( lambda: openFileDialog(root, action.text().lower(), action.data()) )
-                elif i == 2: action.triggered.connect( lambda: encrypt(root, action.text().lower()) )
-                elif i == 3: action.triggered.connect( lambda: decrypt(root, action.text().lower()) )
-
-        for customEncodingAction in root.customEncodingActions: customEncodingAction.triggered.connect( 
-           lambda: (openFileDialog(root,
-               inputDialog(root, root.tr('Custom encoding'), root.tr('Specify an encoding...')).lower(), customEncodingAction.data()) 
-               if customEncodingAction.data() in range(0, 2) else (customEncodingAction.triggered.connect(
-                   lambda: encrypt(root, inputDialog(root, root.tr('Custom encoding'), root.tr('Specify an encoding...')).lower())
-                   if action.data() == 2 else customEncodingAction.triggered.connect(
-                       lambda: decrypt(root, inputDialog(root, root.tr('Custom encoding'), root.tr('Specify an encoding...')).lower())
-               )))))
+        initUi(root, settings)
 
         #Settings dialog
         settings.accepted.connect( lambda: settings.handleDialogAcception(root) )
@@ -1022,3 +1072,6 @@ if __name__ == '__main__':
                  'have fixed this problem yourself, huge thanks to you, please submit a pull request with the code files '
                  'you have changed.'),
                 details = f'Our GitHub: {gitHubLink}\n\n{traceback.format_exc()}')
+
+if __name__ == '__main__':
+    main()    
