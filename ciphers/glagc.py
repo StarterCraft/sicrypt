@@ -1,6 +1,6 @@
 'Convertion of Cyrillic Russian text to Glagolic Russian text and backwards'
 
-from sicrypt import Cipher
+from main import Cipher
 
 class RuCyrillicToGlagolic(Cipher):
     '''

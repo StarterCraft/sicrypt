@@ -34,7 +34,7 @@ If you have faced a critical error during usage of the program, please open an i
 
 ## Used
 - Python 3.8.2
-- PyQt5 5.15.2
+- PySide6 5.15.2
 - [pyperclip](https://github.com/asweigart/pyperclip)
 - [requests](https://github.com/psf/requests)
 
@@ -182,7 +182,7 @@ If you have faced a critical error during usage of the program, please open an i
 
 ## Использованы
 - Python 3.8.2
-- PyQt5 5.15.2
+- PySide6 5.15.2
 - [pyperclip](https://github.com/asweigart/pyperclip)
 - [requests](https://github.com/psf/requests)
 

@@ -1,6 +1,6 @@
 'Base* ciphers'
 
-from sicrypt  import Cipher
+from main  import Cipher
 from base64   import *
 from binascii import Error as BaseCipherDecodingError
 

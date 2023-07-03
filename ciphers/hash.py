@@ -1,6 +1,6 @@
 'Hashing alghorithms'
 
-from sicrypt  import Cipher
+from main  import Cipher
 from hashlib  import *
 
 class MD5(Cipher):
